@@ -12,6 +12,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "../utils/mutations";
 
 function Copyright(props) {
   return (
@@ -36,13 +38,22 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
-  const handleSubmit = (event) => {
+  const [login] = useMutation(LOGIN);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    const email = data.get("email");
+    const password = data.get("password");
+
+    try {
+      const { data } = await login({ variables: { email, password } });
+      console.log("Response Data:", data);
+      AuthService.login(data.login.token);
+    } catch (error) {
+      console.error("Login failed", error);
+    }
   };
 
   return (
