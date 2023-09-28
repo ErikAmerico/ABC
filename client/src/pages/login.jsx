@@ -49,7 +49,7 @@ export default function Login() {
 
     try {
       const { data } = await login({ variables: { email, password } });
-      console.log("Response Data:", data);
+      console.log("Response Data:", data); //put breakpoint here and try again.
       AuthService.login(data.login.token);
     } catch (error) {
       console.error("Login failed", error);
