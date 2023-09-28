@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const jobSchema = new mongoose.Schema({
+const moveSchema = new mongoose.Schema({
   date: Date,
   startTime: String,
   estimate: String,
@@ -77,6 +77,6 @@ const jobSchema = new mongoose.Schema({
   prePayment: String,
 });
 
-const Job = mongoose.model("Job", jobSchema);
+const Move = mongoose.model("Move", moveSchema);
 
-module.exports = Job;
+module.exports = Move;
