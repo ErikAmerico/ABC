@@ -134,11 +134,11 @@ const Header = () => {
             </Typography>
           ) : null}
 
-          {!userName && (
+          {/* {!userName && (
             <Button component={Link} to="/login" color="inherit">
               Login
             </Button>
-          )}
+          )} */}
 
           {AuthService.loggedIn() && (
             <IconButton edge="end" color="inherit" onClick={handleMenuOpen}>
