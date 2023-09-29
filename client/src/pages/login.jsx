@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../utils/mutations";
+import AuthService from "../utils/auth";
 
 function Copyright(props) {
   return (
@@ -44,8 +45,8 @@ export default function Login() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const email = data.get("email");
-    const password = data.get("password");
+    const email = data.get("email").trim();
+    const password = data.get("password").trim();
 
     try {
       const { data } = await login({ variables: { email, password } });

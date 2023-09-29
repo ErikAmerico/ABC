@@ -2,9 +2,6 @@
 // const User = require("../server/models/user");
 // const db = require("../server/config/connection");
 
-// const saltRounds = 10;
-// const plainTextPassword = "nick123.";
-
 // db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // db.once("open", () => {
@@ -15,18 +12,17 @@
 //   const roles = ["Owner"];
 //   const email = "nick@gmail.com";
 //   const phone = "555-555-5555";
+//   const password = "nick123.";
 
 //   async function createUser() {
 //     try {
-//       const hash = await bcrypt.hash(plainTextPassword, saltRounds);
-
 //       const newUser = new User({
 //         firstName,
 //         lastName,
 //         roles,
 //         email,
 //         phone,
-//         password: hash,
+//         password,
 //       });
 
 //       await newUser.save();

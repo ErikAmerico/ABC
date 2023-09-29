@@ -23,6 +23,7 @@ const classes = styled(Avatar)(({ theme }) => ({
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState();
   const [userName, setUserName] = useState();
+  const [userRole, setUserRole] = useState();
   const [userId, setUserId] = useState("");
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
@@ -47,12 +48,6 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
-    await createMsgCnt({
-      variables: {
-        userId: userId,
-      },
-    });
-
     AuthService.logout();
     handleMenuClose();
   };
@@ -119,7 +114,7 @@ const Header = () => {
                 variant="outlined"
                 to="/Jobs"
                 sx={{
-                  backgroundColor: hasUnreadMessages ? "#6669ad" : "#134074",
+                  backgroundColor: "#134074",
                   color: "white",
                 }}
               >
@@ -146,10 +141,10 @@ const Header = () => {
                 className={classes.avatar}
                 sx={{
                   //bgcolor: "white",
-                  backgroundColor: unreadMessages ? "#6669ad" : "white",
-                  color: unreadMessages ? "white" : "#144074",
+                  backgroundColor: "white",
+                  color: "#144074",
                   border: "3px solid gray",
-                  fontWeight: unreadMessages ? "normal" : "bold",
+                  fontWeight: "bold",
                   textShadow: "0px 0px 12px black",
                 }}
               >

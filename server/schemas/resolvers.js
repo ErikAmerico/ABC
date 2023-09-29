@@ -1,8 +1,16 @@
-const { signToken, AuthenticationError } = require("../utils/auth");
+const { signToken } = require("../utils/auth");
 const User = require("../models/user");
 const Move = require("../models/move");
 const Company = require("../models/company");
 const Contact = require("../models/contact");
+const bcrypt = require("bcrypt");
+
+class AuthenticationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "AuthenticationError";
+  }
+}
 
 const resolvers = {
   Query: {
@@ -25,13 +33,18 @@ const resolvers = {
   Mutation: {
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
+      //const user = await User.findOne({ email: email.toLowerCase() });
       if (!user) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw new AuthenticationError("Incorrect email");
       }
 
-      const correctPw = await user.isCorrectPassword(password);
+      console.log(user);
+      console.log("Stored Hash:", user.password);
+      console.log("Entered Password Hash:", await bcrypt.hash(password, 10));
+
+      const correctPw = await user.isCorrectPassword(password.trim());
       if (!correctPw) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw new AuthenticationError("Incorrect password");
       }
 
       const token = signToken(user);
