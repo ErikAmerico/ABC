@@ -106,7 +106,7 @@ const Header = () => {
                   color: "white",
                 }}
               >
-                Users
+                Employees
               </Button>
               <Button
                 component={Link}
@@ -118,7 +118,7 @@ const Header = () => {
                   color: "white",
                 }}
               >
-                Chat
+                Dispatch Sheet
               </Button>
             </Typography>
           )}

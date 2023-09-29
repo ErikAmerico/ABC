@@ -24,6 +24,9 @@ const RootComponent = () => {
     if (!AuthService.loggedIn() && location.pathname !== "/login") {
       // Redirect to login page if not logged in and not already on the login page
       navigate("/login");
+    } else if (AuthService.loggedIn() && location.pathname === "/login") {
+      // Redirect to home page if logged in and on the login page
+      navigate("/");
     }
   }, [location, navigate]);
 
