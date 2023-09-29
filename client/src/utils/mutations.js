@@ -39,6 +39,19 @@ export const DELETE_USER = gql`
   }
 `;
 
+export const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+
 export const CREATE_MOVE = gql`
   mutation CreateMove($input: MoveInput!) {
     createMove(input: $input) {

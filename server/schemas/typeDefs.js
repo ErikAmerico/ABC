@@ -124,10 +124,16 @@ const typeDefs = gql`
   }
 
   type Query {
+    me: User
     getUser(id: ID!): User
     getMove(id: ID!): Move
     getCompany(id: ID!): Company
     getContact(id: ID!): Contact
+  }
+
+  type Auth {
+    token: ID!
+    user: User
   }
 
   input MoveInput {
@@ -249,6 +255,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    login(email: String!, password: String!): Auth
     createUser(input: UserInput!): User!
     updateUser(id: ID!, input: UserInput!): User
     deleteUser(id: ID!): User

@@ -44,7 +44,6 @@ class AuthService {
   login(idToken) {
     const decodedToken = decode(idToken);
 
-    // Saves company id of the logged-in user to cookies
     console.log(decodedToken);
 
     // Saves user token to cookies
