@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import "./jobs.css";
+import "./dispatch.css";
 import {
   Button,
   Table,
@@ -32,7 +32,7 @@ const columns = [
 // valueGetter: (params) =>
 // `${params.row.firstName || ""} ${params.row.lastName || ""}`
 
-export default function Jobs() {
+export default function Dispatch() {
   const [rows, setRows] = useState([]);
 
   const addRow = () => {
