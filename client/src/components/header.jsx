@@ -8,11 +8,14 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthService from "../utils/auth";
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
+import DispatchDrawer from "./dispatchDrawer";
+import { useLocation } from "react-router-dom";
 
 const classes = styled(Avatar)(({ theme }) => ({
   width: theme.spacing(4),
@@ -26,6 +29,7 @@ const Header = () => {
   const [userRole, setUserRole] = useState();
   const [userId, setUserId] = useState("");
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const location = useLocation();
 
   useEffect(() => {
     if (AuthService.loggedIn()) {
@@ -63,7 +67,6 @@ const Header = () => {
         sx={{ borderRadius: 2, backgroundColor: "#8da9c4" }}
       >
         <Toolbar>
-          {/* Company Logo */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link to="/">
               <img
@@ -79,7 +82,6 @@ const Header = () => {
             </Link>
           </Typography>
 
-          {/* Navigation Links */}
           {AuthService.loggedIn() && screenWidth > 790 && (
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Button
@@ -106,52 +108,62 @@ const Header = () => {
                   color: "white",
                 }}
               >
-                Users
+                Employees
               </Button>
               <Button
                 component={Link}
                 color="info"
                 variant="outlined"
-                to="/Jobs"
+                to="/dispatch"
                 sx={{
                   backgroundColor: "#134074",
                   color: "white",
                 }}
               >
-                Chat
+                Dispatch Sheet
               </Button>
             </Typography>
           )}
 
-          {userName && screenWidth > 415 ? (
-            <Typography variant="h6" component="div">
-              {userName}
-            </Typography>
-          ) : null}
+          <Box display="flex" flexDirection="column" alignItems="start">
+            <Box display="flex" alignItems="center">
+              {userName && screenWidth > 415 ? (
+                <Typography variant="h6" component="div">
+                  {userName}
+                </Typography>
+              ) : null}
 
-          {/* {!userName && (
-            <Button component={Link} to="/login" color="inherit">
-              Login
-            </Button>
-          )} */}
+              {AuthService.loggedIn() && (
+                <IconButton edge="end" color="inherit" onClick={handleMenuOpen}>
+                  <Avatar
+                    className={classes.avatar}
+                    sx={{
+                      //bgcolor: "white",
+                      backgroundColor: "white",
+                      color: "#144074",
+                      border: "3px solid gray",
+                      fontWeight: "bold",
+                      textShadow: "0px 0px 12px black",
+                    }}
+                  >
+                    {initials}
+                  </Avatar>
+                </IconButton>
+              )}
+            </Box>
 
-          {AuthService.loggedIn() && (
-            <IconButton edge="end" color="inherit" onClick={handleMenuOpen}>
-              <Avatar
-                className={classes.avatar}
+            {AuthService.loggedIn() && location.pathname === "/dispatch" && (
+              <Box
+                mt={-5}
                 sx={{
-                  //bgcolor: "white",
-                  backgroundColor: "white",
-                  color: "#144074",
-                  border: "3px solid gray",
-                  fontWeight: "bold",
-                  textShadow: "0px 0px 12px black",
+                  position: "relative",
+                  top: 40,
                 }}
               >
-                {initials}
-              </Avatar>
-            </IconButton>
-          )}
+                <DispatchDrawer />
+              </Box>
+            )}
+          </Box>
 
           <Menu
             anchorEl={anchorEl}

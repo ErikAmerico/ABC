@@ -1,0 +1,16 @@
+.border-right {
+  border-right: 1px solid rgba(224, 224, 224, 1);
+}
+
+/* .gridContainer {
+  height: 500px;
+} */
+
+.myDataGrid .MuiDataGrid-overlay {
+  display: none;
+}
+
+.MuiDataGrid-columnHeaders {
+  background-color: gray;
+  position: fixed;
+}

@@ -7,12 +7,12 @@
 // db.once("open", () => {
 //   console.log("Connected to the database");
 
-//   const firstName = "Nick";
-//   const lastName = "Graves";
-//   const roles = ["Owner"];
-//   const email = "nick@gmail.com";
-//   const phone = "555-555-5555";
-//   const password = "nick123.";
+//   const firstName = "Bob";
+//   const lastName = "GreenLeaf";
+//   const roles = ["Supervisor"];
+//   const email = "bob@gmail.com";
+//   const phone = "617-694-1231";
+//   const password = "bob123.";
 
 //   async function createUser() {
 //     try {
