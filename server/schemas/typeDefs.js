@@ -125,6 +125,7 @@ const typeDefs = gql`
 
   type Query {
     me: User
+    users: [User]
     getUser(id: ID!): User
     getMove(id: ID!): Move
     getCompany(id: ID!): Company
