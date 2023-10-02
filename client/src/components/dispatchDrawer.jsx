@@ -9,10 +9,39 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_USER_IDS } from "../utils/queries";
 
 export default function DispatchDrawer() {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState({});
+
+  const { data, loading, error } = useQuery(GET_ALL_USER_IDS);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const employees = data.users;
+
+  console.log(employees);
+
+  const generateExpandedData = (employees) => {
+    const data = {};
+
+    employees.forEach((employee) => {
+      const fullName = `${employee.firstName} ${employee.lastName}`;
+      employee.roles.forEach((role) => {
+        if (!data[role]) {
+          data[role] = [];
+        }
+        data[role].push(fullName);
+      });
+    });
+
+    return data;
+  };
+
+  const expandedData = generateExpandedData(employees);
 
   const toggleDrawer = (isOpen) => () => {
     setOpen(isOpen);
@@ -20,16 +49,6 @@ export default function DispatchDrawer() {
 
   const toggleExpand = (item) => () => {
     setExpanded((prev) => ({ ...prev, [item]: !prev[item] }));
-  };
-
-  //Dummy Data
-  const expandedData = {
-    Supervisors: ["Supervisor 1", "Supervisor 2"],
-    Drivers: ["Driver 1", "Driver 2", "Driver 3"],
-    Helpers: ["Helper 1", "Helper 2", "Helper 3"],
-    Techs: ["Tech 1", "Tech 2", "Tech 3"],
-    TruckVan: ["Truck 1", "Truck 2", "Truck 3"],
-    contacts: ["Contact 1", "Contact 2", "Contact 3"],
   };
 
   const items = [
