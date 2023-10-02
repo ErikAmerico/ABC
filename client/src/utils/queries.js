@@ -39,9 +39,9 @@ export const GET_ALL_USER_IDS = gql`
   }
 `;
 
-export const GET_ALL_TRUCK_IDS = gql`
+export const GET_ALL_TRUCKS = gql`
   {
-    trucks {
+    getTrucks {
       id
       number
       crewCab
@@ -52,9 +52,9 @@ export const GET_ALL_TRUCK_IDS = gql`
   }
 `;
 
-export const GET_ALL_VAN_IDS = gql`
+export const GET_ALL_VANS = gql`
   {
-    vans {
+    getVans {
       id
       number
       openBack

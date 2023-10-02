@@ -277,7 +277,9 @@ const typeDefs = gql`
     getCompany(id: ID!): Company
     getContact(id: ID!): Contact
     getTruck(id: ID!): Truck
+    getTrucks: [Truck]
     getVan(id: ID!): Van
+    getVans: [Van]
   }
 
   type Auth {

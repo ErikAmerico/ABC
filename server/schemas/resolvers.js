@@ -45,8 +45,18 @@ const resolvers = {
       return Truck.findById(id);
     },
 
+    getTrucks: async () => {
+      const trucks = await Truck.find();
+      return trucks;
+    },
+
     getVan: (parent, { id }) => {
       return Van.findById(id);
+    },
+
+    getVans: async () => {
+      const vans = await Van.find();
+      return vans;
     },
   },
   Mutation: {
@@ -116,8 +126,12 @@ const resolvers = {
       return Contact.findByIdAndDelete(id);
     },
 
-    createTruck: (parent, { input }) => {
-      return Truck.create(input);
+    createTruck: async (parent, { input }) => {
+      try {
+        return await Truck.create(input);
+      } catch (error) {
+        throw new Error("Failed to create truck");
+      }
     },
 
     updateTruck: (parent, { id, input }) => {
