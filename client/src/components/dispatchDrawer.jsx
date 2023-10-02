@@ -11,29 +11,52 @@ import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_USER_IDS } from "../utils/queries";
+import { GET_ALL_TRUCKS } from "../utils/queries";
+import { GET_ALL_VANS } from "../utils/queries";
 
 export default function DispatchDrawer() {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState({});
 
-  const { data, loading, error } = useQuery(GET_ALL_USER_IDS);
+  const {
+    data: usersData,
+    loading: usersLoading,
+    error: usersError,
+  } = useQuery(GET_ALL_USER_IDS);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const {
+    data: trucksData,
+    loading: trucksLoading,
+    error: trucksError,
+  } = useQuery(GET_ALL_TRUCKS);
 
-  const employees = data.users;
+  const {
+    data: vansData,
+    loading: vansLoading,
+    error: vansError,
+  } = useQuery(GET_ALL_VANS);
+
+  if (usersLoading || trucksLoading || vansLoading) return <p>Loading...</p>;
+  if (usersError) return <p>Error: {usersError.message}</p>;
+  if (trucksError) return <p>Error: {trucksError.message}</p>;
+  if (vansError) return <p>Error: {vansError.message}</p>;
+
+  const employees = usersData.users;
+  const trucks = trucksData.getTrucks;
+  const vans = vansData.getVans;
 
   const items = [
     "Supervisor",
     "Driver",
     "Helper",
     "Tech",
-    "Truck/Van",
+    "Truck",
+    "Van",
     "Contact",
     "Company",
   ];
 
-  const generateExpandedData = (employees) => {
+  const generateExpandedData = (employees, trucks, vans) => {
     const data = {};
 
     employees.forEach((employee) => {
@@ -49,10 +72,17 @@ export default function DispatchDrawer() {
       });
     });
 
+    data["Truck"] = trucks.map((truck) => `${truck.number}`);
+    data["Van"] = vans.map((van) => `${van.number}`);
+
+    items.forEach((item) => {
+      if (!data[item]) data[item] = [];
+    });
+
     return data;
   };
 
-  const expandedData = generateExpandedData(employees);
+  const expandedData = generateExpandedData(employees, trucks, vans);
 
   const toggleDrawer = (isOpen) => () => {
     setOpen(isOpen);
@@ -100,11 +130,13 @@ export default function DispatchDrawer() {
                   unmountOnExit
                 >
                   <List component="div" disablePadding>
-                    {expandedData[text]?.map((subItem) => (
-                      <ListItem key={subItem} dense button>
-                        <ListItemText primary={subItem} inset />
-                      </ListItem>
-                    ))}
+                    {/* {expandedData[text]?.map((subItem) => ( */}
+                    {Array.isArray(expandedData[text]) &&
+                      expandedData[text].map((subItem) => (
+                        <ListItem key={subItem} dense button>
+                          <ListItemText primary={subItem} inset />
+                        </ListItem>
+                      ))}
                   </List>
                 </Collapse>
               </div>

@@ -3,6 +3,8 @@ const User = require("../models/user");
 const Move = require("../models/move");
 const Company = require("../models/company");
 const Contact = require("../models/contact");
+const Truck = require("../models/truck");
+const Van = require("../models/van");
 const bcrypt = require("bcrypt");
 
 class AuthenticationError extends Error {
@@ -37,6 +39,24 @@ const resolvers = {
 
     getContact: (parent, { id }) => {
       return Contact.findById(id);
+    },
+
+    getTruck: (parent, { id }) => {
+      return Truck.findById(id);
+    },
+
+    getTrucks: async () => {
+      const trucks = await Truck.find();
+      return trucks;
+    },
+
+    getVan: (parent, { id }) => {
+      return Van.findById(id);
+    },
+
+    getVans: async () => {
+      const vans = await Van.find();
+      return vans;
     },
   },
   Mutation: {
@@ -104,6 +124,34 @@ const resolvers = {
 
     deleteContact: (parent, { id }) => {
       return Contact.findByIdAndDelete(id);
+    },
+
+    createTruck: async (parent, { input }) => {
+      try {
+        return await Truck.create(input);
+      } catch (error) {
+        throw new Error("Failed to create truck");
+      }
+    },
+
+    updateTruck: (parent, { id, input }) => {
+      return Truck.findByIdAndUpdate(id, input, { new: true });
+    },
+
+    deleteTruck: (parent, { id }) => {
+      return Truck.findByIdAndDelete(id);
+    },
+
+    createVan: (parent, { input }) => {
+      return Van.create(input);
+    },
+
+    updateVan: (parent, { input }) => {
+      return Van.findByIdAndUpdate(id, input, { new: true });
+    },
+
+    deleteVan: (parent, { id }) => {
+      return Van.findByIdAndDelete(id);
     },
   },
 };

@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   roles: [String],
+  cdlProgram: Boolean,
+  cdl: Boolean,
   email: {
     type: String,
     unique: true,
