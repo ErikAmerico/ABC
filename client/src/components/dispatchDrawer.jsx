@@ -23,7 +23,15 @@ export default function DispatchDrawer() {
 
   const employees = data.users;
 
-  console.log(employees);
+  const items = [
+    "Supervisor",
+    "Driver",
+    "Helper",
+    "Tech",
+    "Truck/Van",
+    "Contact",
+    "Company",
+  ];
 
   const generateExpandedData = (employees) => {
     const data = {};
@@ -31,10 +39,13 @@ export default function DispatchDrawer() {
     employees.forEach((employee) => {
       const fullName = `${employee.firstName} ${employee.lastName}`;
       employee.roles.forEach((role) => {
-        if (!data[role]) {
+        if (!data[role] && items.includes(role)) {
+          // Ensure that the role matches one of our main items
           data[role] = [];
         }
-        data[role].push(fullName);
+        if (data[role]) {
+          data[role].push(fullName);
+        }
       });
     });
 
@@ -50,16 +61,6 @@ export default function DispatchDrawer() {
   const toggleExpand = (item) => () => {
     setExpanded((prev) => ({ ...prev, [item]: !prev[item] }));
   };
-
-  const items = [
-    "Supervisors",
-    "Drivers",
-    "Helpers",
-    "Techs",
-    "Equipment",
-    "Contacts",
-    "Companies",
-  ];
 
   const list = (
     <Box
@@ -88,7 +89,7 @@ export default function DispatchDrawer() {
       <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
         <Box sx={{ width: 250 }} role="presentation">
           <List>
-            {Object.keys(expandedData).map((text) => (
+            {items.map((text) => (
               <div key={text}>
                 <ListItemButton onClick={toggleExpand(text)}>
                   <ListItemText primary={text} />
@@ -99,7 +100,7 @@ export default function DispatchDrawer() {
                   unmountOnExit
                 >
                   <List component="div" disablePadding>
-                    {expandedData[text].map((subItem) => (
+                    {expandedData[text]?.map((subItem) => (
                       <ListItem key={subItem} dense button>
                         <ListItemText primary={subItem} inset />
                       </ListItem>
