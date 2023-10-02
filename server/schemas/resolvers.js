@@ -18,8 +18,17 @@ const resolvers = {
       return User.findById(id);
     },
 
+    users: async () => {
+      return await User.find();
+    },
+
     getMove: (parent, { id }) => {
-      return Move.findById(id).populate("supervisors drivers helpers techs");
+      return Move.findById(id).populate(
+        "supervisors",
+        "drivers",
+        "helpers",
+        "techs"
+      );
     },
 
     getCompany: (parent, { id }) => {

@@ -26,6 +26,19 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_ALL_USER_IDS = gql`
+  {
+    users {
+      id
+      firstName
+      lastName
+      roles
+      email
+      phone
+    }
+  }
+`;
+
 export const GET_MOVE = gql`
   query GetMove($id: ID!) {
     getMove(id: $id) {
