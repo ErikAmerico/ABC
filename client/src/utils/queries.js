@@ -39,6 +39,29 @@ export const GET_ALL_USER_IDS = gql`
   }
 `;
 
+export const GET_ALL_TRUCK_IDS = gql`
+  {
+    trucks {
+      id
+      number
+      crewCab
+      cdl
+      cdlProgram
+      goodTailgate
+    }
+  }
+`;
+
+export const GET_ALL_VAN_IDS = gql`
+  {
+    vans {
+      id
+      number
+      openBack
+    }
+  }
+`;
+
 export const GET_MOVE = gql`
   query GetMove($id: ID!) {
     getMove(id: $id) {

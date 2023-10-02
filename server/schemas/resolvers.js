@@ -3,6 +3,8 @@ const User = require("../models/user");
 const Move = require("../models/move");
 const Company = require("../models/company");
 const Contact = require("../models/contact");
+const Truck = require("../models/truck");
+const Van = require("../models/van");
 const bcrypt = require("bcrypt");
 
 class AuthenticationError extends Error {
@@ -37,6 +39,14 @@ const resolvers = {
 
     getContact: (parent, { id }) => {
       return Contact.findById(id);
+    },
+
+    getTruck: (parent, { id }) => {
+      return Truck.findById(id);
+    },
+
+    getVan: (parent, { id }) => {
+      return Van.findById(id);
     },
   },
   Mutation: {
@@ -104,6 +114,30 @@ const resolvers = {
 
     deleteContact: (parent, { id }) => {
       return Contact.findByIdAndDelete(id);
+    },
+
+    createTruck: (parent, { input }) => {
+      return Truck.create(input);
+    },
+
+    updateTruck: (parent, { id, input }) => {
+      return Truck.findByIdAndUpdate(id, input, { new: true });
+    },
+
+    deleteTruck: (parent, { id }) => {
+      return Truck.findByIdAndDelete(id);
+    },
+
+    createVan: (parent, { input }) => {
+      return Van.create(input);
+    },
+
+    updateVan: (parent, { input }) => {
+      return Van.findByIdAndUpdate(id, input, { new: true });
+    },
+
+    deleteVan: (parent, { id }) => {
+      return Van.findByIdAndDelete(id);
     },
   },
 };

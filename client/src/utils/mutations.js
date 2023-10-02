@@ -469,3 +469,69 @@ export const DELETE_CONTACT = gql`
     }
   }
 `;
+
+export const CREATE_TRUCK = gql`
+  mutation CreateTruck($input: TruckInput!) {
+    createTruck(input: $input) {
+      id
+      number
+      crewCab
+      cdl
+      cdlProgram
+      goodTailgate
+    }
+  }
+`;
+
+export const UPDATE_TRUCK = gql`
+  mutation UpdateTruck($id: ID!, $input: TruckInput!) {
+    updateTruck(id: $id, input: $input) {
+      id
+      number
+      crewCab
+      cdl
+      cdlProgram
+      goodTailgate
+    }
+  }
+`;
+
+export const DELETE_TRUCK = gql`
+  mutation DeleteTruck($id: ID!) {
+    deleteTruck(id: $id) {
+      id
+      number
+      crewCab
+      cdl
+      cdlProgram
+      goodTailgate
+    }
+  }
+`;
+
+export const CREATE_VAN = gql`
+  mutation CreateVan($input: VanInput!) {
+    createVan(input: $input) {
+      id
+      openBack
+    }
+  }
+`;
+
+export const UPDATE_VAN = gql`
+  mutation UpdateVan($id: ID!, $input: VanInput!) {
+    updateVan(id: $id, input: $input) {
+      id
+      openBack
+    }
+  }
+`;
+
+export const DELETE_VAN = gql`
+  mutation DeleteVan($id: ID!) {
+    deleteVan(id: $id) {
+      id
+      openBack
+    }
+  }
+`;

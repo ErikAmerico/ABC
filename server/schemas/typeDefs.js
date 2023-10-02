@@ -10,6 +10,14 @@ const typeDefs = gql`
     phone: String
   }
 
+  input UserInput {
+    firstName: String
+    lastName: String
+    roles: [String]
+    email: String
+    phone: String
+  }
+
   type Contact {
     id: ID
     name: String
@@ -19,11 +27,25 @@ const typeDefs = gql`
     company: Company
   }
 
+  input ContactInput {
+    name: String
+    title: String
+    email: String
+    phone: String
+    company: CompanyInput
+  }
+
   type Company {
     id: ID
     names: [String]
     addresses: [Address]
     contacts: [Contact]
+  }
+
+  input CompanyInput {
+    names: [String]
+    addresses: [AddressInput]
+    contacts: [ContactInput]
   }
 
   type Address {
@@ -34,7 +56,20 @@ const typeDefs = gql`
     floors: [Floor]
   }
 
+  input AddressInput {
+    street: String
+    city: String
+    state: String
+    zipCode: String
+    floors: [FloorInput]
+  }
+
   type Floor {
+    floorNumber: [Int]
+    rooms: [String]
+  }
+
+  input FloorInput {
     floorNumber: [Int]
     rooms: [String]
   }
@@ -74,6 +109,40 @@ const typeDefs = gql`
     prePayment: String
   }
 
+  input MoveInput {
+    date: String
+    startTime: String
+    estimate: String
+    origin: OriginInput
+    destination: DestinationInput
+    noCrewCab: Boolean
+    tailgate: Boolean
+    truck100: Boolean
+    openBack: Boolean
+    stairs: Boolean
+    tooltime: Boolean
+    crewSize: Int
+    trucks: [Int]
+    vans: [Int]
+    supervisors: [UserInput]
+    drivers: [UserInput]
+    helpers: [UserInput]
+    techs: [UserInput]
+    equipment: EquipmentInput
+    description: String
+    insurance: String
+    billTo: CompanyInput
+    attention: String
+    holdForCrates: Boolean
+    salesMan: UserInput
+    author: UserInput
+    poNum: Int
+    projectNum: Int
+    references: String
+    groupBill: String
+    prePayment: String
+  }
+
   type Origin {
     company: Company
     contact: Contact
@@ -81,10 +150,24 @@ const typeDefs = gql`
     additional: String
   }
 
+  input OriginInput {
+    company: CompanyInput
+    contact: ContactInput
+    altContact: ContactInput
+    additional: String
+  }
+
   type Destination {
     company: Company
     contact: Contact
     altContact: Contact
+    additional: String
+  }
+
+  input DestinationInput {
+    company: CompanyInput
+    contact: ContactInput
+    altContact: ContactInput
     additional: String
   }
 
@@ -123,68 +206,6 @@ const typeDefs = gql`
     other: String
   }
 
-  type Query {
-    me: User
-    users: [User]
-    getUser(id: ID!): User
-    getMove(id: ID!): Move
-    getCompany(id: ID!): Company
-    getContact(id: ID!): Contact
-  }
-
-  type Auth {
-    token: ID!
-    user: User
-  }
-
-  input MoveInput {
-    date: String
-    startTime: String
-    estimate: String
-    origin: OriginInput
-    destination: DestinationInput
-    noCrewCab: Boolean
-    tailgate: Boolean
-    truck100: Boolean
-    openBack: Boolean
-    stairs: Boolean
-    tooltime: Boolean
-    crewSize: Int
-    trucks: [Int]
-    vans: [Int]
-    supervisors: [UserInput]
-    drivers: [UserInput]
-    helpers: [UserInput]
-    techs: [UserInput]
-    equipment: EquipmentInput
-    description: String
-    insurance: String
-    billTo: CompanyInput
-    attention: String
-    holdForCrates: Boolean
-    salesMan: UserInput
-    author: UserInput
-    poNum: Int
-    projectNum: Int
-    references: String
-    groupBill: String
-    prePayment: String
-  }
-
-  input OriginInput {
-    company: CompanyInput
-    contact: ContactInput
-    altContact: ContactInput
-    additional: String
-  }
-
-  input DestinationInput {
-    company: CompanyInput
-    contact: ContactInput
-    altContact: ContactInput
-    additional: String
-  }
-
   input EquipmentInput {
     dollies: Int
     comps: Int
@@ -220,39 +241,48 @@ const typeDefs = gql`
     other: String
   }
 
-  input CompanyInput {
-    names: [String]
-    addresses: [AddressInput]
-    contacts: [ContactInput]
+  type Truck {
+    id: ID
+    number: Int
+    crewCab: Boolean
+    cdl: Boolean
+    cdlProgram: Boolean
+    goodTailgate: Boolean
   }
 
-  input AddressInput {
-    street: String
-    city: String
-    state: String
-    zipCode: String
-    floors: [FloorInput]
+  input TruckInput {
+    number: Int
+    crewCab: Boolean
+    cdl: Boolean
+    cdlProgram: Boolean
+    goodTailgate: Boolean
   }
 
-  input FloorInput {
-    floorNumber: [Int]
-    rooms: [String]
+  type Van {
+    id: ID
+    number: Int
+    openBack: Boolean
   }
 
-  input ContactInput {
-    name: String
-    title: String
-    email: String
-    phone: String
-    company: CompanyInput
+  input VanInput {
+    number: Int
+    openBack: Boolean
   }
 
-  input UserInput {
-    firstName: String
-    lastName: String
-    roles: [String]
-    email: String
-    phone: String
+  type Query {
+    me: User
+    users: [User]
+    getUser(id: ID!): User
+    getMove(id: ID!): Move
+    getCompany(id: ID!): Company
+    getContact(id: ID!): Contact
+    getTruck(id: ID!): Truck
+    getVan(id: ID!): Van
+  }
+
+  type Auth {
+    token: ID!
+    user: User
   }
 
   type Mutation {
@@ -269,6 +299,12 @@ const typeDefs = gql`
     createContact(input: ContactInput!): Contact!
     updateContact(id: ID!, input: ContactInput!): Contact
     deleteContact(id: ID!): Contact
+    createTruck(input: TruckInput!): Truck!
+    updateTruck(id: ID!, input: TruckInput!): Truck
+    deleteTruck(id: ID!): Truck
+    createVan(input: VanInput!): Van!
+    updateVan(id: ID!, input: VanInput!): Van
+    deleteVan(id: ID!): Van
   }
 `;
 
