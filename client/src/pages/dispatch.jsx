@@ -37,7 +37,7 @@ export default function Dispatch() {
 
   const addRow = () => {
     const newRow = {
-      id: rows.length + 1, // Assuming id is a sequential number
+      id: rows.length + 1,
       truckVan: `Truck ${rows.length + 1}`,
       account: `Account ${String.fromCharCode(65 + rows.length)}`,
       contact: "New Contact",
@@ -54,10 +54,15 @@ export default function Dispatch() {
 
   return (
     <>
-      <div
-        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-      >
-        <div style={{ flex: "1 1 auto", overflow: "auto", height: "100vh" }}>
+      <div className="appContainer">
+        <div
+          style={{
+            height: 600,
+            width: "100%",
+            overflowY: "auto",
+          }}
+          className="dispatchContainerDiv"
+        >
           <DataGrid
             rows={rows}
             columns={columns.map((column) => ({
@@ -68,66 +73,64 @@ export default function Dispatch() {
             checkboxSelection
             hideFooter
             className="myDataGrid"
-            autoHeight
-            disableExtendRowFullWidth
           />
         </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "16px",
-          backgroundColor: "#f5f5f5",
-          position: "sticky",
-          bottom: 0,
-        }}
-      >
-        <TableContainer
-          component={Paper}
-          style={{ marginRight: "16px", maxWidth: "20em" }}
-        >
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Men</TableCell>
-                <TableCell>Trucks</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>Row 1</TableCell>
-                <TableCell>Row 1</TableCell>
-                <TableCell>AM</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Row 2</TableCell>
-                <TableCell>Row 2</TableCell>
-                <TableCell>PM</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <div style={{ marginRight: "16px" }}>
-          <Typography variant="subtitle1">Available</Typography>
-          <TextField variant="outlined" multiline rows={3} />
-        </div>
-        <div style={{ marginRight: "16px" }}>
-          <Typography variant="subtitle1">Not Available</Typography>
-          <TextField variant="outlined" multiline rows={3} />
-        </div>
-        <TextField
-          label="Date"
-          type="date"
-          variant="outlined"
-          InputLabelProps={{
-            shrink: true,
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "16px",
+            backgroundColor: "#f5f5f5",
+            position: "sticky",
+            bottom: 0,
           }}
-        />
-        <Button onClick={addRow} variant="contained" color="primary">
-          Add Job
-        </Button>
+        >
+          <TableContainer
+            component={Paper}
+            style={{ marginRight: "16px", maxWidth: "20em" }}
+          >
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Men</TableCell>
+                  <TableCell>Trucks</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Row 1</TableCell>
+                  <TableCell>Row 1</TableCell>
+                  <TableCell>AM</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Row 2</TableCell>
+                  <TableCell>Row 2</TableCell>
+                  <TableCell>PM</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div style={{ marginRight: "16px" }}>
+            <Typography variant="subtitle1">Available</Typography>
+            <TextField variant="outlined" multiline rows={3} />
+          </div>
+          <div style={{ marginRight: "16px" }}>
+            <Typography variant="subtitle1">Not Available</Typography>
+            <TextField variant="outlined" multiline rows={3} />
+          </div>
+          <TextField
+            label="Date"
+            type="date"
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <Button onClick={addRow} variant="contained" color="primary">
+            Add Job
+          </Button>
+        </div>
       </div>
     </>
   );

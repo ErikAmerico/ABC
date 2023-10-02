@@ -1,14 +1,9 @@
-import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import React, { useEffect, useState } from "react";
 import AuthService from "../utils/auth.js";
 import "./employees.css";
+
+import { DataGrid } from "@mui/x-data-grid";
+import { Button } from "@mui/material";
 
 import { useMutation, useQuery } from "@apollo/client";
 import { useApolloClient } from "@apollo/client";
@@ -36,9 +31,19 @@ export default function Employees() {
       refetch();
     };
 
+    // useEffect(() => {
+    //   if (data) {
+    //     const userData = data.users;
+    //     setUsers(userData);
+    //   }
+    // }, [data, triggerRefetch]);
+
     useEffect(() => {
       if (data) {
-        const userData = data.users;
+        const userData = data.users.map((user) => ({
+          ...user,
+          fullName: `${user.firstName} ${user.lastName}`,
+        }));
         setUsers(userData);
       }
     }, [data, triggerRefetch]);
@@ -68,66 +73,74 @@ export default function Employees() {
     //     });
     // };
 
+    const columns = [
+      { field: "fullName", headerName: "Name", width: 130 },
+      {
+        field: "roles",
+        headerName: "Roles",
+        width: 200,
+        renderCell: (params) => params.row.roles.join(" "),
+      },
+      { field: "email", headerName: "Email", width: 200 },
+      { field: "phone", headerName: "Phone Number", width: 150 },
+      {
+        field: "edit",
+        headerName: "Edit",
+        sortable: false,
+        width: 150,
+        renderCell: (params) => (
+          <>
+            {params.row.id !== profile.data._id && (
+              <Button
+                variant="contained"
+                onClick={() => {
+                  /* Handle Edit Logic Here */
+                }}
+                sx={{ backgroundColor: "#134074" }}
+              >
+                {`Edit ${params.row.firstName}`}
+              </Button>
+            )}
+          </>
+        ),
+      },
+      {
+        field: "delete",
+        headerName: "Delete",
+        sortable: false,
+        width: 150,
+        renderCell: (params) => {
+          const userRole = profile.data.roles;
+          const isOwnerOrAdmin =
+            userRole.includes("Owner") ||
+            (userRole.includes("Admin") && params.row.role !== "Owner");
+
+          return (
+            <>
+              {isOwnerOrAdmin && params.row.id !== profile.data._id && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleRemoveUser(params.row.id)}
+                >
+                  Remove User
+                </Button>
+              )}
+            </>
+          );
+        },
+      },
+    ];
+
     return (
-      <div className="tableContainerDiv">
-        <TableContainer component={Paper} className="tableContainer">
-          <Table
-            sx={{ minWidth: 650 }}
-            aria-label="user table"
-            className="userTable"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Roles</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Phone Number</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell component="th" scope="row">
-                    {`${user.firstName} ${user.lastName}`}
-                  </TableCell>
-                  <TableCell>{user.roles.join(" ")}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.phone}</TableCell>
-                  <TableCell>
-                    {user.id !== myId && (
-                      <Button
-                        key="editUzer"
-                        onClick={() => openModal()}
-                        sx={{
-                          backgroundColor: "#134074",
-                        }}
-                        variant="contained"
-                      >
-                        {`Edit ${user.firstName}`}
-                      </Button>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {(myRole.includes("Owner") ||
-                      (myRole.includes("Admin") && user.role !== "Owner")) &&
-                      user.id !== myId && [
-                        <Button
-                          key="removeUzer"
-                          onClick={() => handleRemoveUser(user)}
-                          color="error"
-                          variant="contained"
-                        >
-                          Remove User
-                        </Button>,
-                      ]}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <div style={{ height: 600, width: "100%" }} className="tableContainerDiv">
+        <DataGrid
+          rows={users}
+          columns={columns}
+          className="tableContainer"
+          checkboxSelection
+          hideFooter
+        />
       </div>
     );
   }
