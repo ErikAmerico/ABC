@@ -31,13 +31,6 @@ export default function Employees() {
       refetch();
     };
 
-    // useEffect(() => {
-    //   if (data) {
-    //     const userData = data.users;
-    //     setUsers(userData);
-    //   }
-    // }, [data, triggerRefetch]);
-
     useEffect(() => {
       if (data) {
         const userData = data.users.map((user) => ({
@@ -46,19 +39,13 @@ export default function Employees() {
         }));
         setUsers(userData);
       }
-    }, [data, triggerRefetch]);
+    }, [data]);
 
     if (loading) return <p>Loading IDs...</p>;
     if (error) return <p>Error fetching user IDs: {error.message}</p>;
 
-    console.log("data", data);
-
-    // console.log(profile);
-
     const myRole = profile.data.roles;
     const myId = profile.data._id;
-    // console.log(myId);
-    // console.log(myRole);
 
     // const handleRemoveUser = (user) => {
     //   const userId = user.id;
@@ -112,8 +99,8 @@ export default function Employees() {
         renderCell: (params) => {
           const userRole = profile.data.roles;
           const isOwnerOrAdmin =
-            userRole.includes("Owner") ||
-            (userRole.includes("Admin") && params.row.role !== "Owner");
+            myRole.includes("Owner") ||
+            (myRole.includes("Admin") && params.row.role !== "Owner");
 
           return (
             <>
