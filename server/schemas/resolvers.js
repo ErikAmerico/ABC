@@ -29,7 +29,8 @@ const resolvers = {
         "supervisors",
         "drivers",
         "helpers",
-        "techs"
+        "techs",
+        "equipment"
       );
     },
 
