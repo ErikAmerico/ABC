@@ -8,9 +8,9 @@ import { Button } from "@mui/material";
 import { useMutation, useQuery } from "@apollo/client";
 import { useApolloClient } from "@apollo/client";
 
-import { GET_ALL_USER_IDS } from "../utils/queries";
-import { DELETE_USER } from "../utils/mutations";
-import { GET_USER } from "../utils/queries";
+import { GET_ALL_USER_IDS } from "../utils/queries.js";
+import { DELETE_USER } from "../utils/mutations.js";
+import { GET_USER } from "../utils/queries.js";
 
 export default function Employees() {
   if (AuthService.loggedIn()) {
