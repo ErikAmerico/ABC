@@ -34,23 +34,29 @@ const columns = [
 
 export default function Dispatch() {
   const [rows, setRows] = useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  console.log(rowSelectionModel);
 
   const addRow = () => {
     const newRow = {
+      // id: rows.length + 1,
+      // truckVan: `Truck ${rows.length + 1}`,
+      // account: `Account ${String.fromCharCode(65 + rows.length)}`,
+      // contact: "New Contact",
+      // origin: `City ${String.fromCharCode(65 + rows.length)}`,
+      // destination: `City ${String.fromCharCode(65 + ((rows.length + 1) % 26))}`,
+      // serviceType: "New Service",
+      // crewsize: 1,
+      // leaveABC: "9:00 AM",
+      // crewMembers: "New Member",
+      // remarks: "N/A",
       id: rows.length + 1,
-      truckVan: `Truck ${rows.length + 1}`,
-      account: `Account ${String.fromCharCode(65 + rows.length)}`,
-      contact: "New Contact",
-      origin: `City ${String.fromCharCode(65 + rows.length)}`,
-      destination: `City ${String.fromCharCode(65 + ((rows.length + 1) % 26))}`,
-      serviceType: "New Service",
-      crewsize: 1,
-      leaveABC: "9:00 AM",
-      crewMembers: "New Member",
-      remarks: "N/A",
+      rowLength: 10,
     };
     setRows((prevRows) => [...prevRows, newRow]);
   };
+
+  console.log(rows);
 
   return (
     <>
@@ -71,6 +77,17 @@ export default function Dispatch() {
               cellClassName: "border-right",
             }))}
             checkboxSelection
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              if (newRowSelectionModel.length > 1) {
+                // Only take the last selected row.
+                setRowSelectionModel([
+                  newRowSelectionModel[newRowSelectionModel.length - 1],
+                ]);
+              } else {
+                setRowSelectionModel(newRowSelectionModel);
+              }
+            }}
+            rowSelectionModel={rowSelectionModel}
             hideFooter
             className="myDataGrid"
           />
