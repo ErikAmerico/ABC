@@ -12,9 +12,10 @@ import {
   TableRow,
   Paper,
   TextField,
-  InputAdornment,
   Typography,
 } from "@mui/material";
+import DispatchDrawer from "../components/dispatchDrawer";
+import { useGlobalContext } from "../utils/globalContext";
 
 const columns = [
   { field: "truckVan", headerName: "Truck/Van", width: 100 },
@@ -29,13 +30,12 @@ const columns = [
   { field: "remarks", headerName: "Remarks", width: 130 },
 ];
 
-// valueGetter: (params) =>
-// `${params.row.firstName || ""} ${params.row.lastName || ""}`
-
 export default function Dispatch() {
-  const [rows, setRows] = useState([]);
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  console.log(rowSelectionModel);
+  //const [rows, setRows] = useState([]);
+  const { rows, setRows } = useGlobalContext();
+  //const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
+  //console.log("rowSelectionModel in dispatch", rowSelectionModel);
 
   const addRow = () => {
     const newRow = {
@@ -48,15 +48,13 @@ export default function Dispatch() {
       // serviceType: "New Service",
       // crewsize: 1,
       // leaveABC: "9:00 AM",
-      // crewMembers: "New Member",
+      crewMembers: [],
       // remarks: "N/A",
       id: rows.length + 1,
       rowLength: 10,
     };
     setRows((prevRows) => [...prevRows, newRow]);
   };
-
-  console.log(rows);
 
   return (
     <>
@@ -78,6 +76,7 @@ export default function Dispatch() {
             }))}
             checkboxSelection
             onRowSelectionModelChange={(newRowSelectionModel) => {
+              console.log("Row Selection Change:", newRowSelectionModel);
               if (newRowSelectionModel.length > 1) {
                 // Only take the last selected row.
                 setRowSelectionModel([
@@ -148,6 +147,11 @@ export default function Dispatch() {
             Add Job
           </Button>
         </div>
+        {/* <DispatchDrawer
+          selectedRowId={rowSelectionModel[0]}
+          rows={rows}
+          setRows={setRows}
+        /> */}
       </div>
     </>
   );

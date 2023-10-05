@@ -16,6 +16,7 @@ import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
 import DispatchDrawer from "./dispatchDrawer";
 import { useLocation } from "react-router-dom";
+import { useGlobalContext } from "../utils/globalContext";
 
 const classes = styled(Avatar)(({ theme }) => ({
   width: theme.spacing(4),
@@ -30,6 +31,10 @@ const Header = () => {
   const [userId, setUserId] = useState("");
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const location = useLocation();
+  const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
+  const { rows, setRows } = useGlobalContext();
+  //console.log("rowSelectionModel in Header:", rowSelectionModel);
+  //console.log("rows in Header:", rows);
 
   useEffect(() => {
     if (AuthService.loggedIn()) {

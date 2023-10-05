@@ -8,12 +8,18 @@ export function useGlobalContext() {
 
 export function GlobalProvider({ children }) {
   const [triggerRefetch, setTriggerRefetch] = useState(false);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [rows, setRows] = useState([]);
 
   return (
     <GlobalContext.Provider
       value={{
         triggerRefetch,
         setTriggerRefetch,
+        rowSelectionModel,
+        setRowSelectionModel,
+        rows,
+        setRows,
       }}
     >
       {children}
