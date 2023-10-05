@@ -63,8 +63,8 @@ export default function DispatchDrawer(
     console.log("Updating selected row:", name, role, rowSelectionModel[0]);
     if (rowSelectionModel === undefined || rowSelectionModel === null) return;
     setRows((prevRows) => {
-      return prevRows.map((row) => {
-        if (row.id === rowSelectionModel) {
+      const newRows = prevRows.map((row) => {
+        if (row.id === rowSelectionModel[0]) {
           return {
             ...row,
             crewMembers: role === "Driver" ? `D) ${name}` : row.crewMembers,
@@ -72,8 +72,24 @@ export default function DispatchDrawer(
         }
         return row;
       });
+      console.log("Updated Rows:", newRows);
+      return newRows;
     });
   };
+
+  //   const newMember = { role: role, name: name };
+
+  // setRows((prevRows) => {
+  //   return prevRows.map((row) => {
+  //     if (row.id === rowSelectionModel) {
+  //       return {
+  //         ...row,
+  //         crewMembers: [...row.crewMembers, newMember]
+  //       };
+  //     }
+  //     return row;
+  //   });
+  // });
 
   const items = [
     "Supervisor",
