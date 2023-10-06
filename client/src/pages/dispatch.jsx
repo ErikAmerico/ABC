@@ -12,44 +12,207 @@ import {
   TableRow,
   Paper,
   TextField,
-  InputAdornment,
   Typography,
 } from "@mui/material";
-
-const columns = [
-  { field: "truckVan", headerName: "Truck/Van", width: 100 },
-  { field: "account", headerName: "Account", width: 130 },
-  { field: "contact", headerName: "Contact", width: 130 },
-  { field: "origin", headerName: "Origin", width: 90 },
-  { field: "destination", headerName: "Destination", width: 130 },
-  { field: "serviceType", headerName: "Type of Service", width: 130 },
-  { field: "crewsize", headerName: "Crew Size", width: 130 },
-  { field: "leaveABC", headerName: "Leave ABC", width: 130 },
-  { field: "crewMembers", headerName: "Crew Members", width: 200 },
-  { field: "remarks", headerName: "Remarks", width: 130 },
-];
-
-// valueGetter: (params) =>
-// `${params.row.firstName || ""} ${params.row.lastName || ""}`
+import DispatchDrawer from "../components/dispatchDrawer";
+import { useGlobalContext } from "../utils/globalContext";
+import RemoveModal from "../components/removeModal";
 
 export default function Dispatch() {
-  const [rows, setRows] = useState([]);
+  const { rows, setRows } = useGlobalContext();
+  const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
+
+  const chunkArray = (arr, chunkSize) => {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+      chunks.push(arr.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
+
+  const columns = [
+    { field: "truckVan", headerName: "Truck/Van", width: 100 },
+    { field: "account", headerName: "Account", width: 150 },
+    { field: "contact", headerName: "Contact", width: 130 },
+    { field: "origin", headerName: "Origin", width: 150 },
+    { field: "destination", headerName: "Destination", width: 150 },
+    { field: "serviceType", headerName: "Type of Service", width: 130 },
+    {
+      field: "crewsize",
+      headerName: "Crew Size",
+      width: 130,
+      renderCell: (params) => {
+        const supervisorChunks = chunkArray(params.value?.supervisors || [], 2);
+        return (
+          <div>
+            {supervisorChunks.map((chunk, cIndex) => (
+              <span key={cIndex}>
+                {chunk.map((supervisor, sIndex) => (
+                  <span
+                    key={sIndex}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRemovalDetails({ id: params.id, name: supervisor });
+                      setModalVisible(true);
+                    }}
+                  >
+                    {supervisor}
+                    {sIndex !== chunk.length - 1 && ", "}
+                  </span>
+                ))}
+                {cIndex !== supervisorChunks.length - 1 && <br />}
+              </span>
+            ))}
+            +
+            <input
+              style={{ width: "30px", marginLeft: "5px" }}
+              type="number"
+              defaultValue={params.value?.count || 0}
+              onChange={(e) => {
+                const rowIndex = rows.findIndex(
+                  (row) => row.id === params.row.id
+                );
+                const updatedRows = [...rows];
+                updatedRows[rowIndex].crewsize.count = parseInt(
+                  e.target.value,
+                  10
+                );
+                setRows(updatedRows);
+              }}
+            />
+          </div>
+        );
+      },
+    },
+    { field: "leaveABC", headerName: "Leave ABC", width: 130 },
+    {
+      field: "crewMembers",
+      headerName: "Crew Members",
+      width: 400,
+      renderCell: (params) => {
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+            }}
+          >
+            {params.value
+              .filter((member) => member.names.length > 0)
+              .map((member) => {
+                const chunks = chunkArray(member.names, 6);
+                return chunks.map((chunk, index) => {
+                  const prefix =
+                    index === 0 ? `${member.role.charAt(0)}) ` : "--- ";
+                  return (
+                    <div key={index}>
+                      {prefix}
+                      {chunk.map((name, nIndex) => {
+                        let parts = name.split(" ");
+                        let lastNameInitial =
+                          parts.length > 1 ? parts[1].charAt(0) + "" : "";
+                        return (
+                          <span
+                            key={nIndex}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setRemovalDetails({ id: params.id, name: name });
+                              setModalVisible(true);
+                            }}
+                          >
+                            {parts[0] + " " + lastNameInitial}
+                            {nIndex !== chunk.length - 1 && ", "}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  );
+                });
+              })}
+          </div>
+        );
+      },
+    },
+    { field: "remarks", headerName: "Remarks", width: 130 },
+  ];
 
   const addRow = () => {
     const newRow = {
-      id: rows.length + 1,
-      truckVan: `Truck ${rows.length + 1}`,
-      account: `Account ${String.fromCharCode(65 + rows.length)}`,
+      //adjust truck and van models to include role. refer to dispatchDrawer.jsx
+      truckVan: [
+        { role: "Truck", numbers: [] },
+        { role: "Van", numbers: [] },
+      ],
+      account: "BMS",
       contact: "New Contact",
-      origin: `City ${String.fromCharCode(65 + rows.length)}`,
-      destination: `City ${String.fromCharCode(65 + ((rows.length + 1) % 26))}`,
-      serviceType: "New Service",
-      crewsize: 1,
-      leaveABC: "9:00 AM",
-      crewMembers: "New Member",
-      remarks: "N/A",
+      origin: "100 Main Street",
+      destination: "125 High Street",
+      serviceType: "Move",
+      crewsize: { supervisors: [], count: 0 },
+      leaveABC: "8:00 AM",
+      crewMembers: [
+        { role: "Driver", names: [] },
+        { role: "Helper", names: [] },
+        { role: "Tech", names: [] },
+      ],
+      remarks: "Figure it out",
+      id: rows.length + 1,
+      rowLength: 10,
     };
     setRows((prevRows) => [...prevRows, newRow]);
+    setRowSelectionModel([newRow.id]);
+  };
+
+  //Still need to work this out, but this is the general idea.
+  const confirmRemove = () => {
+    // Find the index of the row to be updated
+    const rowIndex = rows.findIndex((row) => row.id === removalDetails.id);
+
+    if (rowIndex !== -1) {
+      // Clone the row object to avoid modifying the original row
+      const updatedRow = { ...rows[rowIndex] };
+
+      // Check if the removal target is a crew member or supervisor
+      if (removalDetails.type === "crewMember") {
+        // Find the index of the crew member to be removed
+        const memberIndex = updatedRow.crewMembers.findIndex((member) =>
+          member.names.includes(removalDetails.name)
+        );
+
+        if (memberIndex !== -1) {
+          // Remove the crew member from the array
+          updatedRow.crewMembers[memberIndex].names = updatedRow.crewMembers[
+            memberIndex
+          ].names.filter((name) => name !== removalDetails.name);
+        }
+      } else if (removalDetails.type === "supervisor") {
+        // Find the index of the supervisor to be removed
+        const supervisorIndex = updatedRow.crewsize.supervisors.findIndex(
+          (supervisor) => supervisor === removalDetails.name
+        );
+
+        if (supervisorIndex !== -1) {
+          // Remove the supervisor from the array
+          updatedRow.crewsize.supervisors.splice(supervisorIndex, 1);
+        }
+      }
+
+      // Create a new rows array with the updated row
+      const updatedRows = [...rows];
+      updatedRows[rowIndex] = updatedRow;
+
+      // Update the state with the updated rows
+      setRows(updatedRows);
+    }
+
+    // Reset removalDetails and hide the modal
+    setRemovalDetails({ id: null, name: "", type: "" });
+    setModalVisible(false);
   };
 
   return (
@@ -71,8 +234,46 @@ export default function Dispatch() {
               cellClassName: "border-right",
             }))}
             checkboxSelection
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              console.log("Row Selection Change:", newRowSelectionModel);
+              if (newRowSelectionModel.length > 1) {
+                // Only take the last selected row.
+                setRowSelectionModel([
+                  newRowSelectionModel[newRowSelectionModel.length - 1],
+                ]);
+              } else {
+                setRowSelectionModel(newRowSelectionModel);
+              }
+            }}
+            onCellClick={(params, event) => {
+              if (params.field === "crewMembers") {
+                event.stopPropagation();
+                const clickedValue = params.value[0]?.names[0];
+                if (clickedValue) {
+                  setRemovalDetails({
+                    id: params.id,
+                    name: clickedValue,
+                    type: "crewMember",
+                  });
+                  setModalVisible(true);
+                }
+              } else if (params.field === "crewsize") {
+                event.stopPropagation();
+                const clickedValue = params.value.supervisors[0];
+                if (clickedValue) {
+                  setRemovalDetails({
+                    id: params.id,
+                    name: clickedValue,
+                    type: "supervisor",
+                  });
+                  setModalVisible(true);
+                }
+              }
+            }}
+            rowSelectionModel={rowSelectionModel}
             hideFooter
             className="myDataGrid"
+            rowHeight={100}
           />
         </div>
         <div
@@ -132,6 +333,12 @@ export default function Dispatch() {
           </Button>
         </div>
       </div>
+      <RemoveModal
+        open={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onConfirm={confirmRemove}
+        name={removalDetails.name}
+      />
     </>
   );
 }

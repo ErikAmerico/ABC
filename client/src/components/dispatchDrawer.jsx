@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -13,10 +13,19 @@ import { useQuery } from "@apollo/client";
 import { GET_ALL_USER_IDS } from "../utils/queries";
 import { GET_ALL_TRUCKS } from "../utils/queries";
 import { GET_ALL_VANS } from "../utils/queries";
+import { useGlobalContext } from "../utils/globalContext";
 
-export default function DispatchDrawer() {
+export default function DispatchDrawer(
+  {
+    // selectedRowId,
+    // rows,
+    // setRows,
+  }
+) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState({});
+  const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
+  const { rows, setRows } = useGlobalContext();
 
   const {
     data: usersData,
@@ -45,6 +54,58 @@ export default function DispatchDrawer() {
   const trucks = trucksData.getTrucks;
   const vans = vansData.getVans;
 
+  // console.log(
+  //   "Updated rowSelectionModel in DispatchDrawer:",
+  //   rowSelectionModel
+  // );
+
+  const updateSelectedRow = (name, role) => {
+    console.log("Updating selected row:", name, role, rowSelectionModel[0]);
+    if (rowSelectionModel === undefined || rowSelectionModel === null) return;
+
+    //need to add role to truck and van in model, role: truck, role: van. Then i can implement them the same.
+    setRows((prevRows) => {
+      return prevRows.map((row) => {
+        if (row.id === rowSelectionModel[0]) {
+          if (role === "Supervisor") {
+            const updatedSupervisors = [...row.crewsize.supervisors];
+            const initials = name
+              .split(" ")
+              .map((part) => part.charAt(0))
+              .join("");
+            updatedSupervisors.push(initials);
+            return {
+              ...row,
+              crewsize: {
+                supervisors: updatedSupervisors,
+                count: row.crewsize.count,
+              },
+            };
+          } else {
+            const updatedCrewMembers = [...row.crewMembers];
+            const roleIndex = updatedCrewMembers.findIndex(
+              (r) => r.role === role
+            );
+
+            if (roleIndex !== -1) {
+              // Role exists, just push the name
+              updatedCrewMembers[roleIndex].names.push(name);
+            } else {
+              // Role does not exist, create a new role object
+              updatedCrewMembers.push({ role: role, names: [name] });
+            }
+
+            return {
+              ...row,
+              crewMembers: updatedCrewMembers,
+            };
+          }
+        }
+        return row;
+      });
+    });
+  };
+
   const items = [
     "Supervisor",
     "Driver",
@@ -63,7 +124,6 @@ export default function DispatchDrawer() {
       const fullName = `${employee.firstName} ${employee.lastName}`;
       employee.roles.forEach((role) => {
         if (!data[role] && items.includes(role)) {
-          // Ensure that the role matches one of our main items
           data[role] = [];
         }
         if (data[role]) {
@@ -130,10 +190,16 @@ export default function DispatchDrawer() {
                   unmountOnExit
                 >
                   <List component="div" disablePadding>
-                    {/* {expandedData[text]?.map((subItem) => ( */}
                     {Array.isArray(expandedData[text]) &&
                       expandedData[text].map((subItem) => (
-                        <ListItem key={subItem} dense button>
+                        <ListItem
+                          key={subItem}
+                          dense
+                          button
+                          onClick={() =>
+                            updateSelectedRow(subItem, text, rowSelectionModel)
+                          }
+                        >
                           <ListItemText primary={subItem} inset />
                         </ListItem>
                       ))}
