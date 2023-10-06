@@ -66,19 +66,22 @@ export default function Dispatch() {
                 {cIndex !== supervisorChunks.length - 1 && <br />}
               </span>
             ))}
-            +
+            {params.value?.supervisors.length > 0 && " +"}
             <input
               style={{ width: "30px", marginLeft: "5px" }}
               type="number"
-              defaultValue={params.value?.count || 0}
+              value={Math.max(params.value?.count || 0, 0)}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
               onChange={(e) => {
                 const rowIndex = rows.findIndex(
                   (row) => row.id === params.row.id
                 );
                 const updatedRows = [...rows];
-                updatedRows[rowIndex].crewsize.count = parseInt(
-                  e.target.value,
-                  10
+                updatedRows[rowIndex].crewsize.count = Math.max(
+                  parseInt(e.target.value, 10),
+                  0
                 );
                 setRows(updatedRows);
               }}
