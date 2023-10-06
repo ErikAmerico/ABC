@@ -63,6 +63,7 @@ export default function DispatchDrawer(
     console.log("Updating selected row:", name, role, rowSelectionModel[0]);
     if (rowSelectionModel === undefined || rowSelectionModel === null) return;
 
+    //need to add role to truck and van in model, role: truck, role: van. Then i can implement them the same.
     setRows((prevRows) => {
       return prevRows.map((row) => {
         if (row.id === rowSelectionModel[0]) {
