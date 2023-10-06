@@ -62,34 +62,48 @@ export default function DispatchDrawer(
   const updateSelectedRow = (name, role) => {
     console.log("Updating selected row:", name, role, rowSelectionModel[0]);
     if (rowSelectionModel === undefined || rowSelectionModel === null) return;
+
     setRows((prevRows) => {
-      const newRows = prevRows.map((row) => {
+      return prevRows.map((row) => {
         if (row.id === rowSelectionModel[0]) {
-          return {
-            ...row,
-            crewMembers: role === "Driver" ? `D) ${name}` : row.crewMembers,
-          };
+          if (role === "Supervisor") {
+            const updatedSupervisors = [...row.crewsize.supervisors];
+            const initials = name
+              .split(" ")
+              .map((part) => part.charAt(0))
+              .join("");
+            updatedSupervisors.push(initials);
+            return {
+              ...row,
+              crewsize: {
+                supervisors: updatedSupervisors,
+                count: row.crewsize.count,
+              },
+            };
+          } else {
+            const updatedCrewMembers = [...row.crewMembers];
+            const roleIndex = updatedCrewMembers.findIndex(
+              (r) => r.role === role
+            );
+
+            if (roleIndex !== -1) {
+              // Role exists, just push the name
+              updatedCrewMembers[roleIndex].names.push(name);
+            } else {
+              // Role does not exist, create a new role object
+              updatedCrewMembers.push({ role: role, names: [name] });
+            }
+
+            return {
+              ...row,
+              crewMembers: updatedCrewMembers,
+            };
+          }
         }
         return row;
       });
-      console.log("Updated Rows:", newRows);
-      return newRows;
     });
   };
-
-  //   const newMember = { role: role, name: name };
-
-  // setRows((prevRows) => {
-  //   return prevRows.map((row) => {
-  //     if (row.id === rowSelectionModel) {
-  //       return {
-  //         ...row,
-  //         crewMembers: [...row.crewMembers, newMember]
-  //       };
-  //     }
-  //     return row;
-  //   });
-  // });
 
   const items = [
     "Supervisor",
