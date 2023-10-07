@@ -34,7 +34,64 @@ export default function Dispatch() {
   };
 
   const columns = [
-    { field: "truckVan", headerName: "Truck/Van", width: 100 },
+    {
+      field: "truckVan",
+      headerName: "Truck/Van",
+      width: 100,
+      renderCell: (params) => {
+        // console.log("params.value:", params.value);
+        // const renderVehicles = (roleChar, numbers) => {
+        //   const chunks = chunkArray(numbers, 2);
+        //   return chunks.map((chunk, index) => (
+        //     <div key={index}>
+        //       {index > 0 ? "--- " : `${roleChar}) `}
+        //       {chunk.join(", ")}
+        //     </div>
+        //   ));
+        // };
+
+        // const trucks = params.value.find(
+        //   (item) => item.role === "Truck"
+        // ).numbers;
+        // const vans = params.value.find((item) => item.role === "Van").numbers;
+
+        // return (
+        //   <div>
+        //     {renderVehicles("T", trucks)}
+        //     {renderVehicles("V", vans)}
+        //   </div>
+        // );
+        const renderVehicles = (roleChar, numbers) => {
+          const chunks = chunkArray(numbers, 2);
+          return chunks.map((chunk, index) => (
+            <div key={index}>
+              {index === 0 ? `${roleChar}) ` : "--- "}
+              {chunk.join(", ")}
+            </div>
+          ));
+        };
+
+        // const truckData = params.value.find((item) => item.role === "Truck");
+        // const vanData = params.value.find((item) => item.role === "Van");
+
+        const trucks = params.value
+          .filter((item) => item.role === "Truck")
+          .flatMap((item) => item.numbers);
+        const vans = params.value
+          .filter((item) => item.role === "Van")
+          .flatMap((item) => item.numbers);
+
+        // const trucks = truckData ? truckData.numbers : [];
+        // const vans = vanData ? vanData.numbers : [];
+
+        return (
+          <div>
+            {trucks.length > 0 && renderVehicles("T", trucks)}
+            {vans.length > 0 && renderVehicles("V", vans)}
+          </div>
+        );
+      },
+    },
     { field: "account", headerName: "Account", width: 150 },
     { field: "contact", headerName: "Contact", width: 130 },
     { field: "origin", headerName: "Origin", width: 150 },

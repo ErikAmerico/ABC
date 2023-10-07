@@ -81,6 +81,13 @@ export default function DispatchDrawer(
                 count: row.crewsize.count,
               },
             };
+          } else if (role === "Truck" || role === "Van") {
+            const updatedVehicles = [...row.truckVan];
+            updatedVehicles.push({ role: role, numbers: [name] });
+            return {
+              ...row,
+              truckVan: updatedVehicles,
+            };
           } else {
             const updatedCrewMembers = [...row.crewMembers];
             const roleIndex = updatedCrewMembers.findIndex(

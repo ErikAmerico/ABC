@@ -39,24 +39,50 @@ db.once("open", () => {
 
   //   createUser();
 
-  const number = "100";
-  const crewCab = false;
-  const cdl = false;
-  const cdlProgram = false;
-  const goodTailgate = false;
+  //   const number = "114";
+  //   const crewCab = false;
+  //   const cdl = false;
+  //   const cdlProgram = false;
+  //   const goodTailgate = false;
+  //   const roles = ["Truck"];
 
-  async function createTruck() {
+  //   async function createTruck() {
+  //     try {
+  //       const newTruck = new Truck({
+  //         number,
+  //         crewCab,
+  //         cdl,
+  //         cdlProgram,
+  //         goodTailgate,
+  //         roles,
+  //       });
+
+  //       await newTruck.save();
+  //       console.log("Truck has been created");
+  //       db.close();
+  //     } catch (err) {
+  //       console.error(err);
+  //       db.close();
+  //     }
+  //   }
+
+  //   createTruck();
+  // });
+
+  const number = "99";
+  const openBack = false;
+  const roles = ["Van"];
+
+  async function createVan() {
     try {
-      const newTruck = new Truck({
+      const newVan = new Van({
         number,
-        crewCab,
-        cdl,
-        cdlProgram,
-        goodTailgate,
+        openBack,
+        roles,
       });
 
-      await newTruck.save();
-      console.log("Truck has been created");
+      await newVan.save();
+      console.log("Van has been created");
       db.close();
     } catch (err) {
       console.error(err);
@@ -64,27 +90,5 @@ db.once("open", () => {
     }
   }
 
-  createTruck();
+  createVan();
 });
-
-//   const number = "99";
-//   const openBack = false;
-
-//   async function createVan() {
-//     try {
-//       const newVan = new Van({
-//         number,
-//         openBack,
-//       });
-
-//       await newVan.save();
-//       console.log("Van has been created");
-//       db.close();
-//     } catch (err) {
-//       console.error(err);
-//       db.close();
-//     }
-//   }
-
-//   createVan();
-// });

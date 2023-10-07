@@ -248,6 +248,7 @@ const typeDefs = gql`
     cdl: Boolean
     cdlProgram: Boolean
     goodTailgate: Boolean
+    roles: [String]
   }
 
   input TruckInput {
@@ -256,17 +257,20 @@ const typeDefs = gql`
     cdl: Boolean
     cdlProgram: Boolean
     goodTailgate: Boolean
+    roles: [String]
   }
 
   type Van {
     id: ID
     number: Int
     openBack: Boolean
+    roles: [String]
   }
 
   input VanInput {
     number: Int
     openBack: Boolean
+    roles: [String]
   }
 
   type Query {
