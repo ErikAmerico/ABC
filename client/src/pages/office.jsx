@@ -132,7 +132,7 @@ export default function Office() {
       { field: "phone", headerName: "Phone Number", width: 150 },
       {
         field: "edit",
-        headerName: "Edit",
+        headerName: "",
         sortable: false,
         width: 150,
         renderCell: (params) => (
@@ -143,7 +143,8 @@ export default function Office() {
                 onClick={() => {
                   /* Handle Edit Logic Here */
                 }}
-                sx={{ backgroundColor: "#134074" }}
+                // sx={{ backgroundColor: "#134074" }}
+                color="inherit"
               >
                 {`Edit ${params.row.firstName}`}
               </Button>
@@ -151,32 +152,32 @@ export default function Office() {
           </>
         ),
       },
-      {
-        field: "delete",
-        headerName: "Delete",
-        sortable: false,
-        width: 150,
-        renderCell: (params) => {
-          const userRole = profile.data.roles;
-          const isOwnerOrAdmin =
-            myRole.includes("Owner") ||
-            (myRole.includes("Admin") && params.row.role !== "Owner");
+      // {
+      //   field: "delete",
+      //   headerName: "Delete",
+      //   sortable: false,
+      //   width: 150,
+      //   renderCell: (params) => {
+      //     const userRole = profile.data.roles;
+      //     const isOwnerOrAdmin =
+      //       myRole.includes("Owner") ||
+      //       (myRole.includes("Admin") && params.row.role !== "Owner");
 
-          return (
-            <>
-              {isOwnerOrAdmin && params.row.id !== profile.data._id && (
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleRemoveUser(params.row.id)}
-                >
-                  Remove User
-                </Button>
-              )}
-            </>
-          );
-        },
-      },
+      //     return (
+      //       <>
+      //         {isOwnerOrAdmin && params.row.id !== profile.data._id && (
+      //           <Button
+      //             variant="contained"
+      //             color="error"
+      //             onClick={() => handleRemoveUser(params.row.id)}
+      //           >
+      //             Remove User
+      //           </Button>
+      //         )}
+      //       </>
+      //     );
+      //   },
+      // },
       {
         field: "add",
         headerName: "Add Employee", // fallback for screen readers
