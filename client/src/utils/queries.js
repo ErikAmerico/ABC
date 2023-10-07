@@ -20,8 +20,11 @@ export const GET_USER = gql`
       firstName
       lastName
       roles
+      cdlProgram
+      cdl
       email
       phone
+      list
     }
   }
 `;
@@ -33,8 +36,11 @@ export const GET_ALL_USER_IDS = gql`
       firstName
       lastName
       roles
+      cdlProgram
+      cdl
       email
       phone
+      list
     }
   }
 `;
@@ -48,6 +54,7 @@ export const GET_ALL_TRUCKS = gql`
       cdl
       cdlProgram
       goodTailgate
+      roles
     }
   }
 `;
@@ -58,6 +65,7 @@ export const GET_ALL_VANS = gql`
       id
       number
       openBack
+      roles
     }
   }
 `;

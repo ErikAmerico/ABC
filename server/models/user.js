@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
   },
   phone: String,
   password: { type: String, required: true },
+  list: {
+    type: Number,
+    default: null,
+  },
 });
 
 userSchema.pre("save", async function (next) {
