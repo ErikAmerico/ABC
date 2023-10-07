@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AuthService from "../utils/auth.js";
-import "./employees.css";
+import "./office.css";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
@@ -12,7 +12,7 @@ import { GET_ALL_USER_IDS } from "../utils/queries.js";
 import { DELETE_USER } from "../utils/mutations.js";
 import { GET_USER } from "../utils/queries.js";
 
-export default function Employees() {
+export default function Office() {
   if (AuthService.loggedIn()) {
     const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,10 +35,11 @@ export default function Employees() {
       if (data) {
         const filteredUsers = data.users.filter((user) => {
           return (
-            user.roles.includes("Driver") ||
-            user.roles.includes("Helper") ||
-            user.roles.includes("Tech") ||
-            user.roles.includes("ForkLift")
+            user.roles.includes("Owner") ||
+            user.roles.includes("Supervisor") ||
+            user.roles.includes("Admin") ||
+            user.roles.includes("ProjectManager") ||
+            user.roles.includes("Salesman")
           );
         });
 
