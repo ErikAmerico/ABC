@@ -31,6 +31,7 @@ const Header = () => {
   const [userId, setUserId] = useState("");
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const location = useLocation();
+  const [showSubLinks, setShowSubLinks] = useState(false);
   const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
   const { rows, setRows } = useGlobalContext();
   //console.log("rowSelectionModel in Header:", rowSelectionModel);
@@ -65,6 +66,14 @@ const Header = () => {
     ? `${userName.split(" ")[0][0]}${userName.split(" ")[1][0]}`
     : "";
 
+  const handlePersonellMenuOpen = () => {
+    setShowSubLinks(!showSubLinks);
+  };
+
+  const handlePersonellMenuClose = () => {
+    setShowSubLinks(false);
+  };
+
   return (
     <>
       <AppBar
@@ -72,7 +81,7 @@ const Header = () => {
         sx={{ borderRadius: 2, backgroundColor: "#8da9c4" }}
       >
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div">
             <Link to="/">
               <img
                 src="/images/abcLogoClear.webp"
@@ -88,49 +97,104 @@ const Header = () => {
           </Typography>
 
           {AuthService.loggedIn() && screenWidth > 790 && (
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              <Button
-                component={Link}
-                color="info"
-                variant="outlined"
-                to="/announcements"
-                sx={{
-                  marginRight: 2,
-                  backgroundColor: "#134074",
-                  color: "white",
-                }}
-              >
-                Announcements
-              </Button>
-              <Button
-                component={Link}
-                color="info"
-                variant="outlined"
-                to="/employees"
-                sx={{
-                  marginRight: 2,
-                  backgroundColor: "#134074",
-                  color: "white",
-                }}
-              >
-                Employees
-              </Button>
-              <Button
-                component={Link}
-                color="info"
-                variant="outlined"
-                to="/dispatch"
-                sx={{
-                  backgroundColor: "#134074",
-                  color: "white",
-                }}
-              >
-                Dispatch Sheet
-              </Button>
-            </Typography>
+            <Box sx={{ flex: 1, textAlign: "center" }}>
+              <Typography variant="h6" component="div">
+                <Button
+                  component={Link}
+                  color="info"
+                  variant="outlined"
+                  to="/announcements"
+                  sx={{
+                    marginRight: 2,
+                    backgroundColor: "#134074",
+                    color: "white",
+                  }}
+                >
+                  Announcements
+                </Button>
+                <Button
+                  color="info"
+                  variant="outlined"
+                  onClick={handlePersonellMenuOpen}
+                  sx={{
+                    marginRight: 2,
+                    backgroundColor: "#134074",
+                    color: "white",
+                  }}
+                >
+                  PERSONELL
+                </Button>
+                <Button
+                  component={Link}
+                  color="info"
+                  variant="outlined"
+                  to="/dispatch"
+                  sx={{
+                    backgroundColor: "#134074",
+                    color: "white",
+                  }}
+                >
+                  Dispatch Sheet
+                </Button>
+              </Typography>
+              {/* )} */}
+              {showSubLinks && (
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, marginTop: 1 }}
+                >
+                  <Button
+                    component={Link}
+                    color="info"
+                    variant="outlined"
+                    to="/office"
+                    sx={{
+                      marginRight: 2,
+                      backgroundColor: "#134074",
+                      color: "white",
+                      position: "relative",
+                      left: 15,
+                    }}
+                  >
+                    OFFICE
+                  </Button>
+                  <Button
+                    component={Link}
+                    color="info"
+                    variant="outlined"
+                    to="/employees"
+                    sx={{
+                      marginRight: 2,
+                      backgroundColor: "#134074",
+                      color: "white",
+                      position: "relative",
+                      left: 25,
+                    }}
+                  >
+                    FIELD
+                  </Button>
+                  <Button
+                    component={Link}
+                    color="info"
+                    variant="outlined"
+                    to="/contacts"
+                    sx={{
+                      marginRight: 2,
+                      backgroundColor: "#134074",
+                      color: "white",
+                      position: "relative",
+                      left: 35,
+                    }}
+                  >
+                    CONTACTS
+                  </Button>
+                </Typography>
+              )}
+            </Box>
           )}
 
-          <Box display="flex" flexDirection="column" alignItems="start">
+          <Box display="flex" flexDirection="column" alignItems="end">
             <Box display="flex" alignItems="center">
               {userName && screenWidth > 415 ? (
                 <Typography variant="h6" component="div">

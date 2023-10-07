@@ -15,6 +15,7 @@ import Employees from "./pages/employees.jsx";
 import Login from "./pages/login.jsx";
 import Dispatch from "./pages/dispatch.jsx";
 import Home from "./pages/home.jsx";
+import Office from "./pages/office.jsx";
 
 const RootComponent = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const RootComponent = () => {
         <Route index element={<Home />} />
         <Route path="/announcements" element={<Announcements />} />
         <Route path="/employees" element={<Employees />} />
+        <Route path="/office" element={<Office />} />
         <Route path="/dispatch" element={<Dispatch />} />
         <Route path="/login" element={<Login />} />
       </Route>
