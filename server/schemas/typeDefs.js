@@ -6,16 +6,22 @@ const typeDefs = gql`
     firstName: String
     lastName: String
     roles: [String]
+    cdlProgram: Boolean
+    cdl: Boolean
     email: String
     phone: String
+    list: Int
   }
 
   input UserInput {
     firstName: String
     lastName: String
     roles: [String]
+    cdlProgram: Boolean
+    cdl: Boolean
     email: String
     phone: String
+    list: Int
   }
 
   type Contact {

@@ -122,7 +122,7 @@ const Header = () => {
                     color: "white",
                   }}
                 >
-                  PERSONELL
+                  PERSONNEL
                 </Button>
                 <Button
                   component={Link}

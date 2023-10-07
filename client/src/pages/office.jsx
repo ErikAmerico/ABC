@@ -2,6 +2,17 @@ import React, { useEffect, useState } from "react";
 import AuthService from "../utils/auth.js";
 import "./office.css";
 
+import Modal from "@mui/material/Modal";
+import {
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import { CREATE_USER } from "../utils/mutations.js";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 
@@ -19,6 +30,18 @@ export default function Office() {
     const [profile, setProfile] = useState(AuthService.getProfile());
     const [removeUser] = useMutation(DELETE_USER);
     const client = useApolloClient();
+    const [isAddEmployeeModalOpen, setIsAddEmployeeModalOpen] = useState(false);
+    const [newEmployeeData, setNewEmployeeData] = useState({
+      firstName: "",
+      lastName: "",
+      roles: [],
+      cdlProgram: false,
+      cdl: false,
+      email: "",
+      phone: "",
+      list: null,
+    });
+    const [createUser] = useMutation(CREATE_USER);
 
     const { data, loading, error } = useQuery(GET_ALL_USER_IDS);
 
@@ -70,6 +93,32 @@ export default function Office() {
     //       console.error("Error removing user:", error);
     //     });
     // };
+
+    const handleAddEmployeeModalOpen = () => {
+      setIsAddEmployeeModalOpen(true);
+    };
+
+    const handleAddEmployeeModalClose = () => {
+      setIsAddEmployeeModalOpen(false);
+    };
+
+    const handleInputChange = (event) => {
+      const { name, value } = event.target;
+      setNewEmployeeData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    };
+
+    const handleAddEmployee = async () => {
+      try {
+        await createUser({ variables: { input: newEmployeeData } });
+        setIsAddEmployeeModalOpen(false);
+        triggerRefetch(); // To refresh the data after adding
+      } catch (err) {
+        console.error("Error adding employee:", err);
+      }
+    };
 
     const columns = [
       { field: "fullName", headerName: "Name", width: 130 },
@@ -128,6 +177,22 @@ export default function Office() {
           );
         },
       },
+      {
+        field: "add",
+        headerName: "Add Employee", // fallback for screen readers
+        width: 175,
+        disableColumnMenu: true,
+        sortable: false,
+        renderHeader: (params) => (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddEmployeeModalOpen}
+          >
+            Add Employee
+          </Button>
+        ),
+      },
     ];
 
     return (
@@ -139,6 +204,94 @@ export default function Office() {
           checkboxSelection
           hideFooter
         />
+        <Modal
+          open={isAddEmployeeModalOpen}
+          onClose={handleAddEmployeeModalClose}
+          aria-labelledby="add-employee-modal"
+        >
+          <Box
+            sx={{
+              width: 400,
+              padding: 2,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              borderRadius: 1,
+            }}
+          >
+            <h2 id="add-employee-modal">Add Office Employee</h2>
+            <TextField
+              fullWidth
+              margin="normal"
+              name="firstName"
+              label="First Name"
+              onChange={handleInputChange}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              name="lastName"
+              label="Last Name"
+              onChange={handleInputChange}
+            />
+            {/* <TextField
+              fullWidth
+              margin="normal"
+              name="roles"
+              label="Roles"
+              onChange={handleInputChange}
+            /> */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="roles-label">Roles</InputLabel>
+              <Select
+                labelId="roles-label"
+                multiple
+                name="roles"
+                value={newEmployeeData.roles}
+                onChange={handleInputChange}
+                renderValue={(selected) => selected.join(", ")}
+              >
+                <MenuItem value="Supervisor">Supervisor</MenuItem>
+                <MenuItem value="Salesman">Salesman</MenuItem>
+                <MenuItem value="Project Manager">Project Manager</MenuItem>
+                <MenuItem value="Warehouse">Warehouse</MenuItem>
+                <MenuItem value="Admin">Admin</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              fullWidth
+              margin="normal"
+              name="email"
+              label="Email"
+              onChange={handleInputChange}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              name="phone"
+              label="Phone Number"
+              onChange={handleInputChange}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              name="password"
+              label="Initial Password (eg. 'Erik123.')"
+              onChange={handleInputChange}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddEmployee}
+            >
+              Save
+            </Button>
+          </Box>
+        </Modal>
       </div>
     );
   }

@@ -7,8 +7,11 @@ export const CREATE_USER = gql`
       firstName
       lastName
       roles
+      cdlProgram
+      cdl
       email
       phone
+      list
     }
   }
 `;
@@ -20,8 +23,11 @@ export const UPDATE_USER = gql`
       firstName
       lastName
       roles
+      cdlProgram
+      cdl
       email
       phone
+      list
     }
   }
 `;
@@ -33,8 +39,11 @@ export const DELETE_USER = gql`
       firstName
       lastName
       roles
+      cdlProgram
+      cdl
       email
       phone
+      list
     }
   }
 `;
@@ -479,6 +488,7 @@ export const CREATE_TRUCK = gql`
       cdl
       cdlProgram
       goodTailgate
+      roles
     }
   }
 `;
@@ -492,6 +502,7 @@ export const UPDATE_TRUCK = gql`
       cdl
       cdlProgram
       goodTailgate
+      roles
     }
   }
 `;
@@ -505,6 +516,7 @@ export const DELETE_TRUCK = gql`
       cdl
       cdlProgram
       goodTailgate
+      roles
     }
   }
 `;
@@ -514,6 +526,7 @@ export const CREATE_VAN = gql`
     createVan(input: $input) {
       id
       openBack
+      roles
     }
   }
 `;
@@ -523,6 +536,7 @@ export const UPDATE_VAN = gql`
     updateVan(id: $id, input: $input) {
       id
       openBack
+      roles
     }
   }
 `;
@@ -532,6 +546,7 @@ export const DELETE_VAN = gql`
     deleteVan(id: $id) {
       id
       openBack
+      roles
     }
   }
 `;
