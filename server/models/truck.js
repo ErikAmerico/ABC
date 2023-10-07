@@ -6,6 +6,7 @@ const truckSchema = new mongoose.Schema({
   cdl: Boolean,
   cdlProgram: Boolean,
   goodTailgate: Boolean,
+  roles: [String],
 });
 
 const Truck = mongoose.model("Truck", truckSchema);
