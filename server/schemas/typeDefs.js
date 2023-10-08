@@ -11,6 +11,7 @@ const typeDefs = gql`
     email: String
     phone: String
     list: Int
+    password: String
   }
 
   input UserInput {
@@ -22,6 +23,7 @@ const typeDefs = gql`
     email: String
     phone: String
     list: Int
+    password: String
   }
 
   type Contact {

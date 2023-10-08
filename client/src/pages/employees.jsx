@@ -7,9 +7,11 @@ import {
   Box,
   TextField,
   FormControl,
+  FormControlLabel,
   InputLabel,
   Select,
   MenuItem,
+  Checkbox,
 } from "@mui/material";
 import { CREATE_USER } from "../utils/mutations.js";
 
@@ -35,20 +37,15 @@ export default function Employees() {
       firstName: "",
       lastName: "",
       roles: [],
-      cdlProgram: false,
-      cdl: false,
+      cdlProgram: null,
+      cdl: null,
       email: "",
       phone: "",
-      list: null,
+      list: false,
     });
     const [createUser] = useMutation(CREATE_USER);
 
-    const { data, loading, error } = useQuery(GET_ALL_USER_IDS);
-
-    // const { refetch } = useQuery(GET_USER, {
-    //   variables: { id: user.id },
-    //   skip: true, // Set skip to true to prevent automatic fetching
-    // });
+    const { data, loading, error, refetch } = useQuery(GET_ALL_USER_IDS);
 
     const triggerRefetch = () => {
       refetch();
@@ -65,7 +62,19 @@ export default function Employees() {
           );
         });
 
-        const userData = filteredUsers.map((user) => ({
+        const sortedUsers = filteredUsers.sort((a, b) => {
+          if (a.list && b.list) {
+            return a.list - b.list; // if both have list numbers, sort by the number
+          } else if (a.list) {
+            return -1; // a has a list number but b doesn't
+          } else if (b.list) {
+            return 1; // b has a list number but a doesn't
+          } else {
+            return 0; // neither a or b have list numbers
+          }
+        });
+
+        const userData = sortedUsers.map((user) => ({
           ...user,
           fullName: `${user.firstName} ${user.lastName}`,
         }));
@@ -107,8 +116,13 @@ export default function Employees() {
       if (name === "roles") {
         setNewEmployeeData((prev) => ({ ...prev, roles: [...value] }));
       } else if (name === "cdlProgram" || name === "cdl") {
-        const booleanValue = value === "true" ? true : false;
+        const booleanValue = value === "" ? null : value === "true";
         setNewEmployeeData((prev) => ({ ...prev, [name]: booleanValue }));
+      } else if (name === "list") {
+        setNewEmployeeData((prev) => ({
+          ...prev,
+          list: !prev.list,
+        }));
       } else {
         setNewEmployeeData((prev) => ({ ...prev, [name]: value }));
       }
@@ -116,15 +130,43 @@ export default function Employees() {
 
     const handleAddEmployee = async () => {
       try {
-        await createUser({ variables: { input: newEmployeeData } });
+        let listValue = null;
+        if (newEmployeeData.list) {
+          const highestListNumber = Math.max(
+            ...users.map((user) => user.list || 0)
+          );
+          listValue = highestListNumber + 1;
+        }
+
+        const inputData = {
+          ...newEmployeeData,
+          list: listValue,
+        };
+
+        await createUser({ variables: { input: inputData } });
         setIsAddEmployeeModalOpen(false);
-        triggerRefetch(); // To refresh the data after adding
+        triggerRefetch();
+        setNewEmployeeData({
+          firstName: "",
+          lastName: "",
+          roles: [],
+          cdlProgram: null,
+          cdl: null,
+          email: "",
+          phone: "",
+          list: false,
+        });
       } catch (err) {
         console.error("Error adding employee:", err);
       }
     };
 
     const columns = [
+      {
+        field: "list",
+        headerName: "List #",
+        width: 100,
+      },
       { field: "fullName", headerName: "Name", width: 130 },
       {
         field: "roles",
@@ -157,33 +199,6 @@ export default function Employees() {
           </>
         ),
       },
-      // {
-      //   field: "delete",
-      //   headerName: "Delete",
-      //   sortable: false,
-      //   width: 150,
-      //   disableColumnMenu: true,
-      //   renderCell: (params) => {
-      //     const userRole = profile.data.roles;
-      //     const isOwnerOrAdmin =
-      //       myRole.includes("Owner") ||
-      //       (myRole.includes("Admin") && params.row.role !== "Owner");
-
-      //     return (
-      //       <>
-      //         {isOwnerOrAdmin && params.row.id !== profile.data._id && (
-      //           <Button
-      //             variant="contained"
-      //             color="error"
-      //             onClick={() => handleRemoveUser(params.row.id)}
-      //           >
-      //             Remove User
-      //           </Button>
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
       {
         field: "add",
         headerName: "Add Employee", // fallback for screen readers
@@ -244,10 +259,13 @@ export default function Employees() {
               label="Last Name"
               onChange={handleInputChange}
             />
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="roles-label">Roles</InputLabel>
+            <FormControl fullWidth margin="normal" variant="outlined">
+              <InputLabel htmlFor="roles-input">Roles</InputLabel>
               <Select
                 labelId="roles-label"
+                id="roles-input"
+                label="Roles"
+                variant="outlined"
                 multiple
                 name="roles"
                 value={newEmployeeData.roles}
@@ -260,28 +278,38 @@ export default function Employees() {
                 <MenuItem value="ForkLift">ForkLift</MenuItem>
               </Select>
             </FormControl>
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="cdlProgram-label">CDL Program</InputLabel>
+            <FormControl fullWidth margin="normal" variant="outlined">
+              <InputLabel htmlFor="cdlProgram-input">CDL Program</InputLabel>
               <Select
                 labelId="cdlProgram-label"
+                id="cdlProgram-input"
+                label="CDL Program"
+                variant="outlined"
                 name="cdlProgram"
-                value={newEmployeeData.cdlProgram}
+                value={
+                  newEmployeeData.cdlProgram === null
+                    ? ""
+                    : newEmployeeData.cdlProgram
+                }
                 onChange={handleInputChange}
               >
-                <MenuItem value={true}>Yes</MenuItem>
-                <MenuItem value={false}>No</MenuItem>
+                <MenuItem value="true">Yes</MenuItem>
+                <MenuItem value="false">No</MenuItem>
               </Select>
             </FormControl>
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="cdl-label">CDL</InputLabel>
+            <FormControl fullWidth margin="normal" variant="outlined">
+              <InputLabel htmlFor="cdl-input">CDL</InputLabel>
               <Select
                 labelId="cdl-label"
+                id="cdl-input"
+                label="CDL"
+                variant="outlined"
                 name="cdl"
-                value={newEmployeeData.cdl}
+                value={newEmployeeData.cdl === null ? "" : newEmployeeData.cdl}
                 onChange={handleInputChange}
               >
-                <MenuItem value={true}>Yes</MenuItem>
-                <MenuItem value={false}>No</MenuItem>
+                <MenuItem value="true">Yes</MenuItem>
+                <MenuItem value="false">No</MenuItem>
               </Select>
             </FormControl>
 
@@ -306,20 +334,28 @@ export default function Employees() {
               label="Initial Password (eg. 'Erik123.')"
               onChange={handleInputChange}
             />
-            <TextField
-              fullWidth
-              margin="normal"
-              name="list"
-              label="List #, if applicable. Otherwise, leave blank."
-              onChange={handleInputChange}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={newEmployeeData.list}
+                  onChange={(e) =>
+                    setNewEmployeeData((prev) => ({
+                      ...prev,
+                      list: e.target.checked,
+                    }))
+                  }
+                  name="list"
+                />
+              }
+              label="Check if adding as list member"
             />
-
+            <br />
             <Button
               variant="contained"
               color="primary"
               onClick={handleAddEmployee}
             >
-              Save
+              Hire Employee
             </Button>
           </Box>
         </Modal>
