@@ -43,12 +43,7 @@ export default function Office() {
     });
     const [createUser] = useMutation(CREATE_USER);
 
-    const { data, loading, error } = useQuery(GET_ALL_USER_IDS);
-
-    // const { refetch } = useQuery(GET_USER, {
-    //   variables: { id: user.id },
-    //   skip: true, // Set skip to true to prevent automatic fetching
-    // });
+    const { data, loading, error, refetch } = useQuery(GET_ALL_USER_IDS);
 
     const triggerRefetch = () => {
       refetch();
@@ -152,32 +147,6 @@ export default function Office() {
           </>
         ),
       },
-      // {
-      //   field: "delete",
-      //   headerName: "Delete",
-      //   sortable: false,
-      //   width: 150,
-      //   renderCell: (params) => {
-      //     const userRole = profile.data.roles;
-      //     const isOwnerOrAdmin =
-      //       myRole.includes("Owner") ||
-      //       (myRole.includes("Admin") && params.row.role !== "Owner");
-
-      //     return (
-      //       <>
-      //         {isOwnerOrAdmin && params.row.id !== profile.data._id && (
-      //           <Button
-      //             variant="contained"
-      //             color="error"
-      //             onClick={() => handleRemoveUser(params.row.id)}
-      //           >
-      //             Remove User
-      //           </Button>
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
       {
         field: "add",
         headerName: "Add Employee", // fallback for screen readers
