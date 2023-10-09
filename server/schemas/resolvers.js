@@ -42,6 +42,10 @@ const resolvers = {
       return Contact.findById(id);
     },
 
+    getContacts: async () => {
+      return await Contact.find();
+    },
+
     getTruck: (parent, { id }) => {
       return Truck.findById(id);
     },

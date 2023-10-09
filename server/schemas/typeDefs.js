@@ -28,16 +28,20 @@ const typeDefs = gql`
 
   type Contact {
     id: ID
-    name: String
+    firstName: String
+    lastName: String
     title: String
+    roles: [String]
     email: String
     phone: String
     company: Company
   }
 
   input ContactInput {
-    name: String
+    firstName: String
+    lastName: String
     title: String
+    roles: [String]
     email: String
     phone: String
     company: CompanyInput
@@ -288,6 +292,7 @@ const typeDefs = gql`
     getMove(id: ID!): Move
     getCompany(id: ID!): Company
     getContact(id: ID!): Contact
+    getContacts: [Contact]
     getTruck(id: ID!): Truck
     getTrucks: [Truck]
     getVan(id: ID!): Van

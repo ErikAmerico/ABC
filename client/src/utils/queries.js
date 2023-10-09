@@ -287,14 +287,31 @@ export const GET_CONTACT = gql`
   query GetContact($id: ID!) {
     getContact(id: $id) {
       id
-      name
+      firstName
+      lastName
       title
+      roles
       email
       phone
-      company {
-        id
-        names
-      }
+    }
+  }
+`;
+
+// company {
+//   id
+//   names
+// }
+
+export const GET_ALL_CONTACTS = gql`
+  {
+    getContacts {
+      id
+      firstName
+      lastName
+      title
+      roles
+      email
+      phone
     }
   }
 `;
