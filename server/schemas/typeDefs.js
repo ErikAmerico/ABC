@@ -291,6 +291,7 @@ const typeDefs = gql`
     getUser(id: ID!): User
     getMove(id: ID!): Move
     getCompany(id: ID!): Company
+    getCompanies: [Company]
     getContact(id: ID!): Contact
     getContacts: [Contact]
     getTruck(id: ID!): Truck

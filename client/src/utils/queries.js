@@ -283,6 +283,32 @@ export const GET_COMPANY = gql`
   }
 `;
 
+export const GET_ALL_COMPANIES = gql`
+  {
+    getCompanies {
+      id
+      names
+      addresses {
+        street
+        city
+        state
+        zipCode
+        floors {
+          floorNumber
+          rooms
+        }
+      }
+      contacts {
+        id
+        name
+        title
+        email
+        phone
+      }
+    }
+  }
+`;
+
 export const GET_CONTACT = gql`
   query GetContact($id: ID!) {
     getContact(id: $id) {
@@ -293,6 +319,10 @@ export const GET_CONTACT = gql`
       roles
       email
       phone
+      company {
+        id
+        names
+      }
     }
   }
 `;
@@ -312,6 +342,10 @@ export const GET_ALL_CONTACTS = gql`
       roles
       email
       phone
+      company {
+        id
+        names
+      }
     }
   }
 `;

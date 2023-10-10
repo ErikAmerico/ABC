@@ -20,6 +20,8 @@ import { useApolloClient } from "@apollo/client";
 
 import { CREATE_CONTACT } from "../utils/mutations.js";
 import { GET_ALL_CONTACTS } from "../utils/queries.js";
+// import { GET_ALL_COMPANIES } from "../utils/queries.js";
+// import { CREATE_COMPANY } from "../utils/mutations.js";
 
 export default function Contacts() {
   if (AuthService.loggedIn()) {
@@ -32,10 +34,11 @@ export default function Contacts() {
       firstName: "",
       lastName: "",
       title: "",
-      roles: [],
+      roles: ["Contact"],
       email: "",
       phone: "",
     });
+    //const [newCompanyName, setNewCompanyName] = useState("");
 
     const [createContact] = useMutation(CREATE_CONTACT);
     const { data, loading, error, refetch } = useQuery(GET_ALL_CONTACTS);
@@ -57,8 +60,13 @@ export default function Contacts() {
           ...contacts,
           fullName: `${contact.firstName} ${contact.lastName}`,
           title: contact.title,
+          roles: contact.roles,
           email: contact.email,
           phone: contact.phone,
+          company:
+            contact.company && contact.company.names && contact.company.names[0]
+              ? contact.company.names[0]
+              : "N/A",
         }));
 
         setContacts(contactsData);
@@ -70,6 +78,24 @@ export default function Contacts() {
 
     const myRole = profile.data.roles;
     const myId = profile.data._id;
+
+    // const {
+    //   data: companyData,
+    //   loading: companyLoading,
+    //   error: companyError,
+    // } = useQuery(GET_ALL_COMPANIES);
+
+    // const [createCompany] = useMutation(CREATE_COMPANY);
+
+    // const handleAddCompany = async () => {
+    //     try {
+    //         await createCompany({ variables: { input: { names: [newCompanyName] } } });
+    //         setIsModalOpen(false);
+    //         triggerRefetch(); // To refresh the data after adding
+    //     } catch (err) {
+    //         console.error("Error adding company:", err);
+    //     }
+    // };
 
     const handleAddContactModalOpen = () => {
       setIsAddContactModalOpen(true);
@@ -100,12 +126,6 @@ export default function Contacts() {
     const columns = [
       { field: "fullName", headerName: "Name", width: 130 },
       { field: "title", headerName: "Title", width: 130 },
-      //   {
-      //     field: "roles",
-      //     headerName: "Roles",
-      //     width: 200,
-      //     renderCell: (params) => params.row.roles.join(" "),
-      //   },
       { field: "email", headerName: "Email", width: 200 },
       { field: "phone", headerName: "Phone Number", width: 150 },
       { field: "company", headerName: "Company", width: 150 },
@@ -115,23 +135,21 @@ export default function Contacts() {
         sortable: false,
         width: 150,
         renderCell: (params) => (
-          console.log(params.row),
-          (
-            <>
-              {params.row.id !== profile.data._id && (
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    /* Handle Edit Logic Here */
-                  }}
-                  // sx={{ backgroundColor: "#134074" }}
-                  color="inherit"
-                >
-                  {`Edit ${params.row.fullName.split(" ")[0]}`}
-                </Button>
-              )}
-            </>
-          )
+          //console.log(params.row),
+          <>
+            {params.row.id !== profile.data._id && (
+              <Button
+                variant="contained"
+                onClick={() => {
+                  /* Handle Edit Logic Here */
+                }}
+                // sx={{ backgroundColor: "#134074" }}
+                color="inherit"
+              >
+                {`Edit ${params.row.fullName.split(" ")[0]}`}
+              </Button>
+            )}
+          </>
         ),
       },
       {
@@ -179,7 +197,7 @@ export default function Contacts() {
               borderRadius: 1,
             }}
           >
-            <h2 id="add-contact-modal">Add Office Employee</h2>
+            <h2 id="add-contact-modal">Add Contact</h2>
             <TextField
               fullWidth
               margin="normal"
@@ -206,21 +224,13 @@ export default function Contacts() {
               margin="normal"
               name="roles"
               label="Roles"
-              onChange={handleInputChange}
+              value="Contact"
+              InputProps={{
+                readOnly: true,
+              }}
+              disabled
+              //onChange={handleInputChange}
             />
-            {/* <FormControl fullWidth margin="normal">
-              <InputLabel id="roles-label">Roles</InputLabel>
-              <Select
-                labelId="roles-label"
-                multiple
-                name="roles"
-                value={newContactData.roles}
-                onChange={handleInputChange}
-                renderValue={(selected) => selected.join(", ")}
-              >
-                <MenuItem value="Supervisor">Contact</MenuItem>
-              </Select>
-            </FormControl> */}
             <TextField
               fullWidth
               margin="normal"
@@ -235,6 +245,22 @@ export default function Contacts() {
               label="Phone Number"
               onChange={handleInputChange}
             />
+            {/* <FormControl fullWidth margin="normal">
+              <InputLabel id="company-label">Company</InputLabel>
+              <Select
+                labelId="company-label"
+                name="companyId"
+                value={newContactData.companyId}
+                onChange={handleInputChange}
+              >
+                {companyData?.getCompanies.map((company) => (
+                  <MenuItem value={company.id} key={company.id}>
+                    {company.names[0]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl> */}
+
             <Button
               variant="contained"
               color="primary"

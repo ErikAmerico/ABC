@@ -38,12 +38,16 @@ const resolvers = {
       return Company.findById(id).populate("contacts");
     },
 
+    getCompanies: async () => {
+      return await Company.find().populate("contacts");
+    },
+
     getContact: (parent, { id }) => {
       return Contact.findById(id);
     },
 
     getContacts: async () => {
-      return await Contact.find();
+      return await Contact.find().populate("company");
     },
 
     getTruck: (parent, { id }) => {
