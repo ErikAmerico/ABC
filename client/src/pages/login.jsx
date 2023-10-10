@@ -34,8 +34,6 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function Login() {
@@ -50,7 +48,7 @@ export default function Login() {
 
     try {
       const { data } = await login({ variables: { email, password } });
-      console.log("Response Data:", data); //put breakpoint here and try again.
+      //console.log("Response Data:", data); //put breakpoint here and try again.
       AuthService.login(data.login.token);
     } catch (error) {
       console.error("Login failed", error);

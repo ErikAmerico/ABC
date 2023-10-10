@@ -274,8 +274,10 @@ export const GET_COMPANY = gql`
       }
       contacts {
         id
-        name
+        firstName
+        lastName
         title
+        roles
         email
         phone
       }
@@ -300,8 +302,10 @@ export const GET_ALL_COMPANIES = gql`
       }
       contacts {
         id
-        name
+        firstName
+        lastName
         title
+        roles
         email
         phone
       }

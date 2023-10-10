@@ -42,8 +42,16 @@ const resolvers = {
       return await Company.find().populate("contacts");
     },
 
-    getContact: (parent, { id }) => {
-      return Contact.findById(id);
+    // getContact: (parent, { id }) => {
+    //   return Contact.findById(id);
+    // },
+
+    getContact: async (parent, { id }) => {
+      // Find the contact by its ID and populate 'company' field
+      const contact = await Contact.findById(id).populate("company");
+
+      // Return populated contact
+      return contact;
     },
 
     getContacts: async () => {
@@ -123,8 +131,17 @@ const resolvers = {
       return Company.findByIdAndDelete(id);
     },
 
-    createContact: (parent, { input }) => {
-      return Contact.create(input);
+    createContact: async (parent, { input }) => {
+      const newContact = new Contact(input);
+      await newContact.save();
+
+      // Populate 'company' field after saving
+      await newContact.populate("company");
+
+      //TODO: Add contact to company's 'contacts' field
+
+      // Return populated contact
+      return newContact;
     },
 
     updateContact: (parent, { id, input }) => {

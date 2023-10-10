@@ -44,7 +44,7 @@ const typeDefs = gql`
     roles: [String]
     email: String
     phone: String
-    company: CompanyInput
+    company: ID
   }
 
   type Company {
