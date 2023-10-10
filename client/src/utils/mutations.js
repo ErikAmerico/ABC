@@ -401,27 +401,46 @@ export const DELETE_COMPANY = gql`
   }
 `;
 
+// export const CREATE_CONTACT = gql`
+//   mutation CreateContact($input: ContactInput!) {
+//     createContact(input: $input) {
+//       id
+//       firstName
+//       lastName
+//       title
+//       roles
+//       email
+//       phone
+//       company {
+//         id
+//         names
+//         addresses {
+//           street
+//           city
+//           state
+//           zipCode
+//           floors {
+//             floorNumber
+//             rooms
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
+
 export const CREATE_CONTACT = gql`
   mutation CreateContact($input: ContactInput!) {
     createContact(input: $input) {
       id
-      name
+      firstName
+      lastName
       title
+      roles
       email
       phone
       company {
         id
-        names
-        addresses {
-          street
-          city
-          state
-          zipCode
-          floors {
-            floorNumber
-            rooms
-          }
-        }
       }
     }
   }
@@ -431,8 +450,10 @@ export const UPDATE_CONTACT = gql`
   mutation UpdateContact($id: ID!, $input: ContactInput!) {
     updateContact(id: $id, input: $input) {
       id
-      name
+      firstName
+      lastName
       title
+      roles
       email
       phone
       company {
@@ -457,8 +478,10 @@ export const DELETE_CONTACT = gql`
   mutation DeleteContact($id: ID!) {
     deleteContact(id: $id) {
       id
-      name
+      firstName
+      lastName
       title
+      roles
       email
       phone
       company {
