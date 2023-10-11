@@ -340,8 +340,10 @@ export const CREATE_COMPANY = gql`
       }
       contacts {
         id
-        name
+        firstName
+        lastName
         title
+        roles
         email
         phone
       }
@@ -366,8 +368,10 @@ export const UPDATE_COMPANY = gql`
       }
       contacts {
         id
-        name
+        firstName
+        lastName
         title
+        roles
         email
         phone
       }
@@ -392,8 +396,10 @@ export const DELETE_COMPANY = gql`
       }
       contacts {
         id
-        name
+        firstName
+        lastName
         title
+        roles
         email
         phone
       }
