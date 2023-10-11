@@ -84,7 +84,7 @@ const resolvers = {
         throw new AuthenticationError("Incorrect email");
       }
 
-      console.log(user);
+      //console.log(user);
       console.log("Stored Hash:", user.password);
       console.log("Entered Password Hash:", await bcrypt.hash(password, 10));
 
@@ -135,10 +135,15 @@ const resolvers = {
       const newContact = new Contact(input);
       await newContact.save();
 
+      const companyId = newContact.company;
+
       // Populate 'company' field after saving
       await newContact.populate("company");
 
-      //TODO: Add contact to company's 'contacts' field
+      // Update company with new contact
+      await Company.findByIdAndUpdate(companyId, {
+        $push: { contacts: newContact._id },
+      });
 
       // Return populated contact
       return newContact;

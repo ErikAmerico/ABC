@@ -113,8 +113,6 @@ export default function Contacts() {
       };
       await createContact({ variables: { input: input } });
 
-      //TODO: Add Contact to companys contacts array
-
       setIsAddContactModalOpen(false);
       triggerRefetch(); // To refresh the data after adding
     } catch (err) {
@@ -124,10 +122,16 @@ export default function Contacts() {
 
   const handleAddCompany = async () => {
     try {
-      await createCompany({
+      const newCompany = await createCompany({
         variables: { input: { names: [newCompanyName] } },
       });
-      handleAddContact();
+
+      const input = {
+        ...newContactData,
+        company: newCompany.data.createCompany.id,
+      };
+      await createContact({ variables: { input: input } });
+
       setIsModalOpen(false);
       triggerRefetch(); // To refresh the data after adding
     } catch (err) {
