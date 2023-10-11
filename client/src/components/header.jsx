@@ -113,6 +113,19 @@ const Header = () => {
                   Announcements
                 </Button>
                 <Button
+                  component={Link}
+                  color="info"
+                  variant="outlined"
+                  to="/companies"
+                  sx={{
+                    marginRight: 2,
+                    backgroundColor: "#134074",
+                    color: "white",
+                  }}
+                >
+                  Companies
+                </Button>
+                <Button
                   color="info"
                   variant="outlined"
                   onClick={handlePersonellMenuOpen}
