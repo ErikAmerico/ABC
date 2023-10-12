@@ -223,7 +223,7 @@ export default function Employees() {
           rows={users}
           columns={columns}
           className="tableContainer"
-          checkboxSelection
+          //checkboxSelection
           hideFooter
         />
         <Modal

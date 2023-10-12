@@ -31,7 +31,6 @@ export default function Contacts() {
   }
   //if (AuthService.loggedIn()) {
   const [contacts, setContacts] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState(AuthService.getProfile());
   const client = useApolloClient();
   const [isAddContactModalOpen, setIsAddContactModalOpen] = useState(false);
@@ -48,7 +47,27 @@ export default function Contacts() {
 
   const [showNewCompanyField, setShowNewCompanyField] = useState(false);
 
-  const [createContact] = useMutation(CREATE_CONTACT);
+  const [createContact] = useMutation(CREATE_CONTACT, {
+    update(cache, { data: { createContact } }) {
+      const existingCompanies = cache.readQuery({ query: GET_ALL_COMPANIES });
+
+      const updatedCompanies = existingCompanies.getCompanies.map((company) => {
+        if (company.id === newContactData.company) {
+          return {
+            ...company,
+            contacts: [...company.contacts, createContact],
+          };
+        }
+        return company;
+      });
+
+      cache.writeQuery({
+        query: GET_ALL_COMPANIES,
+        data: { getCompanies: updatedCompanies },
+      });
+    },
+  });
+
   const [createCompany] = useMutation(CREATE_COMPANY);
 
   const { data, loading, error, refetch } = useQuery(GET_ALL_CONTACTS);
@@ -114,7 +133,7 @@ export default function Contacts() {
       await createContact({ variables: { input: input } });
 
       setIsAddContactModalOpen(false);
-      triggerRefetch(); // To refresh the data after adding
+      triggerRefetch();
     } catch (err) {
       console.error("Error adding contact:", err);
     }
@@ -132,8 +151,8 @@ export default function Contacts() {
       };
       await createContact({ variables: { input: input } });
 
-      setIsModalOpen(false);
-      triggerRefetch(); // To refresh the data after adding
+      setIsAddContactModalOpen(false);
+      triggerRefetch();
     } catch (err) {
       console.error("Error adding company:", err);
     }
@@ -192,7 +211,7 @@ export default function Contacts() {
         rows={contacts}
         columns={columns}
         className="tableContainer"
-        checkboxSelection
+        //checkboxSelection
         hideFooter
       />
       <Modal

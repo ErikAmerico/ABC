@@ -171,7 +171,7 @@ export default function Office() {
           rows={users}
           columns={columns}
           className="tableContainer"
-          checkboxSelection
+          //checkboxSelection
           hideFooter
         />
         <Modal
