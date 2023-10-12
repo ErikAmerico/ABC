@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import AuthService from "../utils/auth.js";
 import "./companies.css";
 
-import Modal from "@mui/material/Modal";
 import {
   Box,
   TextField,
   FormControl,
   InputLabel,
   Select,
+  Modal,
   MenuItem,
 } from "@mui/material";
-import { CREATE_COMPANY } from "../utils/mutations.js";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
@@ -20,6 +19,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useApolloClient } from "@apollo/client";
 
 import { GET_ALL_COMPANIES } from "../utils/queries.js";
+import { CREATE_COMPANY, CREATE_CONTACT } from "../utils/mutations.js";
 
 export default function Companies() {
   if (AuthService.loggedIn()) {
@@ -27,19 +27,23 @@ export default function Companies() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [profile, setProfile] = useState(AuthService.getProfile());
     const client = useApolloClient();
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [selectedContact, setSelectedContact] = useState(null);
+    const [detailModalOpen, setDetailModalOpen] = useState(false);
     const [isAddCompanyModalOpen, setIsAddCompanyModalOpen] = useState(false);
     const [newCompanyData, setNewCompanyData] = useState({
-      firstName: "",
-      lastName: "",
-      roles: [],
-      cdlProgram: false,
-      cdl: false,
-      email: "",
-      phone: "",
-      list: null,
+      names: [""],
+      addresses: [
+        {
+          street: "",
+          city: "",
+          state: "",
+          zipCode: "",
+          floors: [{ floorNumber: "", rooms: [""] }],
+        },
+      ],
     });
     const [createCompany] = useMutation(CREATE_COMPANY);
-
     const { data, loading, error, refetch } = useQuery(GET_ALL_COMPANIES);
     console.log(data);
     console.log("companies", companies);
@@ -50,21 +54,6 @@ export default function Companies() {
 
     useEffect(() => {
       if (data) {
-        // const filteredUsers = data.users.filter((user) => {
-        //   return (
-        //     user.roles.includes("Owner") ||
-        //     user.roles.includes("Supervisor") ||
-        //     user.roles.includes("Admin") ||
-        //     user.roles.includes("ProjectManager") ||
-        //     user.roles.includes("Salesman")
-        //   );
-        // });
-
-        // const userData = filteredUsers.map((user) => ({
-        //   ...user,
-        //   fullName: `${user.firstName} ${user.lastName}`,
-        // }));
-
         setCompanies(data.getCompanies);
       }
     }, [data]);
@@ -72,23 +61,19 @@ export default function Companies() {
     if (loading) return <p>Loading IDs...</p>;
     if (error) return <p>Error fetching user IDs: {error.message}</p>;
 
-    const myRole = profile.data.roles;
-    const myId = profile.data._id;
-
-    // const handleRemoveUser = (user) => {
-    //   const userId = user.id;
-    //   console.log(userId);
-
-    //   removeUser({ variables: { userId } })
-    //     .then(() => {
-    //       triggerRefetch();
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error removing user:", error);
-    //     });
-    // };
-
     const handleAddCompanyModalOpen = () => {
+      setNewCompanyData({
+        names: [""],
+        addresses: [
+          {
+            street: "",
+            city: "",
+            state: "",
+            zipCode: "",
+            floors: [{ floorNumber: "", rooms: [""] }],
+          },
+        ],
+      });
       setIsAddCompanyModalOpen(true);
     };
 
@@ -96,45 +81,130 @@ export default function Companies() {
       setIsAddCompanyModalOpen(false);
     };
 
-    const handleInputChange = (event) => {
-      const { name, value } = event.target;
-      setNewCompanyData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    };
+    // const handleInputChange = (event) => {
+    //   const { name, value } = event.target;
+    //   setNewCompanyData((prev) => ({
+    //     ...prev,
+    //     [name]: value,
+    //   }));
+    // };
 
     const handleAddCompany = async () => {
       try {
         await createCompany({ variables: { input: newCompanyData } });
         setIsAddCompanyModalOpen(false);
-        triggerRefetch(); // To refresh the data after adding
+        triggerRefetch();
       } catch (err) {
         console.error("Error adding Company:", err);
       }
     };
 
-    //TODO: CONFIGURE COLUMNS TO DISPLAY COMPANY DATA AS DROP DOWNS WHEN CLICKED ON, AND COMPANY IS SELECTED?
+    const handleDetailModalOpen = (type, item) => {
+      if (type === "address") {
+        setSelectedAddress(item);
+      } else {
+        setSelectedContact(item);
+      }
+      setDetailModalOpen(true);
+    };
+
+    const handleDetailModalClose = () => {
+      setSelectedAddress(null);
+      setSelectedContact(null);
+      setDetailModalOpen(false);
+    };
+
     const columns = [
-      { field: "names", headerName: "Company NAme", width: 130 },
+      { field: "names", headerName: "Company Name", width: 130 },
       {
         field: "addresses",
         headerName: "Address",
-        width: 200,
-        //renderCell: (params) => params.row.addresses.join(" "),
-        renderCell: (params) =>
-          params.row.addresses
-            .map((addr) => `${addr.street}, ${addr.city}, ${addr.state}`)
-            .join("; "),
+        width: 250,
+        renderCell: (params) => {
+          if (!params.row.addresses || params.row.addresses.length === 0) {
+            return <div>No Addresses</div>;
+          }
+
+          const sortedAddresses = [...params.row.addresses].sort((a, b) => {
+            const aNumber = parseInt(a.street.split(" ")[0]);
+            const bNumber = parseInt(b.street.split(" ")[0]);
+            return aNumber - bNumber;
+          });
+
+          //   if (sortedAddresses.length === 1) {
+          //     const addr = sortedAddresses[0];
+          //     return `${addr.street}, ${addr.city}, ${addr.state}`;
+          //   }
+
+          if (sortedAddresses.length === 1) {
+            const addr = sortedAddresses[0];
+            return (
+              <div onClick={() => handleDetailModalOpen("address", addr)}>
+                {`${addr.street}, ${addr.city}, ${addr.state},`}
+              </div>
+            );
+          }
+
+          return (
+            <Select
+              displayEmpty
+              fullWidth
+              value=""
+              onChange={(e) => handleDetailModalOpen("address", e.target.value)}
+              renderValue={() => "View Dropdown"}
+              sx={{ backgroundColor: "#134074", borderRadius: 3 }}
+            >
+              {sortedAddresses.map((addr, idx) => (
+                <MenuItem key={idx} value={addr}>
+                  {`${addr.street}, ${addr.city}, ${addr.state}`}
+                </MenuItem>
+              ))}
+            </Select>
+          );
+        },
       },
       {
         field: "contacts",
         headerName: "Contacts",
         width: 200,
-        renderCell: (params) =>
-          params.row.contacts
-            .map((contact) => `${contact.firstName}: ${contact.phone}`)
-            .join("; "),
+        renderCell: (params) => {
+          if (!params.row.contacts || params.row.contacts.length === 0) {
+            return <div>No Contacts</div>;
+          }
+
+          const sortedContacts = [...params.row.contacts].sort((a, b) =>
+            `${a.firstName} ${a.lastName}`.localeCompare(
+              `${b.firstName} ${b.lastName}`
+            )
+          );
+
+          if (sortedContacts.length === 1) {
+            const contact = sortedContacts[0];
+            //return `${contact.firstName} ${contact.lastName}`;
+            return (
+              <div onClick={() => handleDetailModalOpen("contact", contact)}>
+                {`${contact.firstName} ${contact.lastName}`}
+              </div>
+            );
+          }
+
+          return (
+            <Select
+              displayEmpty
+              fullWidth
+              value=""
+              onChange={(e) => handleDetailModalOpen("contact", e.target.value)}
+              renderValue={() => "View Dropdown"}
+              sx={{ backgroundColor: "#134074", borderRadius: 3 }}
+            >
+              {sortedContacts.map((contact, idx) => (
+                <MenuItem key={idx} value={contact}>
+                  {`${contact.firstName} ${contact.lastName}`}
+                </MenuItem>
+              ))}
+            </Select>
+          );
+        },
       },
       {
         field: "edit",
@@ -183,7 +253,7 @@ export default function Companies() {
           rows={companies}
           columns={columns}
           className="tableContainer"
-          checkboxSelection
+          //checkboxSelection
           hideFooter
         />
         <Modal
@@ -205,66 +275,187 @@ export default function Companies() {
             }}
           >
             <h2 id="add-company-modal">Add Company</h2>
-            <TextField
-              fullWidth
-              margin="normal"
-              name="names"
-              label="Company Name"
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              name="address"
-              label="Address"
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              name="contacts"
-              label="Contacts"
-              onChange={handleInputChange}
-            />
-            {/* <FormControl fullWidth margin="normal">
-              <InputLabel id="roles-label">Roles</InputLabel>
-              <Select
-                labelId="roles-label"
-                multiple
-                name="roles"
-                value={newEmployeeData.roles}
-                onChange={handleInputChange}
-                renderValue={(selected) => selected.join(", ")}
+            <div>
+              {newCompanyData.names.map((name, index) => (
+                <div key={`name-${index}`}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    value={name}
+                    onChange={(e) => {
+                      const newNames = [...newCompanyData.names];
+                      newNames[index] = e.target.value;
+                      setNewCompanyData((prevState) => ({
+                        ...prevState,
+                        names: newNames,
+                      }));
+                    }}
+                    //label={`Company Name ${index + 1}`}
+                    label="Company Name"
+                  />
+                </div>
+              ))}
+              {/* <Button
+                type="button"
+                onClick={() => {
+                  setNewCompanyData((prevState) => ({
+                    ...prevState,
+                    names: [...prevState.names, ""],
+                  }));
+                }}
               >
-                <MenuItem value="Supervisor">Supervisor</MenuItem>
-                <MenuItem value="Salesman">Salesman</MenuItem>
-                <MenuItem value="Project Manager">Project Manager</MenuItem>
-                <MenuItem value="Warehouse">Warehouse</MenuItem>
-                <MenuItem value="Admin">Admin</MenuItem>
-              </Select>
-            </FormControl>
+                Add another name
+              </Button> */}
+            </div>
+            <div>
+              {newCompanyData.addresses.map((address, addressIdx) => (
+                <div key={`address-${addressIdx}`}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    value={address.street}
+                    label="Address"
+                    onChange={(e) => {
+                      const updatedAddresses = [...newCompanyData.addresses];
+                      updatedAddresses[addressIdx].street = e.target.value;
+                      setNewCompanyData((prev) => ({
+                        ...prev,
+                        addresses: updatedAddresses,
+                      }));
+                    }}
+                  />
 
-            <TextField
-              fullWidth
-              margin="normal"
-              name="email"
-              label="Email"
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              name="phone"
-              label="Phone Number"
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              name="password"
-              label="Initial Password (eg. 'Erik123.')"
-              onChange={handleInputChange}
-            /> */}
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    value={address.city}
+                    label="City"
+                    onChange={(e) => {
+                      const updatedAddresses = [...newCompanyData.addresses];
+                      updatedAddresses[addressIdx].city = e.target.value;
+                      setNewCompanyData((prev) => ({
+                        ...prev,
+                        addresses: updatedAddresses,
+                      }));
+                    }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    value={address.state}
+                    label="State"
+                    onChange={(e) => {
+                      const updatedAddresses = [...newCompanyData.addresses];
+                      updatedAddresses[addressIdx].state = e.target.value;
+                      setNewCompanyData((prev) => ({
+                        ...prev,
+                        addresses: updatedAddresses,
+                      }));
+                    }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    value={address.zipCode}
+                    label="Zip Code"
+                    onChange={(e) => {
+                      const updatedAddresses = [...newCompanyData.addresses];
+                      updatedAddresses[addressIdx].zipCode = e.target.value;
+                      setNewCompanyData((prev) => ({
+                        ...prev,
+                        addresses: updatedAddresses,
+                      }));
+                    }}
+                  />
+
+                  {address.floors.map((floor, floorIdx) => (
+                    <div key={`floor-${floorIdx}`}>
+                      <TextField
+                        fullWidth
+                        margin="normal"
+                        value={floor.floorNumber}
+                        label="Floor Number"
+                        onChange={(e) => {
+                          const updatedAddresses = [
+                            ...newCompanyData.addresses,
+                          ];
+                          updatedAddresses[addressIdx].floors[
+                            floorIdx
+                          ].floorNumber = e.target.value;
+                          //parseInt(e.target.value, 10);
+                          setNewCompanyData((prev) => ({
+                            ...prev,
+                            addresses: updatedAddresses,
+                          }));
+                        }}
+                      />
+
+                      {floor.rooms.map((room, roomIdx) => (
+                        <div key={`room-div-${roomIdx}`}>
+                          <TextField
+                            fullWidth
+                            margin="normal"
+                            value={room}
+                            //label={`Room ${roomIdx + 1}`}
+                            label="Suite"
+                            onChange={(e) => {
+                              const updatedAddresses = [
+                                ...newCompanyData.addresses,
+                              ];
+                              updatedAddresses[addressIdx].floors[
+                                floorIdx
+                              ].rooms[roomIdx] = e.target.value;
+                              setNewCompanyData((prev) => ({
+                                ...prev,
+                                addresses: updatedAddresses,
+                              }));
+                            }}
+                          />
+                        </div>
+                      ))}
+                      <Button
+                        onClick={() => {
+                          const updatedAddresses = [
+                            ...newCompanyData.addresses,
+                          ];
+                          updatedAddresses[addressIdx].floors[
+                            floorIdx
+                          ].rooms.push("");
+                          setNewCompanyData((prev) => ({
+                            ...prev,
+                            addresses: updatedAddresses,
+                          }));
+                        }}
+                      >
+                        Add another room
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+              {/* <Button
+                onClick={() => {
+                  setNewCompanyData((prev) => ({
+                    ...prev,
+                    addresses: [
+                      ...prev.addresses,
+                      {
+                        street: "",
+                        city: "",
+                        state: "",
+                        zipCode: "",
+                        floors: [{ floorNumber: "", rooms: [""] }],
+                      },
+                    ],
+                  }));
+                }}
+              >
+                Add another address
+              </Button> */}
+            </div>
             <Button
               variant="contained"
               color="primary"
@@ -272,6 +463,51 @@ export default function Companies() {
             >
               Save
             </Button>
+          </Box>
+        </Modal>
+        <Modal
+          open={detailModalOpen}
+          onClose={handleDetailModalClose}
+          aria-labelledby="detail-modal"
+        >
+          <Box
+            sx={{
+              width: 400,
+              padding: 2,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              borderRadius: 1,
+            }}
+          >
+            <h2 id="detail-modal">Details</h2>
+            {selectedAddress && (
+              <div>
+                <p>Street: {selectedAddress.street}</p>
+                <p>City: {selectedAddress.city}</p>
+                <p>State: {selectedAddress.state}</p>
+                <p>Zip Code: {selectedAddress.zipCode}</p>
+                {selectedAddress.floors.map((floor, floorIdx) => (
+                  <div key={`floor-detail-${floorIdx}`}>
+                    <p>Floor Number: {floor.floorNumber}</p>
+                    {floor.rooms.map((room, roomIdx) => (
+                      <p key={`room-detail-${roomIdx}`}>Suite: {room}</p>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+            {selectedContact && (
+              <div>
+                <p>First Name: {selectedContact.firstName}</p>
+                <p>Last Name: {selectedContact.lastName}</p>
+                <p>Email: {selectedContact.email}</p>
+                <p>Phone: {selectedContact.phone}</p>
+              </div>
+            )}
           </Box>
         </Modal>
       </div>

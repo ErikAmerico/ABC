@@ -77,12 +77,12 @@ const typeDefs = gql`
   }
 
   type Floor {
-    floorNumber: [Int]
+    floorNumber: [String]
     rooms: [String]
   }
 
   input FloorInput {
-    floorNumber: [Int]
+    floorNumber: [String]
     rooms: [String]
   }
 
