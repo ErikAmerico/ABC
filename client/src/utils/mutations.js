@@ -347,6 +347,7 @@ export const CREATE_COMPANY = gql`
         email
         phone
       }
+      roles
     }
   }
 `;
@@ -375,6 +376,7 @@ export const UPDATE_COMPANY = gql`
         email
         phone
       }
+      roles
     }
   }
 `;
@@ -403,6 +405,7 @@ export const DELETE_COMPANY = gql`
         email
         phone
       }
+      roles
     }
   }
 `;

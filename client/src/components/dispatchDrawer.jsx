@@ -13,6 +13,8 @@ import { useQuery } from "@apollo/client";
 import { GET_ALL_USER_IDS } from "../utils/queries";
 import { GET_ALL_TRUCKS } from "../utils/queries";
 import { GET_ALL_VANS } from "../utils/queries";
+import { GET_ALL_CONTACTS } from "../utils/queries.js";
+import { GET_ALL_COMPANIES } from "../utils/queries.js";
 import { useGlobalContext } from "../utils/globalContext";
 
 export default function DispatchDrawer(
@@ -45,14 +47,37 @@ export default function DispatchDrawer(
     error: vansError,
   } = useQuery(GET_ALL_VANS);
 
-  if (usersLoading || trucksLoading || vansLoading) return <p>Loading...</p>;
+  const {
+    data: contactsData,
+    loading: contactsLoading,
+    error: contactsError,
+  } = useQuery(GET_ALL_CONTACTS);
+
+  const {
+    data: companiesData,
+    loading: companiesLoading,
+    error: companiesError,
+  } = useQuery(GET_ALL_COMPANIES);
+
+  if (
+    usersLoading ||
+    trucksLoading ||
+    vansLoading ||
+    contactsLoading ||
+    companiesLoading
+  )
+    return <p>Loading...</p>;
   if (usersError) return <p>Error: {usersError.message}</p>;
   if (trucksError) return <p>Error: {trucksError.message}</p>;
   if (vansError) return <p>Error: {vansError.message}</p>;
+  if (contactsError) return <p>Error: {contactsError.message}</p>;
+  if (companiesError) return <p>Error: {companiesError.message}</p>;
 
   const employees = usersData.users;
   const trucks = trucksData.getTrucks;
   const vans = vansData.getVans;
+  const contacts = contactsData.getContacts;
+  const companies = companiesData.getCompanies;
 
   // console.log(
   //   "Updated rowSelectionModel in DispatchDrawer:",
@@ -63,7 +88,6 @@ export default function DispatchDrawer(
     console.log("Updating selected row:", name, role, rowSelectionModel[0]);
     if (rowSelectionModel === undefined || rowSelectionModel === null) return;
 
-    //need to add role to truck and van in model, role: truck, role: van. Then i can implement them the same.
     setRows((prevRows) => {
       return prevRows.map((row) => {
         if (row.id === rowSelectionModel[0]) {
@@ -87,6 +111,19 @@ export default function DispatchDrawer(
             return {
               ...row,
               truckVan: updatedVehicles,
+            };
+          } else if (role === "Contact") {
+            const updatedContacts = [...row.contact, name];
+            return {
+              ...row,
+              contact: updatedContacts,
+            };
+          } else if (role === "Company") {
+            //const updatedCompanies = [...row.account, name];
+            const updatedCompanies = [name]; // Only one company allowed per row.
+            return {
+              ...row,
+              account: updatedCompanies,
             };
           } else {
             const updatedCrewMembers = [...row.crewMembers];
@@ -114,17 +151,23 @@ export default function DispatchDrawer(
   };
 
   const items = [
+    "Company",
+    "Contact",
     "Supervisor",
     "Driver",
     "Helper",
     "Tech",
     "Truck",
     "Van",
-    "Contact",
-    "Company",
   ];
 
-  const generateExpandedData = (employees, trucks, vans) => {
+  const generateExpandedData = (
+    employees,
+    trucks,
+    vans,
+    contacts,
+    companies
+  ) => {
     const data = {};
 
     employees.forEach((employee) => {
@@ -141,6 +184,10 @@ export default function DispatchDrawer(
 
     data["Truck"] = trucks.map((truck) => `${truck.number}`);
     data["Van"] = vans.map((van) => `${van.number}`);
+    data["Contact"] = contacts.map(
+      (contact) => `${contact.firstName} ${contact.lastName}`
+    );
+    data["Company"] = companies.map((company) => `${company.names[0]}`);
 
     items.forEach((item) => {
       if (!data[item]) data[item] = [];
@@ -149,7 +196,13 @@ export default function DispatchDrawer(
     return data;
   };
 
-  const expandedData = generateExpandedData(employees, trucks, vans);
+  const expandedData = generateExpandedData(
+    employees,
+    trucks,
+    vans,
+    contacts,
+    companies
+  );
 
   const toggleDrawer = (isOpen) => () => {
     setOpen(isOpen);

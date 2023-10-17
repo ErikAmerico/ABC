@@ -281,6 +281,7 @@ export const GET_COMPANY = gql`
         email
         phone
       }
+      roles
     }
   }
 `;
@@ -309,6 +310,7 @@ export const GET_ALL_COMPANIES = gql`
         email
         phone
       }
+      roles
     }
   }
 `;

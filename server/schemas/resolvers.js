@@ -85,8 +85,8 @@ const resolvers = {
       }
 
       //console.log(user);
-      console.log("Stored Hash:", user.password);
-      console.log("Entered Password Hash:", await bcrypt.hash(password, 10));
+      //console.log("Stored Hash:", user.password);
+      //console.log("Entered Password Hash:", await bcrypt.hash(password, 10));
 
       const correctPw = await user.isCorrectPassword(password.trim());
       if (!correctPw) {

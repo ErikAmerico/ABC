@@ -92,8 +92,42 @@ export default function Dispatch() {
         );
       },
     },
-    { field: "account", headerName: "Account", width: 150 },
-    { field: "contact", headerName: "Contact", width: 130 },
+    // { field: "account", headerName: "Account", width: 150 },
+    {
+      field: "account",
+      headerName: "Account",
+      width: 150,
+      // renderCell: (params) => {
+      //   return (
+      //     <div>
+      //       {params.value.map((name, index) => (
+      //         <div key={index}>{name}</div>
+      //       ))}
+      //     </div>
+      //   );
+      // },
+      // renderCell: (params) => {
+      //   return params.value;
+      // },
+      renderCell: (params) => params.value.join(", "),
+    },
+    {
+      field: "contact",
+      headerName: "Contact",
+      width: 130,
+      // renderCell: (params) => {
+      //   return params.value.join(", ");
+      // },
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((name, index) => (
+              <div key={index}>{name}</div>
+            ))}
+          </div>
+        );
+      },
+    },
     { field: "origin", headerName: "Origin", width: 150 },
     { field: "destination", headerName: "Destination", width: 150 },
     { field: "serviceType", headerName: "Type of Service", width: 130 },
@@ -203,13 +237,15 @@ export default function Dispatch() {
 
   const addRow = () => {
     const newRow = {
-      //adjust truck and van models to include role. refer to dispatchDrawer.jsx
       truckVan: [
         { role: "Truck", numbers: [] },
         { role: "Van", numbers: [] },
       ],
-      account: "BMS",
-      contact: "New Contact",
+      //account: { role: "Company", names: [] },
+      account: [],
+      //account: "",
+      //contact: [{ role: "Contact", names: [] }],
+      contact: [],
       origin: "100 Main Street",
       destination: "125 High Street",
       serviceType: "Move",
