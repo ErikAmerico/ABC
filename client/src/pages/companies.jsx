@@ -42,6 +42,7 @@ export default function Companies() {
           floors: [{ floorNumber: "", rooms: [""] }],
         },
       ],
+      roles: ["Company"],
     });
     const [createCompany] = useMutation(CREATE_COMPANY);
     const { data, loading, error, refetch } = useQuery(GET_ALL_COMPANIES);
@@ -73,6 +74,7 @@ export default function Companies() {
             floors: [{ floorNumber: "", rooms: [""] }],
           },
         ],
+        roles: ["Company"],
       });
       setIsAddCompanyModalOpen(true);
     };

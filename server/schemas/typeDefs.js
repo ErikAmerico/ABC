@@ -52,12 +52,14 @@ const typeDefs = gql`
     names: [String]
     addresses: [Address]
     contacts: [Contact]
+    roles: [String]
   }
 
   input CompanyInput {
     names: [String]
     addresses: [AddressInput]
     contacts: [ContactInput]
+    roles: [String]
   }
 
   type Address {

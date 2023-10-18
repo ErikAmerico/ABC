@@ -13,7 +13,11 @@ import { useQuery } from "@apollo/client";
 import { GET_ALL_USER_IDS } from "../utils/queries";
 import { GET_ALL_TRUCKS } from "../utils/queries";
 import { GET_ALL_VANS } from "../utils/queries";
+import { GET_ALL_CONTACTS } from "../utils/queries.js";
+import { GET_ALL_COMPANIES } from "../utils/queries.js";
 import { useGlobalContext } from "../utils/globalContext";
+
+//TODO: reselect selectedCompany when navigating between already created jobs, creating ability to have all details available.
 
 export default function DispatchDrawer(
   {
@@ -26,6 +30,15 @@ export default function DispatchDrawer(
   const [expanded, setExpanded] = useState({});
   const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
   const { rows, setRows } = useGlobalContext();
+  const [selectedCompany, setSelectedCompany] = useState({
+    name: null,
+    id: null,
+  });
+
+  useEffect(() => {
+    setSelectedCompany(null);
+    setExpanded({});
+  }, [rowSelectionModel]);
 
   const {
     data: usersData,
@@ -45,25 +58,56 @@ export default function DispatchDrawer(
     error: vansError,
   } = useQuery(GET_ALL_VANS);
 
-  if (usersLoading || trucksLoading || vansLoading) return <p>Loading...</p>;
+  const {
+    data: contactsData,
+    loading: contactsLoading,
+    error: contactsError,
+  } = useQuery(GET_ALL_CONTACTS);
+
+  const {
+    data: companiesData,
+    loading: companiesLoading,
+    error: companiesError,
+  } = useQuery(GET_ALL_COMPANIES);
+
+  if (
+    usersLoading ||
+    trucksLoading ||
+    vansLoading ||
+    contactsLoading ||
+    companiesLoading
+  )
+    return <p>Loading...</p>;
   if (usersError) return <p>Error: {usersError.message}</p>;
   if (trucksError) return <p>Error: {trucksError.message}</p>;
   if (vansError) return <p>Error: {vansError.message}</p>;
+  if (contactsError) return <p>Error: {contactsError.message}</p>;
+  if (companiesError) return <p>Error: {companiesError.message}</p>;
 
   const employees = usersData.users;
   const trucks = trucksData.getTrucks;
   const vans = vansData.getVans;
+  const contacts = contactsData.getContacts;
+  const companies = companiesData.getCompanies;
 
-  // console.log(
-  //   "Updated rowSelectionModel in DispatchDrawer:",
-  //   rowSelectionModel
-  // );
+  const companyAddresses = selectedCompany
+    ? companies.find((c) => c.names[0] === selectedCompany.name)?.addresses ||
+      []
+    : [];
+
+  //console.log("selectedCompany", selectedCompany);
+
+  const companyContacts = selectedCompany
+    ? contacts.filter((contact) => contact.company.id === selectedCompany.id)
+    : [];
+
+  // console.log("companyContacts", companyContacts);
+  // console.log("Sample contact:", contacts[0]);
 
   const updateSelectedRow = (name, role) => {
     console.log("Updating selected row:", name, role, rowSelectionModel[0]);
     if (rowSelectionModel === undefined || rowSelectionModel === null) return;
 
-    //need to add role to truck and van in model, role: truck, role: van. Then i can implement them the same.
     setRows((prevRows) => {
       return prevRows.map((row) => {
         if (row.id === rowSelectionModel[0]) {
@@ -87,6 +131,38 @@ export default function DispatchDrawer(
             return {
               ...row,
               truckVan: updatedVehicles,
+            };
+          } else if (role === "Contact") {
+            const updatedContacts = [...row.contact, name];
+            return {
+              ...row,
+              contact: updatedContacts,
+            };
+          } else if (role === "Company") {
+            // Find the company with the given name
+            const company = companies.find((c) => c.names[0] === name);
+
+            // Set the selected company state with both name and ID
+            setSelectedCompany({ name: company.names[0], id: company.id });
+
+            const updatedCompanies = [name]; // Only one company allowed per row.
+            return {
+              ...row,
+              account: updatedCompanies,
+            };
+          } else if (role === "Origin") {
+            const updatedOrigins = [...row.origin];
+            updatedOrigins.push(name);
+            return {
+              ...row,
+              origin: updatedOrigins,
+            };
+          } else if (role === "Destination") {
+            const updatedDestinations = [...row.destination];
+            updatedDestinations.push(name);
+            return {
+              ...row,
+              destination: updatedDestinations,
             };
           } else {
             const updatedCrewMembers = [...row.crewMembers];
@@ -114,17 +190,30 @@ export default function DispatchDrawer(
   };
 
   const items = [
+    "Company",
+    "Contact",
+    "Origin",
+    "Destination",
     "Supervisor",
     "Driver",
     "Helper",
     "Tech",
     "Truck",
     "Van",
-    "Contact",
-    "Company",
   ];
 
-  const generateExpandedData = (employees, trucks, vans) => {
+  const addressToString = (address) => {
+    return `${address.street}, ${address.city}`;
+  };
+
+  const generateExpandedData = (
+    employees,
+    trucks,
+    vans,
+    companyContacts,
+    companyAddresses,
+    companies
+  ) => {
     const data = {};
 
     employees.forEach((employee) => {
@@ -141,6 +230,12 @@ export default function DispatchDrawer(
 
     data["Truck"] = trucks.map((truck) => `${truck.number}`);
     data["Van"] = vans.map((van) => `${van.number}`);
+    data["Company"] = companies.map((company) => `${company.names[0]}`);
+    data["Origin"] = companyAddresses.map(addressToString);
+    data["Destination"] = companyAddresses.map(addressToString);
+    data["Contact"] = companyContacts.map(
+      (contact) => `${contact.firstName} ${contact.lastName}`
+    );
 
     items.forEach((item) => {
       if (!data[item]) data[item] = [];
@@ -149,7 +244,14 @@ export default function DispatchDrawer(
     return data;
   };
 
-  const expandedData = generateExpandedData(employees, trucks, vans);
+  const expandedData = generateExpandedData(
+    employees,
+    trucks,
+    vans,
+    companyContacts,
+    companyAddresses,
+    companies
+  );
 
   const toggleDrawer = (isOpen) => () => {
     setOpen(isOpen);
@@ -180,13 +282,15 @@ export default function DispatchDrawer(
     </Box>
   );
 
+  const itemsToShow = selectedCompany ? items : ["Company"];
+
   return (
     <>
       <Button onClick={toggleDrawer(true)}>Add Details</Button>
       <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
         <Box sx={{ width: 250 }} role="presentation">
           <List>
-            {items.map((text) => (
+            {itemsToShow.map((text) => (
               <div key={text}>
                 <ListItemButton onClick={toggleExpand(text)}>
                   <ListItemText primary={text} />
@@ -207,7 +311,9 @@ export default function DispatchDrawer(
                             updateSelectedRow(subItem, text, rowSelectionModel)
                           }
                         >
-                          <ListItemText primary={subItem} inset />
+                          {subItem && (
+                            <ListItemText primary={subItem.toString()} inset />
+                          )}
                         </ListItem>
                       ))}
                   </List>
@@ -216,7 +322,14 @@ export default function DispatchDrawer(
             ))}
           </List>
           <Divider />
-          <Button onClick={toggleDrawer(false)}>Close Drawer</Button>
+          <Button
+            onClick={() => {
+              toggleDrawer(false)();
+              setSelectedCompany(null);
+            }}
+          >
+            Close Drawer
+          </Button>
         </Box>
       </Drawer>
     </>

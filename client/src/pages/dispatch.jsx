@@ -14,7 +14,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import DispatchDrawer from "../components/dispatchDrawer";
 import { useGlobalContext } from "../utils/globalContext";
 import RemoveModal from "../components/removeModal";
 
@@ -39,28 +38,6 @@ export default function Dispatch() {
       headerName: "Truck/Van",
       width: 100,
       renderCell: (params) => {
-        // console.log("params.value:", params.value);
-        // const renderVehicles = (roleChar, numbers) => {
-        //   const chunks = chunkArray(numbers, 2);
-        //   return chunks.map((chunk, index) => (
-        //     <div key={index}>
-        //       {index > 0 ? "--- " : `${roleChar}) `}
-        //       {chunk.join(", ")}
-        //     </div>
-        //   ));
-        // };
-
-        // const trucks = params.value.find(
-        //   (item) => item.role === "Truck"
-        // ).numbers;
-        // const vans = params.value.find((item) => item.role === "Van").numbers;
-
-        // return (
-        //   <div>
-        //     {renderVehicles("T", trucks)}
-        //     {renderVehicles("V", vans)}
-        //   </div>
-        // );
         const renderVehicles = (roleChar, numbers) => {
           const chunks = chunkArray(numbers, 2);
           return chunks.map((chunk, index) => (
@@ -71,18 +48,12 @@ export default function Dispatch() {
           ));
         };
 
-        // const truckData = params.value.find((item) => item.role === "Truck");
-        // const vanData = params.value.find((item) => item.role === "Van");
-
         const trucks = params.value
           .filter((item) => item.role === "Truck")
           .flatMap((item) => item.numbers);
         const vans = params.value
           .filter((item) => item.role === "Van")
           .flatMap((item) => item.numbers);
-
-        // const trucks = truckData ? truckData.numbers : [];
-        // const vans = vanData ? vanData.numbers : [];
 
         return (
           <div>
@@ -92,8 +63,26 @@ export default function Dispatch() {
         );
       },
     },
-    { field: "account", headerName: "Account", width: 150 },
-    { field: "contact", headerName: "Contact", width: 130 },
+    {
+      field: "account",
+      headerName: "Account",
+      width: 150,
+      renderCell: (params) => params.value.join(", "),
+    },
+    {
+      field: "contact",
+      headerName: "Contact",
+      width: 130,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((name, index) => (
+              <div key={index}>{name}</div>
+            ))}
+          </div>
+        );
+      },
+    },
     { field: "origin", headerName: "Origin", width: 150 },
     { field: "destination", headerName: "Destination", width: 150 },
     { field: "serviceType", headerName: "Type of Service", width: 130 },
@@ -203,15 +192,14 @@ export default function Dispatch() {
 
   const addRow = () => {
     const newRow = {
-      //adjust truck and van models to include role. refer to dispatchDrawer.jsx
       truckVan: [
         { role: "Truck", numbers: [] },
         { role: "Van", numbers: [] },
       ],
-      account: "BMS",
-      contact: "New Contact",
-      origin: "100 Main Street",
-      destination: "125 High Street",
+      account: [],
+      contact: [],
+      origin: [],
+      destination: [],
       serviceType: "Move",
       crewsize: { supervisors: [], count: 0 },
       leaveABC: "8:00 AM",

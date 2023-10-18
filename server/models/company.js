@@ -17,6 +17,7 @@ const companySchema = new mongoose.Schema({
   names: [String], // Array of names by which the company can be identified
   addresses: [addressSchema], // Array of addresses
   contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Contact" }], // if contacts work directly for this company
+  roles: [String],
 });
 
 const Company = mongoose.model("Company", companySchema);
