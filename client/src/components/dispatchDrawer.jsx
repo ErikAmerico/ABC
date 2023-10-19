@@ -17,8 +17,6 @@ import { GET_ALL_CONTACTS } from "../utils/queries.js";
 import { GET_ALL_COMPANIES } from "../utils/queries.js";
 import { useGlobalContext } from "../utils/globalContext";
 
-//TODO: reselect selectedCompany when navigating between already created jobs, creating ability to have all details available.
-
 export default function DispatchDrawer(
   {
     // selectedRowId,
@@ -34,11 +32,40 @@ export default function DispatchDrawer(
     name: null,
     id: null,
   });
+  const [companies, setCompanies] = useState([]);
+
+  // useEffect(() => {
+  //   setSelectedCompany(null);
+  //   setExpanded({});
+  // }, [rowSelectionModel]);
 
   useEffect(() => {
+    // Reset the selectedCompany and expanded states
     setSelectedCompany(null);
     setExpanded({});
-  }, [rowSelectionModel]);
+
+    // Check if there's a selected row
+    if (rowSelectionModel && rowSelectionModel.length > 0) {
+      const selectedRowId = rowSelectionModel[0];
+      const selectedRow = rows.find((row) => row.id === selectedRowId);
+
+      // If the selected row has an account (company) set, update the selectedCompany state
+      if (
+        selectedRow &&
+        selectedRow.account &&
+        selectedRow.account.length > 0
+      ) {
+        const companyName = selectedRow.account[0];
+        const company = companies.find((c) => c.names[0] === companyName);
+        if (company) {
+          setSelectedCompany({
+            name: company.names[0],
+            id: company.id,
+          });
+        }
+      }
+    }
+  }, [rowSelectionModel, rows, companies]);
 
   const {
     data: usersData,
@@ -88,7 +115,12 @@ export default function DispatchDrawer(
   const trucks = trucksData.getTrucks;
   const vans = vansData.getVans;
   const contacts = contactsData.getContacts;
-  const companies = companiesData.getCompanies;
+  //const companies = companiesData.getCompanies;
+  useEffect(() => {
+    if (companiesData && companiesData.getCompanies) {
+      setCompanies(companiesData.getCompanies);
+    }
+  }, [companiesData]);
 
   const companyAddresses = selectedCompany
     ? companies.find((c) => c.names[0] === selectedCompany.name)?.addresses ||
@@ -206,6 +238,47 @@ export default function DispatchDrawer(
     return `${address.street}, ${address.city}`;
   };
 
+  const getSelectedEmployees = () => {
+    let selectedEmployees = [];
+
+    // Loop through all rows
+    rows.forEach((row) => {
+      if (row.crewMembers) {
+        row.crewMembers.forEach((crew) => {
+          if (crew.names) {
+            selectedEmployees = [...selectedEmployees, ...crew.names];
+          }
+        });
+      }
+
+      // Add supervisors to the selected list
+      if (row.crewsize && row.crewsize.supervisors) {
+        selectedEmployees = [...selectedEmployees, ...row.crewsize.supervisors];
+      }
+    });
+
+    return selectedEmployees;
+  };
+
+  const getAssignedVehicles = () => {
+    let assignedTrucks = [];
+    let assignedVans = [];
+
+    rows.forEach((row) => {
+      if (row.truckVan) {
+        row.truckVan.forEach((vehicle) => {
+          if (vehicle.role === "Truck") {
+            assignedTrucks.push(vehicle.numbers[0]);
+          } else if (vehicle.role === "Van") {
+            assignedVans.push(vehicle.numbers[0]);
+          }
+        });
+      }
+    });
+
+    return { assignedTrucks, assignedVans };
+  };
+
   const generateExpandedData = (
     employees,
     trucks,
@@ -216,20 +289,32 @@ export default function DispatchDrawer(
   ) => {
     const data = {};
 
+    const selectedEmployees = getSelectedEmployees();
+
     employees.forEach((employee) => {
       const fullName = `${employee.firstName} ${employee.lastName}`;
-      employee.roles.forEach((role) => {
-        if (!data[role] && items.includes(role)) {
-          data[role] = [];
-        }
-        if (data[role]) {
-          data[role].push(fullName);
-        }
-      });
+
+      // Check if the employee is already selected
+      if (!selectedEmployees.includes(fullName)) {
+        employee.roles.forEach((role) => {
+          if (!data[role] && items.includes(role)) {
+            data[role] = [];
+          }
+          if (data[role]) {
+            data[role].push(fullName);
+          }
+        });
+      }
     });
 
-    data["Truck"] = trucks.map((truck) => `${truck.number}`);
-    data["Van"] = vans.map((van) => `${van.number}`);
+    const { assignedTrucks, assignedVans } = getAssignedVehicles();
+
+    data["Truck"] = trucks
+      .map((truck) => `${truck.number}`)
+      .filter((truckNumber) => !assignedTrucks.includes(truckNumber));
+    data["Van"] = vans
+      .map((van) => `${van.number}`)
+      .filter((vanNumber) => !assignedVans.includes(vanNumber));
     data["Company"] = companies.map((company) => `${company.names[0]}`);
     data["Origin"] = companyAddresses.map(addressToString);
     data["Destination"] = companyAddresses.map(addressToString);
@@ -252,6 +337,8 @@ export default function DispatchDrawer(
     companyAddresses,
     companies
   );
+
+  //TODO: Keep drawer header open after selecting an item. only collapse drawer item when selecting another drawer header.
 
   const toggleDrawer = (isOpen) => () => {
     setOpen(isOpen);
@@ -310,6 +397,10 @@ export default function DispatchDrawer(
                           onClick={() =>
                             updateSelectedRow(subItem, text, rowSelectionModel)
                           }
+                          // onClick={(e) => {
+                          //   e.stopPropagation(); // Stop the event propagation
+                          //   updateSelectedRow(subItem, text, rowSelectionModel);
+                          // }}
                         >
                           {subItem && (
                             <ListItemText primary={subItem.toString()} inset />
