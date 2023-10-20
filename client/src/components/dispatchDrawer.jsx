@@ -17,27 +17,16 @@ import { GET_ALL_CONTACTS } from "../utils/queries.js";
 import { GET_ALL_COMPANIES } from "../utils/queries.js";
 import { useGlobalContext } from "../utils/globalContext";
 
-export default function DispatchDrawer(
-  {
-    // selectedRowId,
-    // rows,
-    // setRows,
-  }
-) {
+export default function DispatchDrawer() {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState({});
-  const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
-  const { rows, setRows } = useGlobalContext();
+  const { rowSelectionModel, setRowSelectionModel, rows, setRows } =
+    useGlobalContext();
   const [selectedCompany, setSelectedCompany] = useState({
     name: null,
     id: null,
   });
   const [companies, setCompanies] = useState([]);
-
-  // useEffect(() => {
-  //   setSelectedCompany(null);
-  //   setExpanded({});
-  // }, [rowSelectionModel]);
 
   useEffect(() => {
     // Reset the selectedCompany and expanded states
@@ -97,30 +86,29 @@ export default function DispatchDrawer(
     error: companiesError,
   } = useQuery(GET_ALL_COMPANIES);
 
-  if (
-    usersLoading ||
-    trucksLoading ||
-    vansLoading ||
-    contactsLoading ||
-    companiesLoading
-  )
-    return <p>Loading...</p>;
-  if (usersError) return <p>Error: {usersError.message}</p>;
-  if (trucksError) return <p>Error: {trucksError.message}</p>;
-  if (vansError) return <p>Error: {vansError.message}</p>;
-  if (contactsError) return <p>Error: {contactsError.message}</p>;
-  if (companiesError) return <p>Error: {companiesError.message}</p>;
-
-  const employees = usersData.users;
-  const trucks = trucksData.getTrucks;
-  const vans = vansData.getVans;
-  const contacts = contactsData.getContacts;
-  //const companies = companiesData.getCompanies;
   useEffect(() => {
     if (companiesData && companiesData.getCompanies) {
       setCompanies(companiesData.getCompanies);
     }
   }, [companiesData]);
+
+  const queriesLoading =
+    usersLoading ||
+    trucksLoading ||
+    vansLoading ||
+    contactsLoading ||
+    companiesLoading;
+
+  const queriesError =
+    usersError || trucksError || vansError || contactsError || companiesError;
+
+  if (queriesLoading) return <p>Loading...</p>;
+  if (queriesError) return <p>Error: {queriesError.message}</p>;
+
+  const employees = usersData.users;
+  const trucks = trucksData.getTrucks;
+  const vans = vansData.getVans;
+  const contacts = contactsData.getContacts;
 
   const companyAddresses = selectedCompany
     ? companies.find((c) => c.names[0] === selectedCompany.name)?.addresses ||
@@ -338,7 +326,7 @@ export default function DispatchDrawer(
     companies
   );
 
-  //TODO: Keep drawer header open after selecting an item. only collapse drawer item when selecting another drawer header.
+  //TODO: Keep drawer item open after selecting an sub-item. only collapse drawer item when selecting another drawer item.
 
   const toggleDrawer = (isOpen) => () => {
     setOpen(isOpen);
@@ -397,10 +385,6 @@ export default function DispatchDrawer(
                           onClick={() =>
                             updateSelectedRow(subItem, text, rowSelectionModel)
                           }
-                          // onClick={(e) => {
-                          //   e.stopPropagation(); // Stop the event propagation
-                          //   updateSelectedRow(subItem, text, rowSelectionModel);
-                          // }}
                         >
                           {subItem && (
                             <ListItemText primary={subItem.toString()} inset />
