@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./dispatch.css";
 import {
@@ -31,6 +31,81 @@ export default function Dispatch() {
     }
     return chunks;
   };
+
+  function TimeInput({ value, onChange }) {
+    const [hour, minutePart] = value.split(":");
+    const minute = minutePart.split(" ")[0];
+    const period = minutePart.split(" ")[1];
+
+    const handleTimeChange = () => {
+      const selectedHour = hourRef.current.value;
+      const selectedMinute = minuteRef.current.value;
+      const selectedPeriod = periodRef.current.value;
+      onChange(`${selectedHour}:${selectedMinute} ${selectedPeriod}`);
+    };
+
+    const hourRef = useRef(null);
+    const minuteRef = useRef(null);
+    const periodRef = useRef(null);
+
+    return (
+      <div
+        style={{ display: "flex", alignItems: "center" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <select ref={hourRef} value={hour} onChange={handleTimeChange}>
+          {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
+            <option key={num} value={num}>
+              {num}
+            </option>
+          ))}
+        </select>
+        <div style={{ margin: "0 5px" }}>:</div>
+        <select ref={minuteRef} value={minute} onChange={handleTimeChange}>
+          {["00", "15", "30", "45"].map((min) => (
+            <option key={min} value={min}>
+              {min}
+            </option>
+          ))}
+        </select>
+        <select
+          ref={periodRef}
+          value={period}
+          onChange={handleTimeChange}
+          style={{ marginLeft: "5px" }}
+        >
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+    );
+  }
+
+  function ServiceDropdown({ value, onChange }) {
+    const serviceOptions = [
+      "Move",
+      "Pull",
+      "Crate Delivery",
+      "Crate Pickup",
+      "Material Delivery",
+      "Warehouse",
+    ];
+
+    return (
+      <select
+        value={value}
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ width: "130px", position: "relative", right: "7px" }}
+      >
+        {serviceOptions.map((service) => (
+          <option key={service} value={service}>
+            {service}
+          </option>
+        ))}
+      </select>
+    );
+  }
 
   const columns = [
     {
@@ -85,7 +160,26 @@ export default function Dispatch() {
     },
     { field: "origin", headerName: "Origin", width: 150 },
     { field: "destination", headerName: "Destination", width: 150 },
-    { field: "serviceType", headerName: "Type of Service", width: 130 },
+    {
+      field: "serviceType",
+      headerName: "Type of Service",
+      width: 130,
+      renderCell: (params) => {
+        return (
+          <ServiceDropdown
+            value={params.value || "Move"} // default to "Move" if there's no value
+            onChange={(newService) => {
+              const rowIndex = rows.findIndex((row) => row.id === params.id);
+              if (rowIndex !== -1) {
+                const updatedRows = [...rows];
+                updatedRows[rowIndex].serviceType = newService;
+                setRows(updatedRows);
+              }
+            }}
+          />
+        );
+      },
+    },
     {
       field: "crewsize",
       headerName: "Crew Size",
@@ -136,7 +230,26 @@ export default function Dispatch() {
         );
       },
     },
-    { field: "leaveABC", headerName: "Leave ABC", width: 130 },
+    {
+      field: "leaveABC",
+      headerName: "Leave ABC",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <TimeInput
+            value={params.value || "  :  AM"}
+            onChange={(newTime) => {
+              const rowIndex = rows.findIndex((row) => row.id === params.id);
+              if (rowIndex !== -1) {
+                const updatedRows = [...rows];
+                updatedRows[rowIndex].leaveABC = newTime;
+                setRows(updatedRows);
+              }
+            }}
+          />
+        );
+      },
+    },
     {
       field: "crewMembers",
       headerName: "Crew Members",
