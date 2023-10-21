@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./dispatch.css";
 import {
@@ -300,7 +300,58 @@ export default function Dispatch() {
         );
       },
     },
-    { field: "remarks", headerName: "Remarks", width: 130 },
+    {
+      field: "remarks",
+      headerName: "Remarks",
+      width: 205,
+      renderCell: (params) => (
+        <textarea
+          value={params.value || ""}
+          style={{
+            width: "100%",
+            height: "100%",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            resize: "none",
+            whiteSpace: "pre-wrap",
+            overflow: "hidden",
+            padding: "4px",
+          }}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => {
+            const rowIndex = rows.findIndex((row) => row.id === params.id);
+            if (rowIndex !== -1) {
+              const updatedRows = [...rows];
+              updatedRows[rowIndex].remarks = e.target.value;
+              setRows(updatedRows);
+            }
+          }}
+        />
+      ),
+    },
+    {
+      field: "save",
+      headerName: "",
+      sortable: false,
+      width: 125,
+      renderCell: (params) => (
+        //console.log(params.row),
+        <>
+          {params.row.id && (
+            <Button
+              variant="contained"
+              onClick={() => {
+                /* Handle Save Logic Here */
+              }}
+              // sx={{ backgroundColor: "#134074" }}
+              color="inherit"
+            >
+              {`SAVE JOB`}
+            </Button>
+          )}
+        </>
+      ),
+    },
   ];
 
   const addRow = () => {
@@ -321,7 +372,7 @@ export default function Dispatch() {
         { role: "Helper", names: [] },
         { role: "Tech", names: [] },
       ],
-      remarks: "Figure it out",
+      remarks: "",
       id: rows.length + 1,
       rowLength: 10,
     };
