@@ -68,35 +68,11 @@ export const CREATE_MOVE = gql`
       date
       startTime
       estimate
-      origin {
-        company {
-          id
-          names
-        }
-        contact {
-          id
-          name
-        }
-        altContact {
-          id
-          name
-        }
-        additional
-      }
-      destination {
-        company {
-          id
-          names
-        }
-        contact {
-          id
-          name
-        }
-        altContact {
-          id
-          name
-        }
-        additional
+      origin
+      destination
+      account
+      contact {
+        id
       }
       noCrewCab
       tailgate
@@ -105,27 +81,23 @@ export const CREATE_MOVE = gql`
       stairs
       tooltime
       crewSize
-      trucks
-      vans
+      trucks {
+        id
+      }
+      vans {
+        id
+      }
       supervisors {
         id
-        firstName
-        lastName
       }
       drivers {
         id
-        firstName
-        lastName
       }
       helpers {
         id
-        firstName
-        lastName
       }
       techs {
         id
-        firstName
-        lastName
       }
       equipment {
         dollies

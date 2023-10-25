@@ -16,10 +16,16 @@ import {
 } from "@mui/material";
 import { useGlobalContext } from "../utils/globalContext";
 import RemoveModal from "../components/removeModal";
+import { useMutation, useQuery } from "@apollo/client";
+import { CREATE_MOVE } from "../utils/mutations.js";
 
 export default function Dispatch() {
   const { rows, setRows } = useGlobalContext();
   const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
+  const [selectedDate, setSelectedDate] = useState("");
+  const [createMove] = useMutation(CREATE_MOVE);
+
+  console.log(rows);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
@@ -107,6 +113,57 @@ export default function Dispatch() {
     );
   }
 
+  const handleSaveJob = async (selectedRowId) => {
+    const selectedRow = rows.find((row) => row.id === selectedRowId);
+
+    let drivers = [];
+    let helpers = [];
+    let techs = [];
+
+    selectedRow.crewMembers.forEach((member) => {
+      if (member.role === "Driver") {
+        drivers = member.names.map((name) => name.id);
+      } else if (member.role === "Helper") {
+        helpers = member.names.map((name) => name.id);
+      } else if (member.role === "Tech") {
+        techs = member.names.map((name) => name.id);
+      }
+    });
+
+    const moveInput = {
+      date: selectedDate,
+      startTime: selectedRow.leaveABC,
+      origin: selectedRow.origin,
+      destination: selectedRow.destination,
+      crewSize: selectedRow.crewsize.count,
+      //serviceType: selectedRow.serviceType,
+      supervisors: selectedRow.crewsize.supervisors.map(
+        (supervisor) => supervisor.id
+      ),
+      drivers,
+      helpers,
+      techs,
+      remarks: selectedRow.remarks,
+      trucks: selectedRow.truckVan
+        .filter((item) => item.role === "Truck")
+        .map((truckObj) => truckObj.id),
+      vans: selectedRow.truckVan
+        .filter((item) => item.role === "Van")
+        .map((vanObj) => vanObj.id),
+      account: selectedRow.account,
+      contact: selectedRow.contact.map((contact) => contact.id),
+    };
+
+    try {
+      const response = await createMove({
+        variables: { input: moveInput },
+      });
+      console.log(response);
+    } catch (error) {
+      console.error("Error creating move:", error);
+    }
+  };
+
   const columns = [
     {
       field: "truckVan",
@@ -125,10 +182,10 @@ export default function Dispatch() {
 
         const trucks = params.value
           .filter((item) => item.role === "Truck")
-          .flatMap((item) => item.numbers);
+          .flatMap((item) => item.number);
         const vans = params.value
           .filter((item) => item.role === "Van")
-          .flatMap((item) => item.numbers);
+          .flatMap((item) => item.number);
 
         return (
           <div>
@@ -151,8 +208,8 @@ export default function Dispatch() {
       renderCell: (params) => {
         return (
           <div>
-            {params.value.map((name, index) => (
-              <div key={index}>{name}</div>
+            {params.value.map((contact, index) => (
+              <div key={index}>{contact.name}</div>
             ))}
           </div>
         );
@@ -167,7 +224,7 @@ export default function Dispatch() {
       renderCell: (params) => {
         return (
           <ServiceDropdown
-            value={params.value || "Move"} // default to "Move" if there's no value
+            value={params.value || "Move"}
             onChange={(newService) => {
               const rowIndex = rows.findIndex((row) => row.id === params.id);
               if (rowIndex !== -1) {
@@ -185,7 +242,10 @@ export default function Dispatch() {
       headerName: "Crew Size",
       width: 130,
       renderCell: (params) => {
-        const supervisorChunks = chunkArray(params.value?.supervisors || [], 2);
+        const supervisorInitials =
+          params.value?.supervisors?.map((supervisor) => supervisor.initials) ||
+          [];
+        const supervisorChunks = chunkArray(supervisorInitials, 2);
         return (
           <div>
             {supervisorChunks.map((chunk, cIndex) => (
@@ -206,7 +266,7 @@ export default function Dispatch() {
                 {cIndex !== supervisorChunks.length - 1 && <br />}
               </span>
             ))}
-            {params.value?.supervisors.length > 0 && " +"}
+            {params.value?.supervisors?.length > 0 && " +"}
             <input
               style={{ width: "30px", marginLeft: "5px" }}
               type="number"
@@ -275,7 +335,7 @@ export default function Dispatch() {
                     <div key={index}>
                       {prefix}
                       {chunk.map((name, nIndex) => {
-                        let parts = name.split(" ");
+                        let parts = name.name.split(" ");
                         let lastNameInitial =
                           parts.length > 1 ? parts[1].charAt(0) + "" : "";
                         return (
@@ -340,9 +400,7 @@ export default function Dispatch() {
           {params.row.id && (
             <Button
               variant="contained"
-              onClick={() => {
-                /* Handle Save Logic Here */
-              }}
+              onClick={() => handleSaveJob(params.row.id)}
               // sx={{ backgroundColor: "#134074" }}
               color="inherit"
             >
@@ -356,10 +414,7 @@ export default function Dispatch() {
 
   const addRow = () => {
     const newRow = {
-      truckVan: [
-        { role: "Truck", numbers: [] },
-        { role: "Van", numbers: [] },
-      ],
+      truckVan: [],
       account: [],
       contact: [],
       origin: [],
@@ -536,6 +591,8 @@ export default function Dispatch() {
             label="Date"
             type="date"
             variant="outlined"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}

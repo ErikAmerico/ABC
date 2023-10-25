@@ -6,6 +6,8 @@ const Contact = require("../models/contact");
 const Truck = require("../models/truck");
 const Van = require("../models/van");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
+const objectId = mongoose.Types.ObjectId;
 
 class AuthenticationError extends Error {
   constructor(message) {
@@ -108,8 +110,31 @@ const resolvers = {
       return User.findByIdAndDelete(id);
     },
 
-    createMove: (parent, { input }) => {
-      return Move.create(input);
+    createMove: async (parent, { input }) => {
+      try {
+        const move = await Move.create(input);
+
+        const convertToIdString = (arr) =>
+          arr.map((item) => ({
+            ...item._doc,
+            id: item._id.toString(),
+          }));
+
+        return {
+          ...move._doc,
+          id: move._id.toString(),
+          supervisors: convertToIdString(move.supervisors),
+          drivers: convertToIdString(move.drivers),
+          helpers: convertToIdString(move.helpers),
+          techs: convertToIdString(move.techs),
+          contact: convertToIdString(move.contact),
+          trucks: convertToIdString(move.trucks),
+          vans: convertToIdString(move.vans),
+        };
+      } catch (err) {
+        console.error("Error while creating move:", err);
+        throw new Error("Failed to create move");
+      }
     },
 
     updateMove: (parent, { id, input }) => {

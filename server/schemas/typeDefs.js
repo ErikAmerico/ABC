@@ -93,8 +93,11 @@ const typeDefs = gql`
     date: String
     startTime: String
     estimate: String
-    origin: Origin
-    destination: Destination
+    origin: [String]
+    destination: [String]
+    account: [String]
+    remarks: String
+    contact: [Contact]
     noCrewCab: Boolean
     tailgate: Boolean
     truck100: Boolean
@@ -102,8 +105,8 @@ const typeDefs = gql`
     stairs: Boolean
     tooltime: Boolean
     crewSize: Int
-    trucks: [Int]
-    vans: [Int]
+    trucks: [Truck]
+    vans: [Van]
     supervisors: [User]
     drivers: [User]
     helpers: [User]
@@ -127,8 +130,11 @@ const typeDefs = gql`
     date: String
     startTime: String
     estimate: String
-    origin: OriginInput
-    destination: DestinationInput
+    origin: [String]
+    destination: [String]
+    account: [String]
+    remarks: String
+    contact: [ID]
     noCrewCab: Boolean
     tailgate: Boolean
     truck100: Boolean
@@ -136,12 +142,12 @@ const typeDefs = gql`
     stairs: Boolean
     tooltime: Boolean
     crewSize: Int
-    trucks: [Int]
-    vans: [Int]
-    supervisors: [UserInput]
-    drivers: [UserInput]
-    helpers: [UserInput]
-    techs: [UserInput]
+    trucks: [ID]
+    vans: [ID]
+    supervisors: [ID]
+    drivers: [ID]
+    helpers: [ID]
+    techs: [ID]
     equipment: EquipmentInput
     description: String
     insurance: String
@@ -155,34 +161,6 @@ const typeDefs = gql`
     references: String
     groupBill: String
     prePayment: String
-  }
-
-  type Origin {
-    company: Company
-    contact: Contact
-    altContact: Contact
-    additional: String
-  }
-
-  input OriginInput {
-    company: CompanyInput
-    contact: ContactInput
-    altContact: ContactInput
-    additional: String
-  }
-
-  type Destination {
-    company: Company
-    contact: Contact
-    altContact: Contact
-    additional: String
-  }
-
-  input DestinationInput {
-    company: CompanyInput
-    contact: ContactInput
-    altContact: ContactInput
-    additional: String
   }
 
   type Equipment {

@@ -115,17 +115,11 @@ export default function DispatchDrawer() {
       []
     : [];
 
-  //console.log("selectedCompany", selectedCompany);
-
   const companyContacts = selectedCompany
     ? contacts.filter((contact) => contact.company.id === selectedCompany.id)
     : [];
 
-  // console.log("companyContacts", companyContacts);
-  // console.log("Sample contact:", contacts[0]);
-
   const updateSelectedRow = (name, role) => {
-    console.log("Updating selected row:", name, role, rowSelectionModel[0]);
     if (rowSelectionModel === undefined || rowSelectionModel === null) return;
 
     setRows((prevRows) => {
@@ -137,7 +131,13 @@ export default function DispatchDrawer() {
               .split(" ")
               .map((part) => part.charAt(0))
               .join("");
-            updatedSupervisors.push(initials);
+
+            const userId = employees.find(
+              (employee) =>
+                `${employee.firstName} ${employee.lastName}` === name
+            )?.id;
+
+            updatedSupervisors.push({ initials: initials, id: userId });
             return {
               ...row,
               crewsize: {
@@ -147,13 +147,36 @@ export default function DispatchDrawer() {
             };
           } else if (role === "Truck" || role === "Van") {
             const updatedVehicles = [...row.truckVan];
-            updatedVehicles.push({ role: role, numbers: [name] });
+
+            const vehicleId = role === "Truck" ? trucks : vans;
+            //const vehicle = vehicleId.find((v) => v.number === name);
+            const vehicle = vehicleId.find(
+              (v) => String(v.number) === String(name)
+            );
+
+            if (!vehicle) {
+              console.error(`Vehicle with number ${name} not found!`);
+              return;
+            }
+
+            updatedVehicles.push({
+              role: role,
+              number: name,
+              id: vehicle.id,
+            });
             return {
               ...row,
               truckVan: updatedVehicles,
             };
           } else if (role === "Contact") {
-            const updatedContacts = [...row.contact, name];
+            const updatedContacts = [...row.contact];
+
+            const contactId = contacts.find(
+              (contact) => `${contact.firstName} ${contact.lastName}` === name
+            )?.id;
+
+            updatedContacts.push({ name: name, id: contactId });
+
             return {
               ...row,
               contact: updatedContacts,
@@ -184,18 +207,27 @@ export default function DispatchDrawer() {
               ...row,
               destination: updatedDestinations,
             };
-          } else {
+          } else if (["Driver", "Helper", "Tech"].includes(role)) {
+            const userId = employees.find(
+              (employee) =>
+                `${employee.firstName} ${employee.lastName}` === name
+            )?.id;
+
             const updatedCrewMembers = [...row.crewMembers];
             const roleIndex = updatedCrewMembers.findIndex(
               (r) => r.role === role
             );
 
             if (roleIndex !== -1) {
-              // Role exists, just push the name
-              updatedCrewMembers[roleIndex].names.push(name);
+              updatedCrewMembers[roleIndex].names.push({
+                name: name,
+                id: userId,
+              });
             } else {
-              // Role does not exist, create a new role object
-              updatedCrewMembers.push({ role: role, names: [name] });
+              updatedCrewMembers.push({
+                role: role,
+                names: [{ name: name, id: userId }],
+              });
             }
 
             return {
@@ -208,6 +240,8 @@ export default function DispatchDrawer() {
       });
     });
   };
+
+  //console.log("rows", rows);
 
   const items = [
     "Company",
@@ -229,18 +263,19 @@ export default function DispatchDrawer() {
   const getSelectedEmployees = () => {
     let selectedEmployees = [];
 
-    // Loop through all rows
     rows.forEach((row) => {
       if (row.crewMembers) {
         row.crewMembers.forEach((crew) => {
           if (crew.names) {
-            selectedEmployees = [...selectedEmployees, ...crew.names];
+            selectedEmployees = [
+              ...selectedEmployees,
+              ...crew.names.map((n) => n.name),
+            ];
           }
         });
       }
 
-      // Add supervisors to the selected list
-      if (row.crewsize && row.crewsize.supervisors) {
+      if (Array.isArray(row.crewsize.supervisors)) {
         selectedEmployees = [...selectedEmployees, ...row.crewsize.supervisors];
       }
     });
@@ -256,9 +291,9 @@ export default function DispatchDrawer() {
       if (row.truckVan) {
         row.truckVan.forEach((vehicle) => {
           if (vehicle.role === "Truck") {
-            assignedTrucks.push(vehicle.numbers[0]);
+            assignedTrucks.push(vehicle.number);
           } else if (vehicle.role === "Van") {
-            assignedVans.push(vehicle.numbers[0]);
+            assignedVans.push(vehicle.number);
           }
         });
       }
