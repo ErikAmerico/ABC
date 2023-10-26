@@ -72,20 +72,34 @@ export const GET_ALL_VANS = gql`
 
 export const FETCH_JOBS_BY_DATE = gql`
   query getJobsByDate($date: String!) {
-    jobs(date: $date) {
+    getJobsByDate(date: $date) {
       id
-      trucks
-      vans
-      account
+      trucks {
+        id
+      }
+      vans {
+        id
+      }
+      account {
+        id
+      }
       serviceType
-      contact
+      contact {
+        id
+      }
       origin
       destination
       crewSize
-      leaveAbc
-      drivers
-      helpers
-      techs
+      startTime
+      drivers {
+        id
+      }
+      helpers {
+        id
+      }
+      techs {
+        id
+      }
       remarks
     }
   }

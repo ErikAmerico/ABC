@@ -16,6 +16,22 @@ class AuthenticationError extends Error {
   }
 }
 
+function deepConvertObjectIdToString(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => deepConvertObjectIdToString(item));
+  }
+  if (obj && typeof obj === "object") {
+    for (const key in obj) {
+      if (obj[key] instanceof mongoose.Types.ObjectId) {
+        obj[key] = obj[key].toString();
+      } else if (typeof obj[key] === "object") {
+        obj[key] = deepConvertObjectIdToString(obj[key]);
+      }
+    }
+  }
+  return obj;
+}
+
 const resolvers = {
   Query: {
     getUser: (parent, { id }) => {
@@ -78,8 +94,75 @@ const resolvers = {
       return vans;
     },
 
+    // getJobsByDate: async (parent, { date }) => {
+    //   return await Job.find({ date: date }); // Assuming you're using Mongoose and have a Job model
+    // },
+
     getJobsByDate: async (parent, { date }) => {
-      return await Job.find({ date: date }); // Assuming you're using Mongoose and have a Job model
+      const jobs = await Job.find({ date: date })
+        .populate("trucks")
+        .populate("vans")
+        .populate("account")
+        .populate("contact")
+        .populate("drivers")
+        .populate("helpers")
+        .populate("techs")
+        .populate("supervisors")
+        .populate("date")
+        .populate("startTime")
+        .populate("origin")
+        .populate("destination")
+        .populate("serviceType")
+        .populate("remarks")
+        .populate("crewSize");
+
+      // console.log(jobs);
+      // console.log(JSON.stringify(jobs, null, 2));
+
+      return jobs.map((job) => {
+        let jobObj = job.toObject();
+        jobObj = deepConvertObjectIdToString(jobObj);
+        return {
+          ...jobObj,
+          id: jobObj._id.toString(), // Convert the main Job's _id to id
+          trucks: jobObj.account.map((acc) => ({
+            ...acc,
+            id: acc._id.toString(),
+          })),
+          vans: jobObj.vans.map((van) => ({ ...van, id: van._id.toString() })),
+          account: jobObj.account.map((acc) => ({
+            ...acc,
+            id: acc._id.toString(),
+          })),
+          contact: jobObj.contact.map((cont) => ({
+            ...cont,
+            id: cont._id.toString(),
+          })),
+          drivers: jobObj.drivers.map((driv) => ({
+            ...driv,
+            id: driv._id.toString(),
+          })),
+          helpers: jobObj.helpers.map((help) => ({
+            ...help,
+            id: help._id.toString(),
+          })),
+          techs: jobObj.techs.map((tech) => ({
+            ...tech,
+            id: tech._id.toString(),
+          })),
+          supervisors: jobObj.supervisors.map((sup) => ({
+            ...sup,
+            id: sup._id.toString(),
+          })),
+          date: jobObj.date,
+          startTime: jobObj.startTime,
+          origin: jobObj.origin,
+          destination: jobObj.destination,
+          serviceType: jobObj.serviceType,
+          remarks: jobObj.remarks,
+          crewSize: jobObj.crewSize,
+        };
+      });
     },
   },
   Mutation: {

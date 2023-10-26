@@ -18,6 +18,7 @@ import { useGlobalContext } from "../utils/globalContext";
 import RemoveModal from "../components/removeModal";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_JOB } from "../utils/mutations.js";
+import { FETCH_JOBS_BY_DATE } from "../utils/queries";
 
 function formatDate(date) {
   const d = new Date(date);
@@ -41,6 +42,45 @@ export default function Dispatch() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
+
+  const { data, loading, error } = useQuery(FETCH_JOBS_BY_DATE, {
+    variables: { date: selectedDate.toString().split("T")[0] },
+  });
+
+  //TODO: I am retrieving only the ID from the database of these fields. I need to retrieve the entire object, or at least the name, numbers, along with the id.
+  //maybe not entire object. But i need to match what is created when adding a job. this would be the easiest way to do it.
+  useEffect(() => {
+    if (data && data.getJobsByDate) {
+      const transformedJobs = data.getJobsByDate.map((job) => {
+        return {
+          id: job.id,
+          truckVan: [...job.trucks, ...job.vans], // everything needs to be adjusted
+          account: job.account,
+          contact: job.contact,
+          origin: job.origin,
+          destination: job.destination,
+          serviceType: job.serviceType,
+          crewsize: {
+            count: job.crewSize,
+            supervisors: [], // this may need to change
+          },
+          leaveABC: job.startTime,
+          crewMembers: [
+            { role: "Driver", names: job.drivers },
+            { role: "Helper", names: job.helpers },
+            { role: "Tech", names: job.techs },
+          ],
+          remarks: job.remarks,
+        };
+      });
+      setRows(transformedJobs);
+    }
+  }, [data]);
+
+  console.log(data);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   const chunkArray = (arr, chunkSize) => {
     const chunks = [];
