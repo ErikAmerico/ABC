@@ -88,7 +88,7 @@ const typeDefs = gql`
     rooms: [String]
   }
 
-  type Move {
+  type Job {
     id: ID!
     date: String
     startTime: String
@@ -96,6 +96,7 @@ const typeDefs = gql`
     origin: [String]
     destination: [String]
     account: [Company]
+    serviceType: String
     remarks: String
     contact: [Contact]
     noCrewCab: Boolean
@@ -126,13 +127,14 @@ const typeDefs = gql`
     prePayment: String
   }
 
-  input MoveInput {
+  input JobInput {
     date: String
     startTime: String
     estimate: String
     origin: [String]
     destination: [String]
     account: [ID]
+    serviceType: String
     remarks: String
     contact: [ID]
     noCrewCab: Boolean
@@ -269,7 +271,7 @@ const typeDefs = gql`
     me: User
     users: [User]
     getUser(id: ID!): User
-    getMove(id: ID!): Move
+    getJob(id: ID!): Job
     getCompany(id: ID!): Company
     getCompanies: [Company]
     getContact(id: ID!): Contact
@@ -278,6 +280,7 @@ const typeDefs = gql`
     getTrucks: [Truck]
     getVan(id: ID!): Van
     getVans: [Van]
+    getJobsByDate(date: String!): [Job]
   }
 
   type Auth {
@@ -290,9 +293,9 @@ const typeDefs = gql`
     createUser(input: UserInput!): User!
     updateUser(id: ID!, input: UserInput!): User
     deleteUser(id: ID!): User
-    createMove(input: MoveInput!): Move!
-    updateMove(id: ID!, input: MoveInput!): Move
-    deleteMove(id: ID!): Move
+    createJob(input: JobInput!): Job!
+    updateJob(id: ID!, input: JobInput!): Job
+    deleteJob(id: ID!): Job
     createCompany(input: CompanyInput!): Company!
     updateCompany(id: ID!, input: CompanyInput!): Company
     deleteCompany(id: ID!): Company

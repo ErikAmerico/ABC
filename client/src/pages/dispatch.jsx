@@ -17,13 +17,27 @@ import {
 import { useGlobalContext } from "../utils/globalContext";
 import RemoveModal from "../components/removeModal";
 import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_MOVE } from "../utils/mutations.js";
+import { CREATE_JOB } from "../utils/mutations.js";
+
+function formatDate(date) {
+  const d = new Date(date);
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  const year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+}
 
 export default function Dispatch() {
   const { rows, setRows } = useGlobalContext();
   const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
-  const [selectedDate, setSelectedDate] = useState("");
-  const [createMove] = useMutation(CREATE_MOVE);
+  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [createJob] = useMutation(CREATE_JOB);
+
+  console.log(rows);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
@@ -128,13 +142,13 @@ export default function Dispatch() {
       }
     });
 
-    const moveInput = {
+    const jobInput = {
       date: selectedDate,
       startTime: selectedRow.leaveABC,
       origin: selectedRow.origin,
       destination: selectedRow.destination,
       crewSize: selectedRow.crewsize.count,
-      //serviceType: selectedRow.serviceType,
+      serviceType: selectedRow.serviceType,
       supervisors: selectedRow.crewsize.supervisors.map(
         (supervisor) => supervisor.id
       ),
@@ -153,12 +167,12 @@ export default function Dispatch() {
     };
 
     try {
-      const response = await createMove({
-        variables: { input: moveInput },
+      const response = await createJob({
+        variables: { input: jobInput },
       });
-      console.log(response);
+      //console.log(response);
     } catch (error) {
-      console.error("Error creating move:", error);
+      console.error("Error creating job:", error);
     }
   };
 
@@ -407,7 +421,6 @@ export default function Dispatch() {
             <Button
               variant="contained"
               onClick={() => handleSaveJob(params.row.id)}
-              // sx={{ backgroundColor: "#134074" }}
               color="inherit"
             >
               {`SAVE JOB`}

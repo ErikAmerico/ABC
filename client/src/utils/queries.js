@@ -70,6 +70,27 @@ export const GET_ALL_VANS = gql`
   }
 `;
 
+export const FETCH_JOBS_BY_DATE = gql`
+  query getJobsByDate($date: String!) {
+    jobs(date: $date) {
+      id
+      trucks
+      vans
+      account
+      serviceType
+      contact
+      origin
+      destination
+      crewSize
+      leaveAbc
+      drivers
+      helpers
+      techs
+      remarks
+    }
+  }
+`;
+
 export const GET_MOVE = gql`
   query GetMove($id: ID!) {
     getMove(id: $id) {
@@ -332,11 +353,6 @@ export const GET_CONTACT = gql`
     }
   }
 `;
-
-// company {
-//   id
-//   names
-// }
 
 export const GET_ALL_CONTACTS = gql`
   {

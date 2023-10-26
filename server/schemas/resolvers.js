@@ -1,6 +1,6 @@
 const { signToken } = require("../utils/auth");
 const User = require("../models/user");
-const Move = require("../models/move");
+const Job = require("../models/job");
 const Company = require("../models/company");
 const Contact = require("../models/contact");
 const Truck = require("../models/truck");
@@ -26,8 +26,8 @@ const resolvers = {
       return await User.find();
     },
 
-    getMove: (parent, { id }) => {
-      return Move.findById(id).populate(
+    getJob: (parent, { id }) => {
+      return Job.findById(id).populate(
         "supervisors",
         "drivers",
         "helpers",
@@ -77,6 +77,10 @@ const resolvers = {
       const vans = await Van.find();
       return vans;
     },
+
+    getJobsByDate: async (parent, { date }) => {
+      return await Job.find({ date: date }); // Assuming you're using Mongoose and have a Job model
+    },
   },
   Mutation: {
     login: async (parent, { email, password }) => {
@@ -110,9 +114,9 @@ const resolvers = {
       return User.findByIdAndDelete(id);
     },
 
-    createMove: async (parent, { input }) => {
+    createJob: async (parent, { input }) => {
       try {
-        const move = await Move.create(input);
+        const job = await Job.create(input);
 
         const convertToIdString = (arr) =>
           arr.map((item) => ({
@@ -121,29 +125,29 @@ const resolvers = {
           }));
 
         return {
-          ...move._doc,
-          id: move._id.toString(),
-          supervisors: convertToIdString(move.supervisors),
-          drivers: convertToIdString(move.drivers),
-          helpers: convertToIdString(move.helpers),
-          techs: convertToIdString(move.techs),
-          contact: convertToIdString(move.contact),
-          trucks: convertToIdString(move.trucks),
-          vans: convertToIdString(move.vans),
-          account: convertToIdString(move.account),
+          ...job._doc,
+          id: job._id.toString(),
+          supervisors: convertToIdString(job.supervisors),
+          drivers: convertToIdString(job.drivers),
+          helpers: convertToIdString(job.helpers),
+          techs: convertToIdString(job.techs),
+          contact: convertToIdString(job.contact),
+          trucks: convertToIdString(job.trucks),
+          vans: convertToIdString(job.vans),
+          account: convertToIdString(job.account),
         };
       } catch (err) {
-        console.error("Error while creating move:", err);
-        throw new Error("Failed to create move");
+        console.error("Error while creating Job:", err);
+        throw new Error("Failed to create Job");
       }
     },
 
-    updateMove: (parent, { id, input }) => {
-      return Move.findByIdAndUpdate(id, input, { new: true });
+    updateJob: (parent, { id, input }) => {
+      return Job.findByIdAndUpdate(id, input, { new: true });
     },
 
-    deleteMove: (parent, { id }) => {
-      return Move.findByIdAndDelete(id);
+    deleteJob: (parent, { id }) => {
+      return Job.findByIdAndDelete(id);
     },
     createCompany: (parent, { input }) => {
       return Company.create(input);
