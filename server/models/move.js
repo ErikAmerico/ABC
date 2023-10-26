@@ -18,7 +18,7 @@ const moveSchema = new mongoose.Schema({
   // },
   origin: [String],
   destination: [String],
-  account: [String],
+  account: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
   remarks: String,
   contact: [{ type: mongoose.Schema.Types.ObjectId, ref: "Contact" }],
   noCrewCab: Boolean,

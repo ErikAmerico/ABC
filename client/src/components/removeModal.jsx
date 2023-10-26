@@ -17,7 +17,8 @@ const RemoveModal = ({ open, onClose, onConfirm, name }) => (
     <DialogTitle id="alert-dialog-title">{"Remove from Job"}</DialogTitle>
     <DialogContent>
       <DialogContentText id="alert-dialog-description">
-        Do you want to remove {name} from the job?
+        {/* Do you want to remove {name} from the job? */}
+        do you want to remove from job?
       </DialogContentText>
     </DialogContent>
     <DialogActions>

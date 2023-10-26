@@ -95,7 +95,7 @@ const typeDefs = gql`
     estimate: String
     origin: [String]
     destination: [String]
-    account: [String]
+    account: [Company]
     remarks: String
     contact: [Contact]
     noCrewCab: Boolean
@@ -132,7 +132,7 @@ const typeDefs = gql`
     estimate: String
     origin: [String]
     destination: [String]
-    account: [String]
+    account: [ID]
     remarks: String
     contact: [ID]
     noCrewCab: Boolean

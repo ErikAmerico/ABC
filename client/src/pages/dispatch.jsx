@@ -25,8 +25,6 @@ export default function Dispatch() {
   const [selectedDate, setSelectedDate] = useState("");
   const [createMove] = useMutation(CREATE_MOVE);
 
-  console.log(rows);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
 
@@ -150,7 +148,7 @@ export default function Dispatch() {
       vans: selectedRow.truckVan
         .filter((item) => item.role === "Van")
         .map((vanObj) => vanObj.id),
-      account: selectedRow.account,
+      account: selectedRow.account[0].id,
       contact: selectedRow.contact.map((contact) => contact.id),
     };
 
@@ -199,7 +197,15 @@ export default function Dispatch() {
       field: "account",
       headerName: "Account",
       width: 150,
-      renderCell: (params) => params.value.join(", "),
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((account, index) => (
+              <div key={index}>{account.name}</div>
+            ))}
+          </div>
+        );
+      },
     },
     {
       field: "contact",
@@ -502,7 +508,7 @@ export default function Dispatch() {
             }))}
             checkboxSelection
             onRowSelectionModelChange={(newRowSelectionModel) => {
-              console.log("Row Selection Change:", newRowSelectionModel);
+              //console.log("Row Selection Change:", newRowSelectionModel);
               if (newRowSelectionModel.length > 1) {
                 // Only take the last selected row.
                 setRowSelectionModel([

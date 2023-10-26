@@ -70,7 +70,9 @@ export const CREATE_MOVE = gql`
       estimate
       origin
       destination
-      account
+      account {
+        id
+      }
       contact {
         id
       }

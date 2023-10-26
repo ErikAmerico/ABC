@@ -7,7 +7,7 @@ const Truck = require("../models/truck");
 const Van = require("../models/van");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-const objectId = mongoose.Types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
 
 class AuthenticationError extends Error {
   constructor(message) {
@@ -130,6 +130,7 @@ const resolvers = {
           contact: convertToIdString(move.contact),
           trucks: convertToIdString(move.trucks),
           vans: convertToIdString(move.vans),
+          account: convertToIdString(move.account),
         };
       } catch (err) {
         console.error("Error while creating move:", err);
