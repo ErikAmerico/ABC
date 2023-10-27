@@ -49,6 +49,8 @@ export default function Dispatch() {
 
   //TODO: I am retrieving only the ID from the database of these fields. I need to retrieve the entire object, or at least the name, numbers, along with the id.
   //maybe not entire object. But i need to match what is created when adding a job. this would be the easiest way to do it.
+
+  //UPDATE: I am now retrieving the necessary details of object from the database. I need to adjust the way the data is being displayed in the table.
   useEffect(() => {
     if (data && data.getJobsByDate) {
       const transformedJobs = data.getJobsByDate.map((job) => {
