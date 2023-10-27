@@ -62,8 +62,8 @@ export default function Dispatch() {
           serviceType: job.serviceType,
           crewsize: {
             count: job.crewSize,
-            supervisors: [], // this may need to change
           },
+          supervisors: job.supervisors,
           leaveABC: job.startTime,
           crewMembers: [
             { role: "Driver", names: job.drivers },

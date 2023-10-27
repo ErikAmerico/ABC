@@ -90,6 +90,9 @@ export const FETCH_JOBS_BY_DATE = gql`
       origin
       destination
       crewSize
+      supervisors {
+        id
+      }
       startTime
       drivers {
         id
