@@ -125,7 +125,7 @@ const resolvers = {
         return {
           ...jobObj,
           id: jobObj._id.toString(), // Convert the main Job's _id to id
-          trucks: jobObj.account.map((acc) => ({
+          trucks: jobObj.trucks.map((acc) => ({
             ...acc,
             id: acc._id.toString(),
           })),

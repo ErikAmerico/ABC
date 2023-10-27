@@ -76,32 +76,75 @@ export const FETCH_JOBS_BY_DATE = gql`
       id
       trucks {
         id
+        number
+        crewCab
+        cdlProgram
+        cdl
+        goodTailgate
       }
       vans {
         id
+        number
+        openBack
       }
       account {
         id
+        names
       }
       serviceType
       contact {
         id
+        firstName
+        lastName
+        title
+        email
+        phone
+        company {
+          id
+          names
+        }
       }
       origin
       destination
       crewSize
       supervisors {
         id
+        firstName
+        lastName
+        roles
+        email
+        phone
       }
       startTime
       drivers {
         id
+        firstName
+        lastName
+        roles
+        cdlProgram
+        cdl
+        email
+        phone
       }
       helpers {
         id
+        firstName
+        lastName
+        roles
+        cdlProgram
+        cdl
+        email
+        phone
       }
       techs {
         id
+        firstName
+        lastName
+        roles
+        cdlProgram
+        cdl
+        email
+        phone
       }
       remarks
     }
