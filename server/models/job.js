@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const moveSchema = new mongoose.Schema({
+const jobSchema = new mongoose.Schema({
   date: Date,
   startTime: String,
   estimate: String,
@@ -18,7 +18,8 @@ const moveSchema = new mongoose.Schema({
   // },
   origin: [String],
   destination: [String],
-  account: [String],
+  account: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
+  serviceType: String,
   remarks: String,
   contact: [{ type: mongoose.Schema.Types.ObjectId, ref: "Contact" }],
   noCrewCab: Boolean,
@@ -52,6 +53,6 @@ const moveSchema = new mongoose.Schema({
   prePayment: String,
 });
 
-const Move = mongoose.model("Move", moveSchema);
+const Job = mongoose.model("Job", jobSchema);
 
-module.exports = Move;
+module.exports = Job;

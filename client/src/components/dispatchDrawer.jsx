@@ -44,7 +44,7 @@ export default function DispatchDrawer() {
         selectedRow.account &&
         selectedRow.account.length > 0
       ) {
-        const companyName = selectedRow.account[0];
+        const companyName = selectedRow.account[0].name;
         const company = companies.find((c) => c.names[0] === companyName);
         if (company) {
           setSelectedCompany({
@@ -188,7 +188,9 @@ export default function DispatchDrawer() {
             // Set the selected company state with both name and ID
             setSelectedCompany({ name: company.names[0], id: company.id });
 
-            const updatedCompanies = [name]; // Only one company allowed per row.
+            const updatedCompanies = [
+              { name: company.names[0], id: company.id },
+            ]; // Store both name and ID
             return {
               ...row,
               account: updatedCompanies,

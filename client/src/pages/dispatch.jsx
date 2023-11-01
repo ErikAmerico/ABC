@@ -17,18 +17,99 @@ import {
 import { useGlobalContext } from "../utils/globalContext";
 import RemoveModal from "../components/removeModal";
 import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_MOVE } from "../utils/mutations.js";
+import { CREATE_JOB } from "../utils/mutations.js";
+import { FETCH_JOBS_BY_DATE } from "../utils/queries";
+
+function formatDate(date) {
+  const d = new Date(date);
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  const year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+}
 
 export default function Dispatch() {
   const { rows, setRows } = useGlobalContext();
   const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
-  const [selectedDate, setSelectedDate] = useState("");
-  const [createMove] = useMutation(CREATE_MOVE);
+  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [createJob] = useMutation(CREATE_JOB);
 
   console.log(rows);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
+
+  const { data, loading, error } = useQuery(FETCH_JOBS_BY_DATE, {
+    variables: { date: selectedDate.toString().split("T")[0] },
+  });
+
+  useEffect(() => {
+    if (data && data.getJobsByDate) {
+      const transformedJobs = data.getJobsByDate.map((job) => {
+        return {
+          id: job.id,
+          truckVan: [...job.trucks, ...job.vans].map((vehicle) => ({
+            id: vehicle.id,
+            role: vehicle.roles[0],
+            number: vehicle.number.toString(),
+          })),
+          account: job.account.map((account) => ({
+            id: account.id,
+            name: account.names[0],
+          })),
+          contact: job.contact.map((contact) => ({
+            id: contact.id,
+            name: `${contact.firstName} ${contact.lastName}`,
+          })),
+          origin: job.origin,
+          destination: job.destination,
+          serviceType: job.serviceType,
+          crewsize: {
+            count: job.crewSize,
+            supervisors: job.supervisors.map((supervisor) => ({
+              id: supervisor.id,
+              initials: `${supervisor.firstName[0].toUpperCase()}${supervisor.lastName[0].toUpperCase()}`,
+            })),
+          },
+          leaveABC: job.startTime,
+          crewMembers: [
+            {
+              role: "Driver",
+              names: job.drivers.map((driver) => ({
+                id: driver.id,
+                name: `${driver.firstName} ${driver.lastName}`,
+              })),
+            },
+            {
+              role: "Helper",
+              names: job.helpers.map((helper) => ({
+                id: helper.id,
+                name: `${helper.firstName} ${helper.lastName}`,
+              })),
+            },
+            {
+              role: "Tech",
+              names: job.techs.map((tech) => ({
+                id: tech.id,
+                name: `${tech.firstName} ${tech.lastName}`,
+              })),
+            },
+          ],
+          remarks: job.remarks,
+        };
+      });
+      setRows(transformedJobs);
+    }
+  }, [data]);
+
+  //console.log(data);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   const chunkArray = (arr, chunkSize) => {
     const chunks = [];
@@ -130,13 +211,13 @@ export default function Dispatch() {
       }
     });
 
-    const moveInput = {
+    const jobInput = {
       date: selectedDate,
       startTime: selectedRow.leaveABC,
       origin: selectedRow.origin,
       destination: selectedRow.destination,
       crewSize: selectedRow.crewsize.count,
-      //serviceType: selectedRow.serviceType,
+      serviceType: selectedRow.serviceType,
       supervisors: selectedRow.crewsize.supervisors.map(
         (supervisor) => supervisor.id
       ),
@@ -150,17 +231,17 @@ export default function Dispatch() {
       vans: selectedRow.truckVan
         .filter((item) => item.role === "Van")
         .map((vanObj) => vanObj.id),
-      account: selectedRow.account,
+      account: selectedRow.account[0].id,
       contact: selectedRow.contact.map((contact) => contact.id),
     };
 
     try {
-      const response = await createMove({
-        variables: { input: moveInput },
+      const response = await createJob({
+        variables: { input: jobInput },
       });
-      console.log(response);
+      //console.log(response);
     } catch (error) {
-      console.error("Error creating move:", error);
+      console.error("Error creating job:", error);
     }
   };
 
@@ -199,7 +280,15 @@ export default function Dispatch() {
       field: "account",
       headerName: "Account",
       width: 150,
-      renderCell: (params) => params.value.join(", "),
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((account, index) => (
+              <div key={index}>{account.name}</div>
+            ))}
+          </div>
+        );
+      },
     },
     {
       field: "contact",
@@ -335,7 +424,10 @@ export default function Dispatch() {
                     <div key={index}>
                       {prefix}
                       {chunk.map((name, nIndex) => {
-                        let parts = name.name.split(" ");
+                        //let parts = name.name.split(" ");
+                        let parts =
+                          name && name.name ? name.name.split(" ") : []; // this is a temporary fix for the error
+
                         let lastNameInitial =
                           parts.length > 1 ? parts[1].charAt(0) + "" : "";
                         return (
@@ -401,7 +493,6 @@ export default function Dispatch() {
             <Button
               variant="contained"
               onClick={() => handleSaveJob(params.row.id)}
-              // sx={{ backgroundColor: "#134074" }}
               color="inherit"
             >
               {`SAVE JOB`}
@@ -502,7 +593,7 @@ export default function Dispatch() {
             }))}
             checkboxSelection
             onRowSelectionModelChange={(newRowSelectionModel) => {
-              console.log("Row Selection Change:", newRowSelectionModel);
+              //console.log("Row Selection Change:", newRowSelectionModel);
               if (newRowSelectionModel.length > 1) {
                 // Only take the last selected row.
                 setRowSelectionModel([

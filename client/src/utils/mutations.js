@@ -61,16 +61,19 @@ export const LOGIN = gql`
   }
 `;
 
-export const CREATE_MOVE = gql`
-  mutation CreateMove($input: MoveInput!) {
-    createMove(input: $input) {
+export const CREATE_JOB = gql`
+  mutation CreateJob($input: JobInput!) {
+    createJob(input: $input) {
       id
       date
       startTime
       estimate
       origin
       destination
-      account
+      account {
+        id
+      }
+      serviceType
       contact {
         id
       }
@@ -160,9 +163,9 @@ export const CREATE_MOVE = gql`
   }
 `;
 
-export const UPDATE_MOVE = gql`
-  mutation UpdateMove($id: ID!, $input: MoveInput!) {
-    updateMove(id: $id, input: $input) {
+export const UPDATE_JOB = gql`
+  mutation UpdateJob($id: ID!, $input: JobInput!) {
+    updateJob(id: $id, input: $input) {
       id
       date
       startTime
@@ -287,9 +290,9 @@ export const UPDATE_MOVE = gql`
   }
 `;
 
-export const DELETE_MOVE = gql`
-  mutation DeleteMove($id: ID!) {
-    deleteMove(id: $id) {
+export const DELETE_JOB = gql`
+  mutation DeleteJob($id: ID!) {
+    deleteJob(id: $id) {
       id
     }
   }

@@ -46,8 +46,8 @@ export default function Companies() {
     });
     const [createCompany] = useMutation(CREATE_COMPANY);
     const { data, loading, error, refetch } = useQuery(GET_ALL_COMPANIES);
-    console.log(data);
-    console.log("companies", companies);
+    //console.log(data);
+    //console.log("companies", companies);
 
     const triggerRefetch = () => {
       refetch();

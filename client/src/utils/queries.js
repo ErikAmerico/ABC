@@ -70,6 +70,89 @@ export const GET_ALL_VANS = gql`
   }
 `;
 
+export const FETCH_JOBS_BY_DATE = gql`
+  query getJobsByDate($date: String!) {
+    getJobsByDate(date: $date) {
+      id
+      trucks {
+        id
+        number
+        crewCab
+        cdlProgram
+        cdl
+        goodTailgate
+        roles
+      }
+      vans {
+        id
+        number
+        openBack
+        roles
+      }
+      account {
+        id
+        names
+      }
+      serviceType
+      contact {
+        id
+        firstName
+        lastName
+        title
+        email
+        phone
+        company {
+          id
+          names
+        }
+      }
+      origin
+      destination
+      crewSize
+      supervisors {
+        id
+        firstName
+        lastName
+        roles
+        email
+        phone
+      }
+      startTime
+      drivers {
+        id
+        firstName
+        lastName
+        roles
+        cdlProgram
+        cdl
+        email
+        phone
+      }
+      helpers {
+        id
+        firstName
+        lastName
+        roles
+        cdlProgram
+        cdl
+        email
+        phone
+      }
+      techs {
+        id
+        firstName
+        lastName
+        roles
+        cdlProgram
+        cdl
+        email
+        phone
+      }
+      remarks
+    }
+  }
+`;
+
 export const GET_MOVE = gql`
   query GetMove($id: ID!) {
     getMove(id: $id) {
@@ -332,11 +415,6 @@ export const GET_CONTACT = gql`
     }
   }
 `;
-
-// company {
-//   id
-//   names
-// }
 
 export const GET_ALL_CONTACTS = gql`
   {
