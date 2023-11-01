@@ -35,7 +35,10 @@ function formatDate(date) {
 export default function Dispatch() {
   const { rows, setRows } = useGlobalContext();
   const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
-  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  //const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [selectedDate, setSelectedDate] = useState(
+    formatDate(new Date(Date.now() + 86400000))
+  );
   const [createJob] = useMutation(CREATE_JOB);
 
   console.log(rows);
