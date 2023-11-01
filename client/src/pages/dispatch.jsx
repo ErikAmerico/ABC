@@ -47,30 +47,57 @@ export default function Dispatch() {
     variables: { date: selectedDate.toString().split("T")[0] },
   });
 
-  //TODO: I am retrieving only the ID from the database of these fields. I need to retrieve the entire object, or at least the name, numbers, along with the id.
-  //maybe not entire object. But i need to match what is created when adding a job. this would be the easiest way to do it.
-
-  //UPDATE: I am now retrieving the necessary details of object from the database. I need to adjust the way the data is being displayed in the table.
   useEffect(() => {
     if (data && data.getJobsByDate) {
       const transformedJobs = data.getJobsByDate.map((job) => {
         return {
           id: job.id,
-          truckVan: [...job.trucks, ...job.vans], // everything needs to be adjusted
-          account: job.account,
-          contact: job.contact,
+          truckVan: [...job.trucks, ...job.vans].map((vehicle) => ({
+            id: vehicle.id,
+            role: vehicle.roles[0],
+            number: vehicle.number.toString(),
+          })),
+          account: job.account.map((account) => ({
+            id: account.id,
+            name: account.names[0],
+          })),
+          contact: job.contact.map((contact) => ({
+            id: contact.id,
+            name: `${contact.firstName} ${contact.lastName}`,
+          })),
           origin: job.origin,
           destination: job.destination,
           serviceType: job.serviceType,
           crewsize: {
             count: job.crewSize,
+            supervisors: job.supervisors.map((supervisor) => ({
+              id: supervisor.id,
+              initials: `${supervisor.firstName[0].toUpperCase()}${supervisor.lastName[0].toUpperCase()}`,
+            })),
           },
-          supervisors: job.supervisors,
           leaveABC: job.startTime,
           crewMembers: [
-            { role: "Driver", names: job.drivers },
-            { role: "Helper", names: job.helpers },
-            { role: "Tech", names: job.techs },
+            {
+              role: "Driver",
+              names: job.drivers.map((driver) => ({
+                id: driver.id,
+                name: `${driver.firstName} ${driver.lastName}`,
+              })),
+            },
+            {
+              role: "Helper",
+              names: job.helpers.map((helper) => ({
+                id: helper.id,
+                name: `${helper.firstName} ${helper.lastName}`,
+              })),
+            },
+            {
+              role: "Tech",
+              names: job.techs.map((tech) => ({
+                id: tech.id,
+                name: `${tech.firstName} ${tech.lastName}`,
+              })),
+            },
           ],
           remarks: job.remarks,
         };
@@ -79,7 +106,7 @@ export default function Dispatch() {
     }
   }, [data]);
 
-  console.log(data);
+  //console.log(data);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -397,7 +424,10 @@ export default function Dispatch() {
                     <div key={index}>
                       {prefix}
                       {chunk.map((name, nIndex) => {
-                        let parts = name.name.split(" ");
+                        //let parts = name.name.split(" ");
+                        let parts =
+                          name && name.name ? name.name.split(" ") : []; // this is a temporary fix for the error
+
                         let lastNameInitial =
                           parts.length > 1 ? parts[1].charAt(0) + "" : "";
                         return (

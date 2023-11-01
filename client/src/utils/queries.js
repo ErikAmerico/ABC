@@ -81,11 +81,13 @@ export const FETCH_JOBS_BY_DATE = gql`
         cdlProgram
         cdl
         goodTailgate
+        roles
       }
       vans {
         id
         number
         openBack
+        roles
       }
       account {
         id
