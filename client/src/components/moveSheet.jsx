@@ -4,20 +4,20 @@ export default function MoveSheet({ job }) {
   console.log(job);
 
   const [formData, setFormData] = useState({
-    date: job?.date,
-    startTime: job?.startTime,
-    origin: job?.origin,
-    destination: job?.destination,
-    account: job?.account.names,
-    remarks: job?.remarks,
-    contact: job?.contact,
-    crewSize: job?.crewSize,
-    trucks: job?.trucks,
-    vans: job?.vans,
-    supervisors: job?.supervisors,
-    drivers: job?.drivers,
-    helpers: job?.helpers,
-    techs: job?.techs,
+    date: job?.date || "",
+    startTime: job?.startTime || "",
+    origin: job?.origin || "",
+    destination: job?.destination || "",
+    account: job?.account.names || "",
+    remarks: job?.remarks || "",
+    contact: job?.contact || "",
+    crewSize: job?.crewSize || "",
+    trucks: job?.trucks || "",
+    vans: job?.vans || "",
+    supervisors: job?.supervisors || "",
+    drivers: job?.drivers || "",
+    helpers: job?.helpers || "",
+    techs: job?.techs || "",
   });
 
   useEffect(() => {
