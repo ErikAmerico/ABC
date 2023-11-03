@@ -74,6 +74,7 @@ export const FETCH_JOBS_BY_DATE = gql`
   query getJobsByDate($date: String!) {
     getJobsByDate(date: $date) {
       id
+      date
       trucks {
         id
         number

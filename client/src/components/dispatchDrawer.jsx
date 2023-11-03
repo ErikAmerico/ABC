@@ -115,6 +115,56 @@ export default function DispatchDrawer() {
       []
     : [];
 
+  // When a job is fetched using GET_JOBS_BY_DATE in dispatch.jsx, whichever contact is associated with that job
+  // is no longer available in dispatchDrawer. I am not sure why yet.
+
+  // To diagnose why contacts disappear from dispatchDrawer.jsx after running the GET_JOBS_BY_DATE query in dispatch.jsx, we need to consider several factors:
+
+  // State Management: See how contacts are being managed in the global state or the local state of dispatchDrawer.jsx. If the contacts are removed or altered elsewhere in the app (potentially by dispatch.jsx), it could affect their appearance in the drawer.
+
+  // Data Updates: Investigate if the GET_JOBS_BY_DATE query modifies the same piece of state or context that dispatchDrawer.jsx relies on. For instance, if the query updates the contacts data in a way that dispatchDrawer.jsx does not expect (like removing contacts associated with jobs), they would disappear from the drawer.
+
+  // Props Drilling or Context API: If dispatchDrawer.jsx receives its contacts through props or context, check if dispatch.jsx is causing these props or context values to change upon the GET_JOBS_BY_DATE query execution.
+
+  // Apollo Cache: Apollo Client uses a cache for its data. If GET_JOBS_BY_DATE causes a cache update that indirectly affects the contacts data, it might make them disappear. This could happen if the data fetched by GET_JOBS_BY_DATE is normalized in the cache and shares identifiers with the contacts data, leading to unintended modifications.
+
+  // Query Results Merging: Look into how Apollo Client merges query results. There are scenarios where fetching new data could overwrite existing data in the cache if not handled properly.
+
+  // Component Re-rendering: Ensure that the disappearance isn't simply a UI issue where the dispatchDrawer.jsx component isn't re-rendering when it should, perhaps due to missing dependencies in a useEffect hook or a similar issue.
+
+  // Data Filtering: Verify that the logic after GET_JOBS_BY_DATE execution isn't filtering out contacts unintentionally. This could be a side effect of transforming the data to fit the UI's needs.
+
+  // Error Handling: Ensure that there isn't an error in the GET_JOBS_BY_DATE query that's causing a faulty state update.
+
+  // Console Log: Add console.log statements before and after the GET_JOBS_BY_DATE query to log out the contacts data and see precisely when the change occurs.
+  // Apollo DevTools: Use Apollo Client DevTools for Chrome to inspect the Apollo cache before and after the query runs.
+  // Breakpoints: Set breakpoints in the developer tools to step through the code that runs after the query.
+  // Dependency Review: Check useEffect dependencies and any other piece of logic that manipulates the contacts state.
+
+  // Shared State: rows is being used from the global context, which means any modifications to rows will reflect across all components using it. If FETCH_JOBS_BY_DATE leads to a change in rows that omits contacts, this would cause them to disappear in dispatchDrawer.jsx.
+
+  // Apollo Cache: Since FETCH_JOBS_BY_DATE likely updates the cache with the fetched jobs, it might inadvertently modify the contacts data if they share a common key or identifier.
+
+  // useQuery Hook Execution: The useQuery hook is reactive. If the selectedDate changes or if any of the jobs data changes in a way that impacts related contacts, the disappearance could be a side effect of that.
+
+  // State Overwriting: If setRows is called with a new set of data that doesn't include the contacts after FETCH_JOBS_BY_DATE, this would result in the contacts disappearing.
+
+  // Here are steps to troubleshoot:
+
+  // Check Apollo Cache: After FETCH_JOBS_BY_DATE runs, inspect the Apollo cache to see if contacts are being altered. The Apollo Client DevTools can help with this.
+
+  // Review State Updates: Look for any code paths in dispatch.jsx where setRows is called, and ensure that contacts are not being removed from the rows inadvertently.
+
+  // Inspect the Data Structure: Examine the structure of the data returned by FETCH_JOBS_BY_DATE. It's possible that the normalization of this data in the Apollo cache is affecting the contacts.
+
+  // Logging: Place console.log statements before and after the query to log out the state of rows and any other relevant state to see when the contacts are removed.
+
+  // Dependency Tracking: Ensure that there aren't unintended consequences from other useState or useEffect hooks that might be based on the data fetched by FETCH_JOBS_BY_DATE.
+
+  // Query Side Effects: If FETCH_JOBS_BY_DATE has any associated onCompleted or onError handlers, check them for side effects that might be modifying the context or state.
+
+  // It might be helpful to place a console.log inside the useEffect hook in dispatchDrawer.jsx that depends on rows and companies to see if the state changes after FETCH_JOBS_BY_DATE runs. If you can identify a change in the state after the query, that would be a strong indication of where the problem lies.
+
   const companyContacts = selectedCompany
     ? contacts.filter((contact) => contact.company.id === selectedCompany.id)
     : [];
