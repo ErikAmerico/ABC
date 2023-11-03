@@ -1,23 +1,54 @@
 import React, { useState, useEffect } from "react";
 
+function formatDate(timestamp) {
+  // Create a date object from the timestamp
+  const d = new Date(Number(timestamp));
+
+  // Adjust for timezone offset
+  const timeOffsetInMS = d.getTimezoneOffset() * 60000;
+  d.setTime(d.getTime() + timeOffsetInMS);
+
+  // Get local date parts
+  let month = "" + (d.getMonth() + 1); // getMonth() is zero-indexed
+  let day = "" + d.getDate();
+  const year = d.getFullYear();
+
+  // Pad single digit month and day with leading zero
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [month, day, year].join("-");
+}
+
 export default function MoveSheet({ job }) {
   console.log(job);
 
   const [formData, setFormData] = useState({
-    date: job?.date || "",
+    date: job?.date ? formatDate(job.date) : "",
     startTime: job?.startTime || "",
     origin: job?.origin || "",
     destination: job?.destination || "",
-    account: job?.account.names || "",
+    account: job?.account.map((account) => `${account.names[0]}`) || "",
     remarks: job?.remarks || "",
-    contact: job?.contact || "",
+    contact:
+      job?.contact.map(
+        (contact) => `${contact.firstName} ${contact.lastName}`
+      ) || "",
     crewSize: job?.crewSize || "",
-    trucks: job?.trucks || "",
-    vans: job?.vans || "",
-    supervisors: job?.supervisors || "",
-    drivers: job?.drivers || "",
-    helpers: job?.helpers || "",
-    techs: job?.techs || "",
+    trucks: job?.trucks.map((truck) => truck.number).join(", ") || "",
+    vans: job?.vans.map((van) => van.number).join(", ") || "",
+    supervisors:
+      job?.supervisors
+        .map((supervisor) => `${supervisor.firstName} ${supervisor.lastName}`)
+        .join(", ") || "",
+    drivers:
+      job?.drivers
+        .map((driver) => `${driver.firstName} ${driver.lastName}`)
+        .join(", ") || "",
+    helpers:
+      job?.helpers.map((helper) => `${helper.firstName} ${helper.lastName}`) ||
+      "",
+    techs: job?.techs.map((tech) => `${tech.firstName} ${tech.lastName}`) || "",
   });
 
   useEffect(() => {
@@ -26,21 +57,35 @@ export default function MoveSheet({ job }) {
     if (job) {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        date: job.date || "",
+        date: job.date ? formatDate(job.date) : "",
         startTime: job.startTime || "",
         origin: job.origin || "",
         destination: job.destination || "",
-        account: job.account.name || "",
-        serviceType: job.serviceType || "",
+        account: job.account.map((account) => `${account.names[0]}`) || "",
         remarks: job.remarks || "",
-        contact: job.contact || "",
+        contact:
+          job.contact.map(
+            (contact) => `${contact.firstName} ${contact.lastName}`
+          ) || "",
         crewSize: job.crewSize || "",
-        trucks: job.trucks || "",
-        vans: job.vans || "",
-        supervisors: job.supervisors || "",
-        drivers: job.drivers || "",
-        helpers: job.helpers || "",
-        techs: job.techs || "",
+        trucks: job.trucks.map((truck) => truck.number).join(", ") || "",
+        vans: job.vans.map((van) => van.number).join(", ") || "",
+        supervisors:
+          job.supervisors
+            .map(
+              (supervisor) => `${supervisor.firstName} ${supervisor.lastName}`
+            )
+            .join(", ") || "",
+        drivers:
+          job.drivers
+            .map((driver) => `${driver.firstName} ${driver.lastName}`)
+            .join(", ") || "",
+        helpers:
+          job.helpers.map(
+            (helper) => `${helper.firstName} ${helper.lastName}`
+          ) || "",
+        techs:
+          job.techs.map((tech) => `${tech.firstName} ${tech.lastName}`) || "",
       }));
     }
   }, [job]);
@@ -92,6 +137,7 @@ export default function MoveSheet({ job }) {
           name="date"
           value={formData.date}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -101,6 +147,7 @@ export default function MoveSheet({ job }) {
           name="startTime"
           value={formData.startTime}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -110,6 +157,7 @@ export default function MoveSheet({ job }) {
           name="origin"
           value={formData.origin}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -119,6 +167,7 @@ export default function MoveSheet({ job }) {
           name="destination"
           value={formData.destination}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -128,6 +177,7 @@ export default function MoveSheet({ job }) {
           name="account"
           value={formData.account}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -137,6 +187,7 @@ export default function MoveSheet({ job }) {
           name="remarks"
           value={formData.remarks}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -146,6 +197,7 @@ export default function MoveSheet({ job }) {
           name="contact"
           value={formData.contact}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -155,6 +207,7 @@ export default function MoveSheet({ job }) {
           name="crewSize"
           value={formData.crewSize}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -164,6 +217,7 @@ export default function MoveSheet({ job }) {
           name="trucks"
           value={formData.trucks}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -173,6 +227,7 @@ export default function MoveSheet({ job }) {
           name="vans"
           value={formData.vans}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -182,6 +237,7 @@ export default function MoveSheet({ job }) {
           name="supervisors"
           value={formData.supervisors}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -191,6 +247,7 @@ export default function MoveSheet({ job }) {
           name="drivers"
           value={formData.drivers}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -200,6 +257,7 @@ export default function MoveSheet({ job }) {
           name="helpers"
           value={formData.helpers}
           onChange={handleChange}
+          readOnly
         />
       </label>
       <label>
@@ -209,6 +267,7 @@ export default function MoveSheet({ job }) {
           name="techs"
           value={formData.techs}
           onChange={handleChange}
+          readOnly
         />
       </label>
 
