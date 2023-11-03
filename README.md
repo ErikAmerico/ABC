@@ -10,7 +10,7 @@ This project is proudly a work in progress.
 
 - [Installation](#installation)
 - [Current Implementations](#current-implementations)
-- [Future Implementations](#future-implementations)
+- [Next Up Implementations](#next-up-implementations)
 
 ## Installation
 
