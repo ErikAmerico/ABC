@@ -60,15 +60,9 @@ const resolvers = {
       return await Company.find().populate("contacts");
     },
 
-    // getContact: (parent, { id }) => {
-    //   return Contact.findById(id);
-    // },
-
     getContact: async (parent, { id }) => {
-      // Find the contact by its ID and populate 'company' field
       const contact = await Contact.findById(id).populate("company");
 
-      // Return populated contact
       return contact;
     },
 
@@ -94,16 +88,18 @@ const resolvers = {
       return vans;
     },
 
-    // getJobsByDate: async (parent, { date }) => {
-    //   return await Job.find({ date: date }); // Assuming you're using Mongoose and have a Job model
-    // },
-
     getJobsByDate: async (parent, { date }) => {
       const jobs = await Job.find({ date: date })
         .populate("trucks")
         .populate("vans")
         .populate("account")
-        .populate("contact")
+        .populate({
+          path: "contact",
+          populate: {
+            path: "company",
+            model: "Company",
+          },
+        })
         .populate("drivers")
         .populate("helpers")
         .populate("techs")
@@ -134,10 +130,10 @@ const resolvers = {
             ...acc,
             id: acc._id.toString(),
           })),
-          contact: jobObj.contact.map((cont) => ({
-            ...cont,
-            id: cont._id.toString(),
-          })),
+          // contact: jobObj.contact.map((cont) => ({
+          //   ...cont,
+          //   id: cont._id.toString(),
+          // })),
           drivers: jobObj.drivers.map((driv) => ({
             ...driv,
             id: driv._id.toString(),

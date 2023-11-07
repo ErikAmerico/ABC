@@ -106,6 +106,7 @@ export const FETCH_JOBS_BY_DATE = gql`
           id
           names
         }
+        roles
       }
       origin
       destination
