@@ -81,7 +81,6 @@ export default function DispatchDrawer() {
   } = useQuery(GET_ALL_CONTACTS);
 
   console.log("contactsData", contactsData);
-  // After running getjobsbydate query, the company.id of contacts associated with a job are null
 
   const {
     data: companiesData,

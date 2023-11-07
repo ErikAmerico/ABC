@@ -39,7 +39,12 @@ export default function Dispatch() {
   const [selectedDate, setSelectedDate] = useState(
     formatDate(new Date(Date.now() + 86400000))
   );
-  const [createJob] = useMutation(CREATE_JOB);
+
+  // Should learn about subscriptions(in place of refetchQueries?) as the job data will potentially be updated in real-time by multiple users
+  const [createJob, { createJobData, createJobLoading, createJobError }] =
+    useMutation(CREATE_JOB, {
+      refetchQueries: ["getJobsByDate"],
+    });
 
   console.log(rows);
 
