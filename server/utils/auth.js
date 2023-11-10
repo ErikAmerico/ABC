@@ -29,9 +29,9 @@ module.exports = {
       req.user = data;
     } catch (err) {
       console.log("Invalid token");
-      console.error(err);
-      console.log("Invalid token:", err.message);
-      console.error(err.stack);
+      // console.error(err);
+      // console.log("Invalid token:", err.message);
+      // console.error(err.stack);
     }
 
     // return the request object so it can be passed to the resolver as `context`
