@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from "react";
+import {
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Button,
+  Box,
+  Grid,
+} from "@mui/material";
 
 function formatDate(timestamp) {
   // Create a date object from the timestamp
@@ -34,6 +43,7 @@ export default function MoveSheet({ job }) {
       job?.contact.map(
         (contact) => `${contact.firstName} ${contact.lastName}`
       ) || "",
+    contactPhone: job?.contact.map((contact) => `${contact.phone}`) || "",
     crewSize: job?.crewSize || "",
     trucks: job?.trucks.map((truck) => truck.number).join(", ") || "",
     vans: job?.vans.map((van) => van.number).join(", ") || "",
@@ -46,9 +56,13 @@ export default function MoveSheet({ job }) {
         .map((driver) => `${driver.firstName} ${driver.lastName}`)
         .join(", ") || "",
     helpers:
-      job?.helpers.map((helper) => `${helper.firstName} ${helper.lastName}`) ||
-      "",
-    techs: job?.techs.map((tech) => `${tech.firstName} ${tech.lastName}`) || "",
+      job?.helpers
+        .map((helper) => `${helper.firstName} ${helper.lastName}`)
+        .join(", ") || "",
+    techs:
+      job?.techs
+        .map((tech) => `${tech.firstName} ${tech.lastName}`)
+        .join(", ") || "",
   });
 
   useEffect(() => {
@@ -129,178 +143,336 @@ export default function MoveSheet({ job }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Date:
-        <input
-          type="text"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Start Time:
-        <input
-          type="text"
-          name="startTime"
-          value={formData.startTime}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Origin:
-        <input
-          type="text"
-          name="origin"
-          value={formData.origin}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Destination:
-        <input
-          type="text"
-          name="destination"
-          value={formData.destination}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Account:
-        <input
-          type="text"
-          name="account"
-          value={formData.account}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Remarks:
-        <input
-          type="text"
-          name="remarks"
-          value={formData.remarks}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Contact:
-        <input
-          type="text"
-          name="contact"
-          value={formData.contact}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Crew Size:
-        <input
-          type="text"
-          name="crewSize"
-          value={formData.crewSize}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Trucks:
-        <input
-          type="text"
-          name="trucks"
-          value={formData.trucks}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Vans:
-        <input
-          type="text"
-          name="vans"
-          value={formData.vans}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Supervisors:
-        <input
-          type="text"
-          name="supervisors"
-          value={formData.supervisors}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Drivers:
-        <input
-          type="text"
-          name="drivers"
-          value={formData.drivers}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Helpers:
-        <input
-          type="text"
-          name="helpers"
-          value={formData.helpers}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
-      <label>
-        Techs:
-        <input
-          type="text"
-          name="techs"
-          value={formData.techs}
-          onChange={handleChange}
-          readOnly
-        />
-      </label>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "start",
+        p: 3,
+        maxHeight: "calc(95vh - 100px)",
+        overflowY: "auto",
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+        }}
+      >
+        <form>
+          <Grid container spacing={3}>
+            {/* Left column */}
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Date"
+                variant="outlined"
+                value={formData.date}
+                sx={{ mb: 2 }}
+                fullWidth
+              />
+              <TextField
+                label="Origin"
+                InputLabelProps={{
+                  style: {
+                    fontSize: "1.2rem",
+                    border: "1px solid navy",
+                    padding: "1px",
+                    background: "white",
+                    borderRadius: "5px",
+                  },
+                }}
+                variant="outlined"
+                value={formData.origin}
+                sx={{ mb: 2, backgroundColor: "#8DA9C4", borderRadius: "5px" }}
+                fullWidth
+              />
+              <TextField
+                label="Origin Contact"
+                InputLabelProps={{
+                  style: {
+                    fontSize: "1.2rem",
+                    border: "1px solid navy",
+                    padding: "1px",
+                    background: "white",
+                    borderRadius: "5px",
+                  },
+                }}
+                variant="outlined"
+                value={formData.contact}
+                sx={{ mb: 2, backgroundColor: "#8DA9C4", borderRadius: "5px" }}
+                fullWidth
+              />
+              <TextField
+                label="Destination"
+                InputLabelProps={{
+                  style: {
+                    fontSize: "1.2rem",
+                    border: "1px solid navy",
+                    padding: "1px",
+                    background: "white",
+                    borderRadius: "5px",
+                  },
+                }}
+                variant="outlined"
+                value={formData.destination}
+                sx={{ mb: 2, backgroundColor: "gray", borderRadius: "5px" }}
+                fullWidth
+              />
+              <TextField
+                label="Destination Contact"
+                InputLabelProps={{
+                  style: {
+                    fontSize: "1.2rem",
+                    border: "1px solid navy",
+                    padding: "1px",
+                    background: "white",
+                    borderRadius: "5px",
+                  },
+                }}
+                variant="outlined"
+                value={formData.contact}
+                sx={{ mb: 2, backgroundColor: "gray", borderRadius: "5px" }}
+                fullWidth
+              />
+              <TextField
+                label="Crew Size"
+                variant="outlined"
+                value={formData.crewSize}
+                onChange={handleChange}
+                sx={{ mb: 2 }}
+                fullWidth
+              />
+              <TextField
+                label="Trucks"
+                variant="outlined"
+                value={formData.trucks}
+                onChange={handleChange}
+                sx={{ mb: 2 }}
+                fullWidth
+              />
+              <TextField
+                label="Vans"
+                variant="outlined"
+                value={formData.vans}
+                onChange={handleChange}
+                sx={{ mb: 2 }}
+                fullWidth
+              />
+              <TextField
+                label="Supervisors"
+                variant="outlined"
+                value={formData.supervisors}
+                onChange={handleChange}
+                sx={{ mb: 2 }}
+                fullWidth
+              />
+            </Grid>
 
-      {equipmentList.map((equipment, index) => (
-        <div key={index}>
-          <label>
-            Equipment Name:
-            <input
-              type="text"
-              name="name"
-              value={equipment.name}
-              onChange={(e) => handleEquipmentChange(index, e)}
+            {/* Right column */}
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Leave ABC"
+                variant="outlined"
+                value={formData.startTime}
+                sx={{ mb: 2 }}
+                fullWidth
+              />
+              <TextField
+                label="Estimated Time"
+                variant="outlined"
+                defaultValue="4 Hours"
+                sx={{ mb: 2 }}
+                fullWidth
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact Upon Arrival"
+                sx={{ marginRight: 2 }}
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact When Leaving ABC"
+                sx={{ marginRight: 2 }}
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact When Close"
+                sx={{ marginRight: 2 }}
+              />
+              <TextField
+                label="Origin Contact Phone#"
+                InputLabelProps={{
+                  style: {
+                    fontSize: "1.2rem",
+                    border: "1px solid navy",
+                    padding: "1px",
+                    background: "white",
+                    borderRadius: "5px",
+                  },
+                }}
+                variant="outlined"
+                defaultValue={formData.contactPhone}
+                sx={{ mb: 2, backgroundColor: "#8DA9C4", borderRadius: "5px" }}
+                fullWidth
+              />
+              <TextField
+                label="Destination Contact Phone#"
+                InputLabelProps={{
+                  style: {
+                    fontSize: "1.2rem",
+                    border: "1px solid navy",
+                    padding: "1px",
+                    background: "white",
+                    borderRadius: "5px",
+                  },
+                }}
+                variant="outlined"
+                defaultValue={formData.contactPhone}
+                sx={{ mb: 2, backgroundColor: "gray", borderRadius: "5px" }}
+                fullWidth
+              />
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.noCrewCabs}
+                      onChange={handleChange}
+                      name="noCrewCabs"
+                    />
+                  }
+                  label="No Crew Cabs"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.tailgate}
+                      onChange={handleChange}
+                      name="tailgate"
+                    />
+                  }
+                  label="Tailgate"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.truck100}
+                      onChange={handleChange}
+                      name="truck100"
+                    />
+                  }
+                  label="Truck 100"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.openBack}
+                      onChange={handleChange}
+                      name="openBack"
+                    />
+                  }
+                  label="Open Back"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.stairs}
+                      onChange={handleChange}
+                      name="stairs"
+                    />
+                  }
+                  label="Stairs"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.toolTime}
+                      onChange={handleChange}
+                      name="toolTime"
+                    />
+                  }
+                  label="Tool Time"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.materialSheet}
+                      onChange={handleChange}
+                      name="materialSheet"
+                    />
+                  }
+                  label="Material Sheet"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.bostonCrateSheet}
+                      onChange={handleChange}
+                      name="bostonCrateSheet"
+                    />
+                  }
+                  label="Boston Crate Sheet"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.parkingPermits}
+                      onChange={handleChange}
+                      name="parkingPermits"
+                    />
+                  }
+                  label="Parking Permits"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.directions}
+                      onChange={handleChange}
+                      name="directions"
+                    />
+                  }
+                  label="Directions"
+                />
+                <TextField
+                  label="Job Description"
+                  variant="outlined"
+                  multiline
+                  rows={8}
+                  defaultValue=""
+                  sx={{ marginBottom: 2, width: "100%" }}
+                />
+              </FormGroup>
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <TextField
+              label="Drivers"
+              variant="outlined"
+              value={formData.drivers}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+              fullWidth
             />
-          </label>
-          <label>
-            Quantity:
-            <input
-              type="text"
-              name="quantity"
-              value={equipment.quantity}
-              onChange={(e) => handleEquipmentChange(index, e)}
+            <TextField
+              label="Helpers"
+              variant="outlined"
+              value={formData.helpers}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+              fullWidth
             />
-          </label>
-          <button type="button" onClick={() => removeEquipmentField(index)}>
-            Remove
-          </button>
-        </div>
-      ))}
-      <button type="button" onClick={addEquipmentField}>
-        Add Equipment
-      </button>
-
-      <button type="submit">Submit</button>
-    </form>
+            <TextField
+              label="Techs"
+              variant="outlined"
+              value={formData.techs}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+              fullWidth
+            />
+          </Grid>
+          <Button variant="contained" type="submit" sx={{ mt: 3 }}>
+            Submit
+          </Button>
+        </form>
+      </Box>
+    </Box>
   );
 }
