@@ -40,7 +40,7 @@ You will need to run `npm install` which will install the necessary package depe
 - On the home page, from the permanent drawer on the left. After clicking the "Jobs" dropdown, a date picker appears, after you've selected a date, all jobs for that date will be listed.
 - After selecting a job, additional form fields will appear for you to fill in. Such as equiptment, billing, and other necessary information.
 - (This feature is in the beginning stages of development.)
-  ![Jobs](assets/partiallyrenderingHomePageJob.png)
+  ![Jobs](assets/updatedMoveSheet.png)
 
 ## Next Up Implementations
 
