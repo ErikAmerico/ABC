@@ -80,7 +80,7 @@ export default function DispatchDrawer() {
     error: contactsError,
   } = useQuery(GET_ALL_CONTACTS);
 
-  console.log("contactsData", contactsData);
+  //console.log("contactsData", contactsData);
 
   const {
     data: companiesData,

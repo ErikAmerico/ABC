@@ -51,6 +51,8 @@ export default function Dispatch() {
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
 
+  console.log(removalDetails);
+
   const { data, loading, error } = useQuery(FETCH_JOBS_BY_DATE, {
     variables: { date: selectedDate.toString().split("T")[0] },
   });
@@ -259,12 +261,29 @@ export default function Dispatch() {
       headerName: "Truck/Van",
       width: 100,
       renderCell: (params) => {
-        const renderVehicles = (roleChar, numbers) => {
-          const chunks = chunkArray(numbers, 2);
+        const renderVehicles = (roleChar, vehicles) => {
+          const chunks = chunkArray(vehicles, 2);
           return chunks.map((chunk, index) => (
             <div key={index}>
               {index === 0 ? `${roleChar}) ` : "--- "}
-              {chunk.join(", ")}
+              {chunk.map((vehicle, vehicleIndex) => (
+                <span
+                  key={`${vehicle.id}-${index}-${vehicleIndex}`}
+                  style={{ cursor: "pointer" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRemovalDetails({
+                      id: params.id,
+                      name: vehicle,
+                      type: "truckVan",
+                    });
+                    setModalVisible(true);
+                  }}
+                >
+                  {vehicle}
+                  {vehicleIndex !== chunk.length - 1 && ", "}
+                </span>
+              ))}
             </div>
           ));
         };
@@ -306,14 +325,82 @@ export default function Dispatch() {
         return (
           <div>
             {params.value.map((contact, index) => (
-              <div key={index}>{contact.name}</div>
+              <div
+                key={index}
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRemovalDetails({
+                    id: params.id,
+                    name: contact,
+                    type: "contact",
+                  });
+                  setModalVisible(true);
+                }}
+              >
+                {contact.name}
+              </div>
             ))}
           </div>
         );
       },
     },
-    { field: "origin", headerName: "Origin", width: 150 },
-    { field: "destination", headerName: "Destination", width: 150 },
+    {
+      field: "origin",
+      headerName: "Origin",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((origin, index) => (
+              <div
+                key={index}
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRemovalDetails({
+                    id: params.id,
+                    name: origin,
+                    type: "origin",
+                  });
+                  setModalVisible(true);
+                }}
+              >
+                {origin}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      field: "destination",
+      headerName: "Destination",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((destination, index) => (
+              <div
+                key={index}
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRemovalDetails({
+                    id: params.id,
+                    name: destination,
+                    type: "destination",
+                  });
+                  setModalVisible(true);
+                }}
+              >
+                {destination}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
     {
       field: "serviceType",
       headerName: "Type of Service",
@@ -350,9 +437,18 @@ export default function Dispatch() {
                 {chunk.map((supervisor, sIndex) => (
                   <span
                     key={sIndex}
+                    style={{ cursor: "pointer" }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setRemovalDetails({ id: params.id, name: supervisor });
+                      setRemovalDetails({
+                        id: params.id,
+                        initials: supervisor,
+                        name: params.value.supervisors.find(
+                          (supervisorObj) =>
+                            supervisorObj.initials === supervisor
+                        ),
+                        type: "supervisor",
+                      });
                       setModalVisible(true);
                     }}
                   >
@@ -441,9 +537,14 @@ export default function Dispatch() {
                         return (
                           <span
                             key={nIndex}
+                            style={{ cursor: "pointer" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setRemovalDetails({ id: params.id, name: name });
+                              setRemovalDetails({
+                                id: params.id,
+                                name: name,
+                                type: "crewMember",
+                              });
                               setModalVisible(true);
                             }}
                           >
@@ -534,49 +635,49 @@ export default function Dispatch() {
     setRowSelectionModel([newRow.id]);
   };
 
-  //Still need to work this out, but this is the general idea.
   const confirmRemove = () => {
-    // Find the index of the row to be updated
     const rowIndex = rows.findIndex((row) => row.id === removalDetails.id);
 
     if (rowIndex !== -1) {
-      // Clone the row object to avoid modifying the original row
       const updatedRow = { ...rows[rowIndex] };
+      //console.log("updatedRow:", updatedRow);
 
-      // Check if the removal target is a crew member or supervisor
       if (removalDetails.type === "crewMember") {
-        // Find the index of the crew member to be removed
-        const memberIndex = updatedRow.crewMembers.findIndex((member) =>
-          member.names.includes(removalDetails.name)
-        );
-
-        if (memberIndex !== -1) {
-          // Remove the crew member from the array
-          updatedRow.crewMembers[memberIndex].names = updatedRow.crewMembers[
-            memberIndex
-          ].names.filter((name) => name !== removalDetails.name);
-        }
+        updatedRow.crewMembers.forEach((memberRole) => {
+          console.log("memberRole.names:", memberRole.names);
+          memberRole.names = memberRole.names.filter(
+            (member) => member.name !== removalDetails.name.name
+          );
+        });
       } else if (removalDetails.type === "supervisor") {
-        // Find the index of the supervisor to be removed
-        const supervisorIndex = updatedRow.crewsize.supervisors.findIndex(
-          (supervisor) => supervisor === removalDetails.name
+        updatedRow.crewsize.supervisors =
+          updatedRow.crewsize.supervisors.filter(
+            (supervisor) => supervisor.id !== removalDetails.name.id
+          );
+      } else if (removalDetails.type === "truckVan") {
+        updatedRow.truckVan = updatedRow.truckVan.filter(
+          (vehicle) => vehicle.number !== removalDetails.name
         );
-
-        if (supervisorIndex !== -1) {
-          // Remove the supervisor from the array
-          updatedRow.crewsize.supervisors.splice(supervisorIndex, 1);
-        }
+      } else if (removalDetails.type === "contact") {
+        updatedRow.contact = updatedRow.contact.filter(
+          (contact) => contact.name !== removalDetails.name.name
+        );
+      } else if (removalDetails.type === "origin") {
+        updatedRow.origin = updatedRow.origin.filter(
+          (origin) => origin !== removalDetails.name
+        );
+      } else if (removalDetails.type === "destination") {
+        updatedRow.destination = updatedRow.destination.filter(
+          (destination) => destination !== removalDetails.name
+        );
       }
 
-      // Create a new rows array with the updated row
       const updatedRows = [...rows];
       updatedRows[rowIndex] = updatedRow;
 
-      // Update the state with the updated rows
       setRows(updatedRows);
     }
 
-    // Reset removalDetails and hide the modal
     setRemovalDetails({ id: null, name: "", type: "" });
     setModalVisible(false);
   };
