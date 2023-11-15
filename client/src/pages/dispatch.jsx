@@ -51,6 +51,8 @@ export default function Dispatch() {
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
 
+  console.log(removalDetails);
+
   const { data, loading, error } = useQuery(FETCH_JOBS_BY_DATE, {
     variables: { date: selectedDate.toString().split("T")[0] },
   });
@@ -339,6 +341,7 @@ export default function Dispatch() {
       headerName: "Crew Size",
       width: 130,
       renderCell: (params) => {
+        //console.log(params.value);
         const supervisorInitials =
           params.value?.supervisors?.map((supervisor) => supervisor.initials) ||
           [];
@@ -352,7 +355,15 @@ export default function Dispatch() {
                     key={sIndex}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setRemovalDetails({ id: params.id, name: supervisor });
+                      setRemovalDetails({
+                        id: params.id,
+                        initials: supervisor,
+                        name: params.value.supervisors.find(
+                          (supervisorObj) =>
+                            supervisorObj.initials === supervisor
+                        ),
+                        type: "supervisor",
+                      });
                       setModalVisible(true);
                     }}
                   >
@@ -443,7 +454,11 @@ export default function Dispatch() {
                             key={nIndex}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setRemovalDetails({ id: params.id, name: name });
+                              setRemovalDetails({
+                                id: params.id,
+                                name: name,
+                                type: "crewMember",
+                              });
                               setModalVisible(true);
                             }}
                           >
@@ -534,49 +549,32 @@ export default function Dispatch() {
     setRowSelectionModel([newRow.id]);
   };
 
-  //Still need to work this out, but this is the general idea.
   const confirmRemove = () => {
-    // Find the index of the row to be updated
     const rowIndex = rows.findIndex((row) => row.id === removalDetails.id);
 
     if (rowIndex !== -1) {
-      // Clone the row object to avoid modifying the original row
       const updatedRow = { ...rows[rowIndex] };
 
-      // Check if the removal target is a crew member or supervisor
       if (removalDetails.type === "crewMember") {
-        // Find the index of the crew member to be removed
-        const memberIndex = updatedRow.crewMembers.findIndex((member) =>
-          member.names.includes(removalDetails.name)
-        );
-
-        if (memberIndex !== -1) {
-          // Remove the crew member from the array
-          updatedRow.crewMembers[memberIndex].names = updatedRow.crewMembers[
-            memberIndex
-          ].names.filter((name) => name !== removalDetails.name);
-        }
+        updatedRow.crewMembers.forEach((memberRole) => {
+          console.log("memberRole.names:", memberRole.names);
+          memberRole.names = memberRole.names.filter(
+            (member) => member.name !== removalDetails.name.name
+          );
+        });
       } else if (removalDetails.type === "supervisor") {
-        // Find the index of the supervisor to be removed
-        const supervisorIndex = updatedRow.crewsize.supervisors.findIndex(
-          (supervisor) => supervisor === removalDetails.name
-        );
-
-        if (supervisorIndex !== -1) {
-          // Remove the supervisor from the array
-          updatedRow.crewsize.supervisors.splice(supervisorIndex, 1);
-        }
+        updatedRow.crewsize.supervisors =
+          updatedRow.crewsize.supervisors.filter(
+            (supervisor) => supervisor.id !== removalDetails.name.id
+          );
       }
 
-      // Create a new rows array with the updated row
       const updatedRows = [...rows];
       updatedRows[rowIndex] = updatedRow;
 
-      // Update the state with the updated rows
       setRows(updatedRows);
     }
 
-    // Reset removalDetails and hide the modal
     setRemovalDetails({ id: null, name: "", type: "" });
     setModalVisible(false);
   };
