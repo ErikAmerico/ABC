@@ -261,12 +261,29 @@ export default function Dispatch() {
       headerName: "Truck/Van",
       width: 100,
       renderCell: (params) => {
-        const renderVehicles = (roleChar, numbers) => {
-          const chunks = chunkArray(numbers, 2);
+        const renderVehicles = (roleChar, vehicles) => {
+          const chunks = chunkArray(vehicles, 2);
           return chunks.map((chunk, index) => (
             <div key={index}>
               {index === 0 ? `${roleChar}) ` : "--- "}
-              {chunk.join(", ")}
+              {chunk.map((vehicle, vehicleIndex) => (
+                <span
+                  key={`${vehicle.id}-${index}-${vehicleIndex}`}
+                  style={{ cursor: "pointer" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRemovalDetails({
+                      id: params.id,
+                      name: vehicle,
+                      type: "truckVan",
+                    });
+                    setModalVisible(true);
+                  }}
+                >
+                  {vehicle}
+                  {vehicleIndex !== chunk.length - 1 && ", "}
+                </span>
+              ))}
             </div>
           ));
         };
@@ -308,14 +325,82 @@ export default function Dispatch() {
         return (
           <div>
             {params.value.map((contact, index) => (
-              <div key={index}>{contact.name}</div>
+              <div
+                key={index}
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRemovalDetails({
+                    id: params.id,
+                    name: contact,
+                    type: "contact",
+                  });
+                  setModalVisible(true);
+                }}
+              >
+                {contact.name}
+              </div>
             ))}
           </div>
         );
       },
     },
-    { field: "origin", headerName: "Origin", width: 150 },
-    { field: "destination", headerName: "Destination", width: 150 },
+    {
+      field: "origin",
+      headerName: "Origin",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((origin, index) => (
+              <div
+                key={index}
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRemovalDetails({
+                    id: params.id,
+                    name: origin,
+                    type: "origin",
+                  });
+                  setModalVisible(true);
+                }}
+              >
+                {origin}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      field: "destination",
+      headerName: "Destination",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.value.map((destination, index) => (
+              <div
+                key={index}
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRemovalDetails({
+                    id: params.id,
+                    name: destination,
+                    type: "destination",
+                  });
+                  setModalVisible(true);
+                }}
+              >
+                {destination}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
     {
       field: "serviceType",
       headerName: "Type of Service",
@@ -341,7 +426,6 @@ export default function Dispatch() {
       headerName: "Crew Size",
       width: 130,
       renderCell: (params) => {
-        //console.log(params.value);
         const supervisorInitials =
           params.value?.supervisors?.map((supervisor) => supervisor.initials) ||
           [];
@@ -353,6 +437,7 @@ export default function Dispatch() {
                 {chunk.map((supervisor, sIndex) => (
                   <span
                     key={sIndex}
+                    style={{ cursor: "pointer" }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setRemovalDetails({
@@ -452,6 +537,7 @@ export default function Dispatch() {
                         return (
                           <span
                             key={nIndex}
+                            style={{ cursor: "pointer" }}
                             onClick={(e) => {
                               e.stopPropagation();
                               setRemovalDetails({
@@ -554,6 +640,7 @@ export default function Dispatch() {
 
     if (rowIndex !== -1) {
       const updatedRow = { ...rows[rowIndex] };
+      //console.log("updatedRow:", updatedRow);
 
       if (removalDetails.type === "crewMember") {
         updatedRow.crewMembers.forEach((memberRole) => {
@@ -567,6 +654,22 @@ export default function Dispatch() {
           updatedRow.crewsize.supervisors.filter(
             (supervisor) => supervisor.id !== removalDetails.name.id
           );
+      } else if (removalDetails.type === "truckVan") {
+        updatedRow.truckVan = updatedRow.truckVan.filter(
+          (vehicle) => vehicle.number !== removalDetails.name
+        );
+      } else if (removalDetails.type === "contact") {
+        updatedRow.contact = updatedRow.contact.filter(
+          (contact) => contact.name !== removalDetails.name.name
+        );
+      } else if (removalDetails.type === "origin") {
+        updatedRow.origin = updatedRow.origin.filter(
+          (origin) => origin !== removalDetails.name
+        );
+      } else if (removalDetails.type === "destination") {
+        updatedRow.destination = updatedRow.destination.filter(
+          (destination) => destination !== removalDetails.name
+        );
       }
 
       const updatedRows = [...rows];
