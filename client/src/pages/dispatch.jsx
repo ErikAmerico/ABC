@@ -17,41 +17,34 @@ import {
 import { useGlobalContext } from "../utils/globalContext";
 import RemoveModal from "../components/removeModal";
 import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_JOB } from "../utils/mutations.js";
+import { CREATE_JOB, UPDATE_JOB } from "../utils/mutations.js";
 import { FETCH_JOBS_BY_DATE } from "../utils/queries";
-
-function formatDate(date) {
-  const d = new Date(date);
-  let month = "" + (d.getMonth() + 1);
-  let day = "" + d.getDate();
-  const year = d.getFullYear();
-
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
-
-  return [year, month, day].join("-");
-}
 
 export default function Dispatch() {
   const { rows, setRows } = useGlobalContext();
-  const { rowSelectionModel, setRowSelectionModel } = useGlobalContext();
-  //const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
-  const [selectedDate, setSelectedDate] = useState(
-    formatDate(new Date(Date.now() + 86400000))
-  );
+  const {
+    rowSelectionModel,
+    setRowSelectionModel,
+    setOpen,
+    selectedCompany,
+    selectedDate,
+    setSelectedDate,
+  } = useGlobalContext();
+  // const [selectedDate, setSelectedDate] = useState(
+  //   formatDate(new Date(Date.now() + 86400000))
+  // );
 
-  // Should learn about subscriptions(in place of refetchQueries?) as the job data will potentially be updated in real-time by multiple users
-  const [createJob, { createJobData, createJobLoading, createJobError }] =
-    useMutation(CREATE_JOB, {
+  const [updateJob, { updateJobData, updateJobLoading, updateJobError }] =
+    useMutation(UPDATE_JOB, {
       refetchQueries: ["getJobsByDate"],
     });
 
-  console.log(rows);
+  const toggleDrawer = (isOpen) => () => {
+    setOpen(isOpen);
+  };
 
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
-
-  console.log(removalDetails);
 
   const { data, loading, error } = useQuery(FETCH_JOBS_BY_DATE, {
     variables: { date: selectedDate.toString().split("T")[0] },
@@ -204,7 +197,7 @@ export default function Dispatch() {
     );
   }
 
-  const handleSaveJob = async (selectedRowId) => {
+  const updateJobInDatabase = async (selectedRowId) => {
     const selectedRow = rows.find((row) => row.id === selectedRowId);
 
     let drivers = [];
@@ -221,37 +214,23 @@ export default function Dispatch() {
       }
     });
 
-    const jobInput = {
+    console.log("selectedRow:", selectedRow.id);
+
+    const JobInput = {
+      //id: selectedRow.id,
       date: selectedDate,
       startTime: selectedRow.leaveABC,
-      origin: selectedRow.origin,
-      destination: selectedRow.destination,
       crewSize: selectedRow.crewsize.count,
       serviceType: selectedRow.serviceType,
-      supervisors: selectedRow.crewsize.supervisors.map(
-        (supervisor) => supervisor.id
-      ),
-      drivers,
-      helpers,
-      techs,
       remarks: selectedRow.remarks,
-      trucks: selectedRow.truckVan
-        .filter((item) => item.role === "Truck")
-        .map((truckObj) => truckObj.id),
-      vans: selectedRow.truckVan
-        .filter((item) => item.role === "Van")
-        .map((vanObj) => vanObj.id),
-      account: selectedRow.account[0].id,
-      contact: selectedRow.contact.map((contact) => contact.id),
     };
 
     try {
-      const response = await createJob({
-        variables: { input: jobInput },
+      const response = await updateJob({
+        variables: { id: selectedRow.id, input: JobInput },
       });
-      //console.log(response);
     } catch (error) {
-      console.error("Error creating job:", error);
+      console.error("Error updating job:", error);
     }
   };
 
@@ -415,6 +394,7 @@ export default function Dispatch() {
                 const updatedRows = [...rows];
                 updatedRows[rowIndex].serviceType = newService;
                 setRows(updatedRows);
+                updateJobInDatabase(params.id);
               }
             }}
           />
@@ -477,6 +457,7 @@ export default function Dispatch() {
                   0
                 );
                 setRows(updatedRows);
+                updateJobInDatabase(params.row.id);
               }}
             />
           </div>
@@ -497,6 +478,7 @@ export default function Dispatch() {
                 const updatedRows = [...rows];
                 updatedRows[rowIndex].leaveABC = newTime;
                 setRows(updatedRows);
+                updateJobInDatabase(params.id);
               }
             }}
           />
@@ -585,34 +567,17 @@ export default function Dispatch() {
               const updatedRows = [...rows];
               updatedRows[rowIndex].remarks = e.target.value;
               setRows(updatedRows);
+              //updateJobInDatabase(updatedRows[rowIndex]);
+              updateJobInDatabase(params.id);
             }
           }}
         />
       ),
     },
-    {
-      field: "save",
-      headerName: "",
-      sortable: false,
-      width: 125,
-      renderCell: (params) => (
-        //console.log(params.row),
-        <>
-          {params.row.id && (
-            <Button
-              variant="contained"
-              onClick={() => handleSaveJob(params.row.id)}
-              color="inherit"
-            >
-              {`SAVE JOB`}
-            </Button>
-          )}
-        </>
-      ),
-    },
   ];
 
-  const addRow = () => {
+  const addRow = async () => {
+    toggleDrawer(true)();
     const newRow = {
       truckVan: [],
       account: [],
@@ -640,7 +605,6 @@ export default function Dispatch() {
 
     if (rowIndex !== -1) {
       const updatedRow = { ...rows[rowIndex] };
-      //console.log("updatedRow:", updatedRow);
 
       if (removalDetails.type === "crewMember") {
         updatedRow.crewMembers.forEach((memberRole) => {
@@ -702,7 +666,6 @@ export default function Dispatch() {
             }))}
             checkboxSelection
             onRowSelectionModelChange={(newRowSelectionModel) => {
-              //console.log("Row Selection Change:", newRowSelectionModel);
               if (newRowSelectionModel.length > 1) {
                 // Only take the last selected row.
                 setRowSelectionModel([
