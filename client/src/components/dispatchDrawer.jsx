@@ -9,24 +9,46 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_USER_IDS } from "../utils/queries";
-import { GET_ALL_TRUCKS } from "../utils/queries";
-import { GET_ALL_VANS } from "../utils/queries";
-import { GET_ALL_CONTACTS } from "../utils/queries.js";
-import { GET_ALL_COMPANIES } from "../utils/queries.js";
+import { useQuery, useMutation } from "@apollo/client";
+import {
+  GET_ALL_CONTACTS,
+  GET_ALL_COMPANIES,
+  GET_ALL_VANS,
+  GET_ALL_TRUCKS,
+  GET_ALL_USER_IDS,
+} from "../utils/queries.js";
 import { useGlobalContext } from "../utils/globalContext";
+import { CREATE_JOB, UPDATE_JOB } from "../utils/mutations.js";
 
 export default function DispatchDrawer() {
-  const [open, setOpen] = useState(false);
+  //const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState({});
-  const { rowSelectionModel, setRowSelectionModel, rows, setRows } =
-    useGlobalContext();
-  const [selectedCompany, setSelectedCompany] = useState({
-    name: null,
-    id: null,
-  });
+  const {
+    rowSelectionModel,
+    setRowSelectionModel,
+    rows,
+    setRows,
+    open,
+    setOpen,
+    selectedCompany,
+    setSelectedCompany,
+    selectedDate,
+  } = useGlobalContext();
+  // const [selectedCompany, setSelectedCompany] = useState({
+  //   name: null,
+  //   id: null,
+  // });
   const [companies, setCompanies] = useState([]);
+
+  const [createJob, { createJobData, createJobLoading, createJobError }] =
+    useMutation(CREATE_JOB, {
+      refetchQueries: ["getJobsByDate"],
+    });
+
+  const [updateJob, { updateJobData, updateJobLoading, updateJobError }] =
+    useMutation(UPDATE_JOB, {
+      refetchQueries: ["getJobsByDate"],
+    });
 
   useEffect(() => {
     // Reset the selectedCompany and expanded states
@@ -80,8 +102,6 @@ export default function DispatchDrawer() {
     error: contactsError,
   } = useQuery(GET_ALL_CONTACTS);
 
-  //console.log("contactsData", contactsData);
-
   const {
     data: companiesData,
     loading: companiesLoading,
@@ -121,8 +141,33 @@ export default function DispatchDrawer() {
     ? contacts.filter((contact) => contact.company.id === selectedCompany.id)
     : [];
 
+  const updateJobDatabase = async (selectedRowId, jobInput) => {
+    console.log("Updating job with input:", jobInput);
+    try {
+      const response = await updateJob({
+        variables: { id: selectedRowId, input: jobInput },
+      });
+      console.log("Job updated successfully:", response);
+    } catch (error) {
+      console.error("Error updating job:", error);
+    }
+  };
+
+  const createJobWithSelectedCompany = async (jobInput) => {
+    console.log("Creating job with input:", jobInput);
+    try {
+      const response = await createJob({
+        variables: { input: jobInput },
+      });
+      console.log("Job created successfully:", response);
+    } catch (error) {
+      console.error("Error creating job:", error);
+    }
+  };
+
   const updateSelectedRow = (name, role) => {
     if (rowSelectionModel === undefined || rowSelectionModel === null) return;
+    const selectedRowId = rowSelectionModel[0];
 
     setRows((prevRows) => {
       return prevRows.map((row) => {
@@ -140,6 +185,14 @@ export default function DispatchDrawer() {
             )?.id;
 
             updatedSupervisors.push({ initials: initials, id: userId });
+
+            const jobInput = {
+              supervisors: updatedSupervisors.map(
+                (supervisor) => supervisor.id
+              ),
+            };
+
+            updateJobDatabase(selectedRowId, jobInput);
             return {
               ...row,
               crewsize: {
@@ -151,7 +204,6 @@ export default function DispatchDrawer() {
             const updatedVehicles = [...row.truckVan];
 
             const vehicleId = role === "Truck" ? trucks : vans;
-            //const vehicle = vehicleId.find((v) => v.number === name);
             const vehicle = vehicleId.find(
               (v) => String(v.number) === String(name)
             );
@@ -166,6 +218,17 @@ export default function DispatchDrawer() {
               number: name,
               id: vehicle.id,
             });
+
+            const jobInput = {
+              trucks: updatedVehicles
+                .filter((item) => item.role === "Truck")
+                .map((truckObj) => truckObj.id),
+              vans: updatedVehicles
+                .filter((item) => item.role === "Van")
+                .map((vanObj) => vanObj.id),
+            };
+
+            updateJobDatabase(selectedRowId, jobInput);
             return {
               ...row,
               truckVan: updatedVehicles,
@@ -179,6 +242,12 @@ export default function DispatchDrawer() {
 
             updatedContacts.push({ name: name, id: contactId });
 
+            const jobInput = {
+              contact: contactId,
+            };
+
+            updateJobDatabase(selectedRowId, jobInput);
+
             return {
               ...row,
               contact: updatedContacts,
@@ -190,6 +259,14 @@ export default function DispatchDrawer() {
             // Set the selected company state with both name and ID
             setSelectedCompany({ name: company.names[0], id: company.id });
 
+            const jobInput = {
+              date: selectedDate,
+              startTime: "8:00 AM",
+              account: company.id,
+            };
+
+            createJobWithSelectedCompany(jobInput);
+
             const updatedCompanies = [
               { name: company.names[0], id: company.id },
             ]; // Store both name and ID
@@ -200,6 +277,12 @@ export default function DispatchDrawer() {
           } else if (role === "Origin") {
             const updatedOrigins = [...row.origin];
             updatedOrigins.push(name);
+
+            const jobInput = {
+              origin: updatedOrigins,
+            };
+
+            updateJobDatabase(selectedRowId, jobInput);
             return {
               ...row,
               origin: updatedOrigins,
@@ -207,6 +290,12 @@ export default function DispatchDrawer() {
           } else if (role === "Destination") {
             const updatedDestinations = [...row.destination];
             updatedDestinations.push(name);
+
+            const jobInput = {
+              destination: updatedDestinations,
+            };
+
+            updateJobDatabase(selectedRowId, jobInput);
             return {
               ...row,
               destination: updatedDestinations,
@@ -234,6 +323,20 @@ export default function DispatchDrawer() {
               });
             }
 
+            const jobInput = {
+              drivers: updatedCrewMembers
+                .find((role) => role.role === "Driver")
+                ?.names.map((name) => name.id),
+              helpers: updatedCrewMembers
+                .find((role) => role.role === "Helper")
+                ?.names.map((name) => name.id),
+              techs: updatedCrewMembers
+                .find((role) => role.role === "Tech")
+                ?.names.map((name) => name.id),
+            };
+
+            updateJobDatabase(selectedRowId, jobInput);
+
             return {
               ...row,
               crewMembers: updatedCrewMembers,
@@ -244,8 +347,6 @@ export default function DispatchDrawer() {
       });
     });
   };
-
-  //console.log("rows", rows);
 
   const items = [
     "Company",

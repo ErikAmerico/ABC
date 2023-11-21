@@ -32,6 +32,12 @@ function deepConvertObjectIdToString(obj) {
   return obj;
 }
 
+const convertToIdString = (arr) =>
+  arr.map((item) => ({
+    ...item._doc,
+    id: item._id.toString(),
+  }));
+
 const resolvers = {
   Query: {
     getUser: (parent, { id }) => {
@@ -197,12 +203,6 @@ const resolvers = {
       try {
         const job = await Job.create(input);
 
-        const convertToIdString = (arr) =>
-          arr.map((item) => ({
-            ...item._doc,
-            id: item._id.toString(),
-          }));
-
         return {
           ...job._doc,
           id: job._id.toString(),
@@ -221,8 +221,28 @@ const resolvers = {
       }
     },
 
-    updateJob: (parent, { id, input }) => {
-      return Job.findByIdAndUpdate(id, input, { new: true });
+    updateJob: async (parent, { id, input }) => {
+      try {
+        const updatedJob = await Job.findByIdAndUpdate(id, input, {
+          new: true,
+        });
+
+        return {
+          ...updatedJob._doc,
+          id: updatedJob._id.toString(),
+          supervisors: convertToIdString(updatedJob.supervisors),
+          drivers: convertToIdString(updatedJob.drivers),
+          helpers: convertToIdString(updatedJob.helpers),
+          techs: convertToIdString(updatedJob.techs),
+          contact: convertToIdString(updatedJob.contact),
+          trucks: convertToIdString(updatedJob.trucks),
+          vans: convertToIdString(updatedJob.vans),
+          account: convertToIdString(updatedJob.account),
+        };
+      } catch (error) {
+        console.error("Error updating job:", error);
+        throw new Error("Error updating job");
+      }
     },
 
     deleteJob: (parent, { id }) => {

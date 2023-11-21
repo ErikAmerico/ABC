@@ -165,6 +165,45 @@ const typeDefs = gql`
     prePayment: String
   }
 
+  input updateJobInput {
+    id: ID!
+    date: String
+    startTime: String
+    estimate: String
+    origin: [String]
+    destination: [String]
+    account: [ID]
+    serviceType: String
+    remarks: String
+    contact: [ID]
+    noCrewCab: Boolean
+    tailgate: Boolean
+    truck100: Boolean
+    openBack: Boolean
+    stairs: Boolean
+    tooltime: Boolean
+    crewSize: Int
+    trucks: [ID]
+    vans: [ID]
+    supervisors: [ID]
+    drivers: [ID]
+    helpers: [ID]
+    techs: [ID]
+    equipment: EquipmentInput
+    description: String
+    insurance: String
+    billTo: CompanyInput
+    attention: String
+    holdForCrates: Boolean
+    salesMan: UserInput
+    author: UserInput
+    poNum: Int
+    projectNum: Int
+    references: String
+    groupBill: String
+    prePayment: String
+  }
+
   type Equipment {
     dollies: Int
     comps: Int
