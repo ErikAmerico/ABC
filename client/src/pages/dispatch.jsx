@@ -285,7 +285,7 @@ export default function Dispatch() {
     {
       field: "account",
       headerName: "Account",
-      width: 150,
+      width: 120,
       renderCell: (params) => {
         return (
           <div>
@@ -327,7 +327,7 @@ export default function Dispatch() {
     {
       field: "origin",
       headerName: "Origin",
-      width: 150,
+      width: 180,
       renderCell: (params) => {
         return (
           <div>
@@ -355,7 +355,7 @@ export default function Dispatch() {
     {
       field: "destination",
       headerName: "Destination",
-      width: 150,
+      width: 180,
       renderCell: (params) => {
         return (
           <div>
@@ -572,6 +572,26 @@ export default function Dispatch() {
             }
           }}
         />
+      ),
+    },
+    {
+      field: "delete",
+      headerName: "",
+      sortable: false,
+      width: 95,
+      renderCell: (params) => (
+        //console.log(params.row),
+        <>
+          {params.row.id && (
+            <Button
+              variant="contained"
+              //onClick={() => handleSaveJob(params.row.id)}
+              color="error"
+            >
+              {`REMOVE`}
+            </Button>
+          )}
+        </>
       ),
     },
   ];
