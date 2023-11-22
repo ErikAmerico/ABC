@@ -8,14 +8,20 @@ This project is proudly a work in progress.
 
 ## Table of Contents
 
-- [Installation](#installation)
+- [Technologies Used](#technologies-used)
 - [Current Implementations](#current-implementations)
 - [Next Up Implementations](#next-up-implementations)
 
-## Installation
+## Technologies Used
 
-To have this application on your own system, `git clone` the repository and set it up in your local system. Ex (Vs Code).
-You will need to run `npm install` which will install the necessary package dependencies;
+- Javascript
+- Express.js
+- React.js
+- Node.js
+- Apollo
+- GraphQL
+- MongoDB
+- MUI
 
 ## Current Implementations
 
