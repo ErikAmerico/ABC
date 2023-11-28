@@ -160,6 +160,7 @@ export default function DispatchDrawer() {
         variables: { input: jobInput },
       });
       console.log("Job created successfully:", response);
+      setRowSelectionModel([response.data.createJob.id]);
     } catch (error) {
       console.error("Error creating job:", error);
     }
