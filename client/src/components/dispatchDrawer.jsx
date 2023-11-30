@@ -263,6 +263,7 @@ export default function DispatchDrawer() {
             const jobInput = {
               date: selectedDate,
               startTime: "8:00 AM",
+              serviceType: "Move",
               account: company.id,
             };
 

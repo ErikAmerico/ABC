@@ -9,6 +9,7 @@ This project is proudly a work in progress.
 ## Table of Contents
 
 - [Technologies Used](#technologies-used)
+- [Installation](#installation)
 - [Current Implementations](#current-implementations)
 - [Next Up Implementations](#next-up-implementations)
 
@@ -23,18 +24,25 @@ This project is proudly a work in progress.
 - MongoDB
 - MUI
 
+## Installation
+
+- Use git clone to bring the repository to your local machine. In your IDE's terminal run npm install followed by node server/seed.js to seed the database with an initial user.
+- Navigate to the webpage where you will be presented with a login form. Login with the following credentials:
+  - Email: arturo@gmail.com
+  - Password: Arturo123.
+
 ## Current Implementations
 
 - An outside person does not have the ability to freely sign up. An owner of the company (already in database) has the ability to create or remove an individuals account.
 - Currently, I only have the office users portion of the application written.
 
-- When a user signs in, they are greeted to the home page.
+- When a user signs in, they are greeted to the home page. Clicking the ABC logo on the left side of the header will bring you back to the home page.
   ![HomePage](assets/HomePage.png)
 
 - Selecting the companies button, will bring you to a list of all the companies ABC works with and the ability to add more or edit existing companies.
   ![Companies](assets/CompanyPage.png)
 
-- Users are able to view a list of office or field employees and contacts. Here we are viewing the "Field Employees". (Employees such as Truck Drivers, Helpers and Technicians)
+- Users are able to view a list of office or field employees and contacts(selecting PERSONELL presents you with these options). Here we are viewing the "Field Employees". (Employees such as Truck Drivers, Helpers and Technicians)
   ![Personell Field](assets/PersonnellField.png)
 
 - The dispatch sheet is where jobs are initialized and saved to the database.
@@ -45,7 +53,7 @@ This project is proudly a work in progress.
 
 - On the home page, from the permanent drawer on the left. After clicking the "Jobs" dropdown, a date picker appears, after you've selected a date, all jobs for that date will be listed.
 - After selecting a job, additional form fields will appear for you to fill in. Such as equiptment, billing, and other necessary information.
-- (This feature is in the beginning stages of development.)
+- (This feature is in the beginning stages of development, currently only available for jobs with the "type of service" of "Move".)
   ![Jobs](assets/updatedMoveSheet.png)
 
 ## Next Up Implementations
