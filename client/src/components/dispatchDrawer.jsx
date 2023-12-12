@@ -47,7 +47,8 @@ export default function DispatchDrawer() {
 
   const [updateJob, { updateJobData, updateJobLoading, updateJobError }] =
     useMutation(UPDATE_JOB, {
-      refetchQueries: ["getJobsByDate"],
+      //refetchQueries: [{ query: GET_ALL_CONTACTS }],
+      //refetchQueries: ["getJobsByDate"],
     });
 
   useEffect(() => {
@@ -100,6 +101,7 @@ export default function DispatchDrawer() {
     data: contactsData,
     loading: contactsLoading,
     error: contactsError,
+    refetch: refetchContacts,
   } = useQuery(GET_ALL_CONTACTS);
 
   const {
@@ -107,6 +109,12 @@ export default function DispatchDrawer() {
     loading: companiesLoading,
     error: companiesError,
   } = useQuery(GET_ALL_COMPANIES);
+
+  useEffect(() => {
+    if (selectedCompany) {
+      refetchContacts();
+    }
+  }, [selectedCompany]);
 
   useEffect(() => {
     if (companiesData && companiesData.getCompanies) {
@@ -244,7 +252,8 @@ export default function DispatchDrawer() {
             updatedContacts.push({ name: name, id: contactId });
 
             const jobInput = {
-              contact: contactId,
+              //contact: contactId,
+              contact: updatedContacts.map((contact) => contact.id),
             };
 
             updateJobDatabase(selectedRowId, jobInput);

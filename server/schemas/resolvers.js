@@ -136,10 +136,10 @@ const resolvers = {
             ...acc,
             id: acc._id.toString(),
           })),
-          // contact: jobObj.contact.map((cont) => ({
-          //   ...cont,
-          //   id: cont._id.toString(),
-          // })),
+          contact: jobObj.contact.map((cont) => ({
+            ...cont,
+            id: cont._id.toString(),
+          })),
           drivers: jobObj.drivers.map((driv) => ({
             ...driv,
             id: driv._id.toString(),
