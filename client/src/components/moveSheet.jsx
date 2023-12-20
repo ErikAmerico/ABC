@@ -95,11 +95,13 @@ export default function MoveSheet({ job }) {
             .map((driver) => `${driver.firstName} ${driver.lastName}`)
             .join(", ") || "",
         helpers:
-          job.helpers.map(
-            (helper) => `${helper.firstName} ${helper.lastName}`
-          ) || "",
+          job.helpers
+            .map((helper) => `${helper.firstName} ${helper.lastName}`)
+            .join(", ") || "",
         techs:
-          job.techs.map((tech) => `${tech.firstName} ${tech.lastName}`) || "",
+          job.techs
+            .map((tech) => `${tech.firstName} ${tech.lastName}`)
+            .join(", ") || "",
       }));
     }
   }, [job]);
@@ -273,31 +275,17 @@ export default function MoveSheet({ job }) {
                 label="Leave ABC"
                 variant="outlined"
                 value={formData.startTime}
-                sx={{ mb: 2 }}
-                fullWidth
+                sx={{ mb: 2, mr: 2 }}
+                halfWidth
               />
               <TextField
                 label="Estimated Time"
                 variant="outlined"
                 defaultValue="4 Hours"
                 sx={{ mb: 2 }}
-                fullWidth
+                halfWidth
               />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Call Contact Upon Arrival"
-                sx={{ marginRight: 2 }}
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Call Contact When Leaving ABC"
-                sx={{ marginRight: 2 }}
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Call Contact When Close"
-                sx={{ marginRight: 2 }}
-              />
+
               <TextField
                 label="Origin Contact Phone#"
                 InputLabelProps={{
@@ -311,8 +299,23 @@ export default function MoveSheet({ job }) {
                 }}
                 variant="outlined"
                 defaultValue={formData.contactPhone}
-                sx={{ mb: 2, backgroundColor: "#8DA9C4", borderRadius: "5px" }}
+                sx={{ backgroundColor: "#8DA9C4", borderRadius: "5px" }}
                 fullWidth
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact Upon Arrival"
+                sx={{ marginRight: 2, mb: 6 }}
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact When Leaving ABC"
+                sx={{ marginRight: 2, mb: 6 }}
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact When Close"
+                sx={{ marginRight: 2, mb: 6 }}
               />
               <TextField
                 label="Destination Contact Phone#"
@@ -468,9 +471,177 @@ export default function MoveSheet({ job }) {
               fullWidth
             />
           </Grid>
-          <Button variant="contained" type="submit" sx={{ mt: 3 }}>
-            Submit
-          </Button>
+          <h2>Equipment: </h2>
+          <Grid item xs={1} md={1}>
+            <TextField
+              label="4 Wheel Dollies"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Computer Carts"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="Panels" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Library Carts"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="Bins" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="Tech Bins" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="Trash Bins" variant="outlined" sx={{ mr: 0.5 }} />
+          </Grid>
+          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
+            <TextField label="Tools" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="Makita #" variant="outlined" sx={{ mr: 0.5 }} />
+            <span>Ramps:</span>
+            <TextField label="14'" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="10'" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="8'" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="6'" variant="outlined" />
+          </Grid>
+          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
+            <TextField label="Platform" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Steel Plate"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="Hood Lift" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="Safe Jacks" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Pallet Jacks"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="Skinny Jack" variant="outlined" />
+          </Grid>
+          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
+            <TextField label="J Bars" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="Big Red" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Masonite 4'"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Masonite 8'"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="Duct Tape" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="Blue Tape" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="Coroflex" variant="outlined" />
+          </Grid>
+
+          <FormGroup row>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  // checked={formData.noCrewCabs}
+                  // onChange={handleChange}
+                  name="carpetGuard"
+                />
+              }
+              label="Carpet Guard"
+            />
+            <FormControlLabel
+              control={<Checkbox name="broom" />}
+              label="Broom"
+            />
+            <FormControlLabel
+              control={<Checkbox name="allenSet" />}
+              label="Allen Set"
+            />
+            <FormControlLabel
+              control={<Checkbox name="bitBox" />}
+              label="Bit Box"
+            />
+            <FormControlLabel
+              control={<Checkbox name="socketSet" />}
+              label="Socket Set"
+            />
+          </FormGroup>
+          <FormGroup row sx={{ mt: 2 }}>
+            <FormControlLabel control={<Checkbox name="foam" />} label="Foam" />
+            <Grid item xs={1} md={1}>
+              <TextField label='1" L' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label='1" S' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label='2" L' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label='2" S' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label="White" variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField
+                label="Carpet Riser"
+                variant="outlined"
+                sx={{ mr: 0.5 }}
+              />
+              <TextField label="Rubber Riser" variant="outlined" />
+            </Grid>
+          </FormGroup>
+
+          <Grid item xs={12} md={12} sx={{ mt: 2, mb: 4 }}>
+            <TextField label="Other" fullWidth></TextField>
+          </Grid>
+
+          <h2>Billing: </h2>
+
+          <FormGroup sx={{ mt: 5, mb: 5 }} row>
+            <span>Insurance:</span>
+            <FormControlLabel
+              control={<Checkbox name="minimumInsurance" />}
+              label="Minumum"
+            />
+            <FormControlLabel
+              control={<Checkbox name="selfInsurance" />}
+              label="Self"
+            />
+            <FormControlLabel
+              control={<Checkbox name="frcInsurance" />}
+              label="F.R.C"
+            />
+
+            <Grid item xs={12} md={12}>
+              <TextField label="Cost" fullWidth />
+            </Grid>
+          </FormGroup>
+
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <FormGroup>
+                <TextField
+                  label="Bill To"
+                  multiline
+                  rows={6}
+                  variant="outlined"
+                />
+
+                <FormControlLabel
+                  control={<Checkbox name="holdForCrates" />}
+                  label="Hold For Crates"
+                  sx={{ mb: 4 }}
+                />
+                <TextField label="Salesman" sx={{ mb: 1 }} />
+                <TextField label="Author" sx={{ mb: 1 }} />
+              </FormGroup>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <FormGroup
+                sx={{
+                  border: "1px solid black",
+                  padding: 2,
+                  borderRadius: 5,
+                }}
+              >
+                <TextField label="PO #" sx={{ mb: 1 }} />
+                <TextField label="Project #" sx={{ mb: 1 }} />
+                <TextField label="References" sx={{ mb: 1 }} />
+                <TextField label="Group Bill" sx={{ mb: 1 }} />
+                <TextField label="Pre Payment" sx={{ mb: 1 }} />
+              </FormGroup>
+            </Grid>
+          </Grid>
         </form>
       </Box>
     </Box>
