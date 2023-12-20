@@ -276,14 +276,12 @@ export default function MoveSheet({ job }) {
                 variant="outlined"
                 value={formData.startTime}
                 sx={{ mb: 2, mr: 2 }}
-                halfWidth
               />
               <TextField
                 label="Estimated Time"
                 variant="outlined"
                 defaultValue="4 Hours"
                 sx={{ mb: 2 }}
-                halfWidth
               />
 
               <TextField
