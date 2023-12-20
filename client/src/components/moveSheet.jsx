@@ -601,8 +601,14 @@ export default function MoveSheet({ job }) {
             />
 
             <Grid item xs={12} md={12}>
-              <TextField label="Cost" fullWidth />
+              <TextField label="Cost" sx={{ width: "150%" }} />
             </Grid>
+            <TextField
+              label="Please Email Invoice to"
+              multiline
+              rows={2}
+              sx={{ ml: 50, width: "30%" }}
+            />
           </FormGroup>
 
           <Grid container spacing={3}>
