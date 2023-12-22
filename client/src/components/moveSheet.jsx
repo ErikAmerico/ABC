@@ -9,6 +9,9 @@ import {
   Grid,
 } from "@mui/material";
 
+import MakitaField from "./makitaSelection";
+import SafeJackField from "./safeJackSelection";
+
 function formatDate(timestamp) {
   // Create a date object from the timestamp
   const d = new Date(Number(timestamp));
@@ -30,7 +33,12 @@ function formatDate(timestamp) {
 }
 
 export default function MoveSheet({ job }) {
-  console.log(job);
+  //console.log(job);
+
+  const [makitaNumber, setMakitaNumber] = useState("0");
+  const [safeJackAmount, setSafeJackAmount] = useState("0");
+  const [selectedNumbers, setSelectedNumbers] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
 
   const [formData, setFormData] = useState({
     date: job?.date ? formatDate(job.date) : "",
@@ -493,12 +501,17 @@ export default function MoveSheet({ job }) {
           </Grid>
           <Grid item xs={1} md={1} sx={{ mt: 1 }}>
             <TextField label="Tools" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="Makita #" variant="outlined" sx={{ mr: 0.5 }} />
-            <span>Ramps:</span>
-            <TextField label="14'" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="10'" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="8'" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="6'" variant="outlined" />
+            <MakitaField
+              value={makitaNumber}
+              onNumberChange={(e) => setMakitaNumber(e.target.value)}
+              onSelectChange={(e) => setMakitaNumber(e.target.value)}
+              selectedNumbers={selectedNumbers}
+              setSelectedNumbers={setSelectedNumbers}
+            />
+            <TextField label="14' Ramps" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="10' Ramps" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="8' Ramps" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField label="6' Ramps" variant="outlined" />
           </Grid>
           <Grid item xs={1} md={1} sx={{ mt: 1 }}>
             <TextField label="Platform" variant="outlined" sx={{ mr: 0.5 }} />
@@ -508,7 +521,13 @@ export default function MoveSheet({ job }) {
               sx={{ mr: 0.5 }}
             />
             <TextField label="Hood Lift" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="Safe Jacks" variant="outlined" sx={{ mr: 0.5 }} />
+            <SafeJackField
+              value={safeJackAmount}
+              onNumberChange={(e) => setSafeJackAmount(e.target.value)}
+              onSelectChange={(e) => setSafeJackAmount(e.target.value)}
+              selectedColors={selectedColors}
+              setSelectedColors={setSelectedColors}
+            />
             <TextField
               label="Pallet Jacks"
               variant="outlined"
