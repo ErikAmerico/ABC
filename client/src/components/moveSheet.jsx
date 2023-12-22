@@ -481,23 +481,46 @@ export default function MoveSheet({ job }) {
           <Grid item xs={1} md={1}>
             <TextField
               label="4 Wheel Dollies"
+              type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Computer Carts"
+              type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="Panels" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Panels"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
             <TextField
               label="Library Carts"
+              type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="Bins" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="Tech Bins" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="Trash Bins" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Bins"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Tech Bins"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Trash Bins"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
           </Grid>
           <Grid item xs={1} md={1} sx={{ mt: 1 }}>
             <TextField label="Tools" variant="outlined" sx={{ mr: 0.5 }} />
@@ -508,19 +531,45 @@ export default function MoveSheet({ job }) {
               selectedNumbers={selectedNumbers}
               setSelectedNumbers={setSelectedNumbers}
             />
-            <TextField label="14' Ramps" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="10' Ramps" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="8' Ramps" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="6' Ramps" variant="outlined" />
-          </Grid>
-          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
-            <TextField label="Platform" variant="outlined" sx={{ mr: 0.5 }} />
             <TextField
-              label="Steel Plate"
+              label="14' Ramps"
+              type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="Hood Lift" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="10' Ramps"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="8' Ramps"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="6' Ramps" type="number" variant="outlined" />
+          </Grid>
+          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
+            <TextField
+              label="Platform"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Steel Plate"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Hood Lift"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
             <SafeJackField
               value={safeJackAmount}
               onNumberChange={(e) => setSafeJackAmount(e.target.value)}
@@ -530,26 +579,49 @@ export default function MoveSheet({ job }) {
             />
             <TextField
               label="Pallet Jacks"
+              type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="Skinny Jack" variant="outlined" />
+            <TextField label="Skinny Jack" type="number" variant="outlined" />
           </Grid>
           <Grid item xs={1} md={1} sx={{ mt: 1 }}>
-            <TextField label="J Bars" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="Big Red" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="J Bars"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Big Red"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
             <TextField
               label="Masonite 4'"
+              type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Masonite 8'"
+              type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="Duct Tape" variant="outlined" sx={{ mr: 0.5 }} />
-            <TextField label="Blue Tape" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Duct Tape"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Blue Tape"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
             <TextField label="Coroflex" variant="outlined" />
           </Grid>
 
@@ -591,10 +663,15 @@ export default function MoveSheet({ job }) {
               <TextField label="White" variant="outlined" sx={{ mr: 0.5 }} />
               <TextField
                 label="Carpet Riser"
+                type="number"
                 variant="outlined"
                 sx={{ mr: 0.5 }}
               />
-              <TextField label="Rubber Riser" variant="outlined" />
+              <TextField
+                label="Rubber Riser"
+                type="number"
+                variant="outlined"
+              />
             </Grid>
           </FormGroup>
 

@@ -7,7 +7,7 @@ import {
   IconButton,
   Chip,
 } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const colors = [
   "Black",
@@ -49,9 +49,9 @@ const SafeJackField = ({ selectedColors, setSelectedColors }) => {
       <TextField
         label="Safe Jacks"
         variant="outlined"
-        sx={{ width: "15%", mr: 0.5 }}
-        // , maxWidth: "15%"
+        sx={{ width: "24%", mr: 0.5 }}
         InputProps={{
+          readOnly: true,
           startAdornment: (
             <InputAdornment position="start">
               <Select
@@ -68,7 +68,7 @@ const SafeJackField = ({ selectedColors, setSelectedColors }) => {
                   </MenuItem>
                 ))}
               </Select>
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   //flexWrap: "wrap",
@@ -81,6 +81,17 @@ const SafeJackField = ({ selectedColors, setSelectedColors }) => {
                     label={color}
                     onDelete={handleDeleteColor(color)}
                   />
+                ))}
+              </div> */}
+              <div style={{ display: "flex", gap: "5px" }}>
+                {selectedColors?.map((selectedColor) => (
+                  <IconButton
+                    key={selectedColor}
+                    onClick={handleDeleteColor(selectedColor)}
+                    style={{ color: selectedColor }}
+                  >
+                    <CircleIcon />{" "}
+                  </IconButton>
                 ))}
               </div>
             </InputAdornment>
@@ -97,7 +108,8 @@ const SafeJackField = ({ selectedColors, setSelectedColors }) => {
               >
                 {colors.map((colorOption) => (
                   <MenuItem key={colorOption} value={colorOption}>
-                    {colorOption}
+                    {/* {colorOption} */}
+                    <CircleIcon style={{ color: colorOption }} />
                   </MenuItem>
                 ))}
               </Select>

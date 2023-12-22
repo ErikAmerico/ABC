@@ -48,8 +48,9 @@ const MakitaField = ({ selectedNumbers, setSelectedNumbers }) => {
       label="Makitas"
       variant="outlined"
       type="readonly"
-      sx={{ width: "15%", mr: 0.5 }}
+      sx={{ width: "24%", mr: 0.5 }}
       InputProps={{
+        readOnly: true,
         startAdornment: (
           <InputAdornment position="start">
             <Select
