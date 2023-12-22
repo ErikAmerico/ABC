@@ -138,22 +138,10 @@ export const CREATE_JOB = gql`
       }
       description
       insurance
-      billTo {
-        id
-        names
-      }
-      attention
+      billTo
       holdForCrates
-      salesMan {
-        id
-        firstName
-        lastName
-      }
-      author {
-        id
-        firstName
-        lastName
-      }
+      salesMan
+      author
       poNum
       projectNum
       references
@@ -240,22 +228,10 @@ export const UPDATE_JOB = gql`
       }
       description
       insurance
-      billTo {
-        id
-        names
-      }
-      attention
+      billTo
       holdForCrates
-      salesMan {
-        id
-        firstName
-        lastName
-      }
-      author {
-        id
-        firstName
-        lastName
-      }
+      salesMan
+      author
       poNum
       projectNum
       references

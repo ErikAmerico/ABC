@@ -115,11 +115,10 @@ const typeDefs = gql`
     equipment: Equipment
     description: String
     insurance: String
-    billTo: Company
-    attention: String
+    billTo: String
     holdForCrates: Boolean
-    salesMan: User
-    author: User
+    salesMan: String
+    author: String
     poNum: Int
     projectNum: Int
     references: String
@@ -153,11 +152,10 @@ const typeDefs = gql`
     equipment: EquipmentInput
     description: String
     insurance: String
-    billTo: CompanyInput
-    attention: String
+    billTo: String
     holdForCrates: Boolean
-    salesMan: UserInput
-    author: UserInput
+    salesMan: String
+    author: String
     poNum: Int
     projectNum: Int
     references: String
@@ -192,11 +190,10 @@ const typeDefs = gql`
     equipment: EquipmentInput
     description: String
     insurance: String
-    billTo: CompanyInput
-    attention: String
+    billTo: String
     holdForCrates: Boolean
-    salesMan: UserInput
-    author: UserInput
+    salesMan: String
+    author: String
     poNum: Int
     projectNum: Int
     references: String

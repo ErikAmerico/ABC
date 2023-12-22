@@ -9,6 +9,9 @@ import {
   Grid,
 } from "@mui/material";
 
+import MakitaField from "./makitaSelection";
+import SafeJackField from "./safeJackSelection";
+
 function formatDate(timestamp) {
   // Create a date object from the timestamp
   const d = new Date(Number(timestamp));
@@ -30,7 +33,12 @@ function formatDate(timestamp) {
 }
 
 export default function MoveSheet({ job }) {
-  console.log(job);
+  //console.log(job);
+
+  const [makitaNumber, setMakitaNumber] = useState("0");
+  const [safeJackAmount, setSafeJackAmount] = useState("0");
+  const [selectedNumbers, setSelectedNumbers] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
 
   const [formData, setFormData] = useState({
     date: job?.date ? formatDate(job.date) : "",
@@ -95,11 +103,13 @@ export default function MoveSheet({ job }) {
             .map((driver) => `${driver.firstName} ${driver.lastName}`)
             .join(", ") || "",
         helpers:
-          job.helpers.map(
-            (helper) => `${helper.firstName} ${helper.lastName}`
-          ) || "",
+          job.helpers
+            .map((helper) => `${helper.firstName} ${helper.lastName}`)
+            .join(", ") || "",
         techs:
-          job.techs.map((tech) => `${tech.firstName} ${tech.lastName}`) || "",
+          job.techs
+            .map((tech) => `${tech.firstName} ${tech.lastName}`)
+            .join(", ") || "",
       }));
     }
   }, [job]);
@@ -273,31 +283,15 @@ export default function MoveSheet({ job }) {
                 label="Leave ABC"
                 variant="outlined"
                 value={formData.startTime}
-                sx={{ mb: 2 }}
-                fullWidth
+                sx={{ mb: 2, mr: 2 }}
               />
               <TextField
                 label="Estimated Time"
                 variant="outlined"
                 defaultValue="4 Hours"
                 sx={{ mb: 2 }}
-                fullWidth
               />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Call Contact Upon Arrival"
-                sx={{ marginRight: 2 }}
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Call Contact When Leaving ABC"
-                sx={{ marginRight: 2 }}
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Call Contact When Close"
-                sx={{ marginRight: 2 }}
-              />
+
               <TextField
                 label="Origin Contact Phone#"
                 InputLabelProps={{
@@ -311,8 +305,23 @@ export default function MoveSheet({ job }) {
                 }}
                 variant="outlined"
                 defaultValue={formData.contactPhone}
-                sx={{ mb: 2, backgroundColor: "#8DA9C4", borderRadius: "5px" }}
+                sx={{ backgroundColor: "#8DA9C4", borderRadius: "5px" }}
                 fullWidth
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact Upon Arrival"
+                sx={{ marginRight: 2, mb: 6 }}
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact When Leaving ABC"
+                sx={{ marginRight: 2, mb: 6 }}
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Call Contact When Close"
+                sx={{ marginRight: 2, mb: 6 }}
               />
               <TextField
                 label="Destination Contact Phone#"
@@ -468,9 +477,271 @@ export default function MoveSheet({ job }) {
               fullWidth
             />
           </Grid>
-          <Button variant="contained" type="submit" sx={{ mt: 3 }}>
-            Submit
-          </Button>
+          <h2>Equipment: </h2>
+          <Grid item xs={1} md={1}>
+            <TextField
+              label="4 Wheel Dollies"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Computer Carts"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Panels"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Library Carts"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Bins"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Tech Bins"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Trash Bins"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+          </Grid>
+          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
+            <TextField label="Tools" variant="outlined" sx={{ mr: 0.5 }} />
+            <MakitaField
+              value={makitaNumber}
+              onNumberChange={(e) => setMakitaNumber(e.target.value)}
+              onSelectChange={(e) => setMakitaNumber(e.target.value)}
+              selectedNumbers={selectedNumbers}
+              setSelectedNumbers={setSelectedNumbers}
+            />
+            <TextField
+              label="14' Ramps"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="10' Ramps"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="8' Ramps"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="6' Ramps" type="number" variant="outlined" />
+          </Grid>
+          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
+            <TextField
+              label="Platform"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Steel Plate"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Hood Lift"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <SafeJackField
+              value={safeJackAmount}
+              onNumberChange={(e) => setSafeJackAmount(e.target.value)}
+              onSelectChange={(e) => setSafeJackAmount(e.target.value)}
+              selectedColors={selectedColors}
+              setSelectedColors={setSelectedColors}
+            />
+            <TextField
+              label="Pallet Jacks"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="Skinny Jack" type="number" variant="outlined" />
+          </Grid>
+          <Grid item xs={1} md={1} sx={{ mt: 1 }}>
+            <TextField
+              label="J Bars"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Big Red"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Masonite 4'"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Masonite 8'"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Duct Tape"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField
+              label="Blue Tape"
+              type="number"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
+            <TextField label="Coroflex" variant="outlined" />
+          </Grid>
+
+          <FormGroup row>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  // checked={formData.noCrewCabs}
+                  // onChange={handleChange}
+                  name="carpetGuard"
+                />
+              }
+              label="Carpet Guard"
+            />
+            <FormControlLabel
+              control={<Checkbox name="broom" />}
+              label="Broom"
+            />
+            <FormControlLabel
+              control={<Checkbox name="allenSet" />}
+              label="Allen Set"
+            />
+            <FormControlLabel
+              control={<Checkbox name="bitBox" />}
+              label="Bit Box"
+            />
+            <FormControlLabel
+              control={<Checkbox name="socketSet" />}
+              label="Socket Set"
+            />
+          </FormGroup>
+          <FormGroup row sx={{ mt: 2 }}>
+            <FormControlLabel control={<Checkbox name="foam" />} label="Foam" />
+            <Grid item xs={1} md={1}>
+              <TextField label='1" L' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label='1" S' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label='2" L' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label='2" S' variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField label="White" variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField
+                label="Carpet Riser"
+                type="number"
+                variant="outlined"
+                sx={{ mr: 0.5 }}
+              />
+              <TextField
+                label="Rubber Riser"
+                type="number"
+                variant="outlined"
+              />
+            </Grid>
+          </FormGroup>
+
+          <Grid item xs={12} md={12} sx={{ mt: 2, mb: 4 }}>
+            <TextField label="Other" fullWidth></TextField>
+          </Grid>
+
+          <h2>Billing: </h2>
+
+          <FormGroup sx={{ mt: 5, mb: 5 }} row>
+            <span>Insurance:</span>
+            <FormControlLabel
+              control={<Checkbox name="minimumInsurance" />}
+              label="Minumum"
+            />
+            <FormControlLabel
+              control={<Checkbox name="selfInsurance" />}
+              label="Self"
+            />
+            <FormControlLabel
+              control={<Checkbox name="frcInsurance" />}
+              label="F.R.C"
+            />
+
+            <Grid item xs={12} md={12}>
+              <TextField label="Cost" sx={{ width: "150%" }} />
+            </Grid>
+            <TextField
+              label="Please Email Invoice to"
+              multiline
+              rows={2}
+              sx={{ ml: 50, width: "30%" }}
+            />
+          </FormGroup>
+
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <FormGroup>
+                <TextField
+                  label="Bill To"
+                  multiline
+                  rows={6}
+                  variant="outlined"
+                />
+
+                <FormControlLabel
+                  control={<Checkbox name="holdForCrates" />}
+                  label="Hold For Crates"
+                  sx={{ mb: 4 }}
+                />
+                <TextField label="Salesman" sx={{ mb: 1 }} />
+                <TextField label="Author" sx={{ mb: 1 }} />
+              </FormGroup>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <FormGroup
+                sx={{
+                  border: "1px solid black",
+                  padding: 2,
+                  borderRadius: 5,
+                }}
+              >
+                <TextField label="PO #" sx={{ mb: 1 }} />
+                <TextField label="Project #" sx={{ mb: 1 }} />
+                <TextField label="References" sx={{ mb: 1 }} />
+                <TextField label="Group Bill" sx={{ mb: 1 }} />
+                <TextField label="Pre Payment" sx={{ mb: 1 }} />
+              </FormGroup>
+            </Grid>
+          </Grid>
         </form>
       </Box>
     </Box>
