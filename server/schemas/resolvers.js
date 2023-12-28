@@ -116,7 +116,8 @@ const resolvers = {
         .populate("destination")
         .populate("serviceType")
         .populate("remarks")
-        .populate("crewSize");
+        .populate("crewSize")
+        .populate("description");
 
       // console.log(jobs);
       // console.log(JSON.stringify(jobs, null, 2));

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import { UPDATE_JOB } from "../utils/mutations";
+
 import {
   TextField,
   Checkbox,
@@ -40,11 +43,17 @@ export default function MoveSheet({ job }) {
   const [selectedNumbers, setSelectedNumbers] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
 
+  const [updateJob, { updateJobData, updateJobLoading, updateJobError }] =
+    useMutation(UPDATE_JOB, {
+      refetchQueries: ["getJobsByDate"],
+    });
+
   const [formData, setFormData] = useState({
     date: job?.date ? formatDate(job.date) : "",
     startTime: job?.startTime || "",
     origin: job?.origin || "",
     destination: job?.destination || "",
+    description: job?.description || "",
     account: job?.account.map((account) => `${account.names[0]}`) || "",
     remarks: job?.remarks || "",
     contact:
@@ -83,6 +92,7 @@ export default function MoveSheet({ job }) {
         startTime: job.startTime || "",
         origin: job.origin || "",
         destination: job.destination || "",
+        description: job.description || "",
         account: job.account.map((account) => `${account.names[0]}`) || "",
         remarks: job.remarks || "",
         contact:
@@ -118,39 +128,49 @@ export default function MoveSheet({ job }) {
     { name: "", quantity: "" },
   ]);
 
+  const jobId = job.id;
+
+  const updateJobDatabase = async (jobId, jobInput) => {
+    console.log("Updating job with input:", jobInput);
+    try {
+      const response = await updateJob({
+        variables: { id: jobId, input: jobInput },
+      });
+      console.log("Job updated successfully:", response);
+    } catch (error) {
+      console.error("Error updating job:", error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
+
+    if (name === "description") {
+      const jobInput = {
+        description: formData.description,
+      };
+      updateJobDatabase(jobId, jobInput);
+    }
   };
 
-  const handleEquipmentChange = (index, e) => {
-    const { name, value } = e.target;
-    const newList = [...equipmentList];
-    newList[index][name] = value;
-    setEquipmentList(newList);
-  };
+  // const handleDescriptionChange = (event) => {
+  //   const newDescription = event.target.value;
 
-  const addEquipmentField = () => {
-    setEquipmentList([...equipmentList, { name: "", quantity: "" }]);
-  };
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     description: newDescription,
+  //   }));
 
-  const removeEquipmentField = (index) => {
-    const newList = [...equipmentList];
-    newList.splice(index, 1);
-    setEquipmentList(newList);
-  };
+  //   const jobInput = {
+  //     description: newDescription,
+  //   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const completeFormData = {
-      ...formData,
-      equipmentList,
-    };
-    console.log(completeFormData);
-  };
+  //   updateJobDatabase(jobId, jobInput);
+  // };
 
   return (
     <Box
@@ -442,10 +462,13 @@ export default function MoveSheet({ job }) {
                 />
                 <TextField
                   label="Job Description"
+                  name="description"
                   variant="outlined"
                   multiline
                   rows={8}
-                  defaultValue=""
+                  value={formData.description}
+                  onChange={handleChange}
+                  //onChange={handleDescriptionChange}
                   sx={{ marginBottom: 2, width: "100%" }}
                 />
               </FormGroup>

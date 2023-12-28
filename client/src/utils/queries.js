@@ -150,6 +150,7 @@ export const FETCH_JOBS_BY_DATE = gql`
         email
         phone
       }
+      description
       remarks
       salesMan
       author
