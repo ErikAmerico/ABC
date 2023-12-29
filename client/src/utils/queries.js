@@ -151,6 +151,10 @@ export const FETCH_JOBS_BY_DATE = gql`
         phone
       }
       description
+      other
+      cost
+      emailInvoice
+      billTo
       remarks
       salesMan
       author
@@ -159,6 +163,10 @@ export const FETCH_JOBS_BY_DATE = gql`
       references
       groupBill
       prePayment
+      minInsurance
+      selfInsurance
+      frcInsurance
+      holdForCrates
     }
   }
 `;

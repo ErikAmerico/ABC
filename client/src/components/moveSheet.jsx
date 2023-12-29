@@ -80,6 +80,21 @@ export default function MoveSheet({ job }) {
       job?.techs
         .map((tech) => `${tech.firstName} ${tech.lastName}`)
         .join(", ") || "",
+    other: job?.other || "",
+    cost: job?.cost || "",
+    emailInvoice: job?.emailInvoice || "",
+    billTo: job?.billTo || "",
+    salesMan: job?.salesMan || "",
+    author: job?.author || "",
+    poNum: job?.poNum || "",
+    projectNum: job?.projectNum || "",
+    references: job?.references || "",
+    groupBill: job?.groupBill || "",
+    prePayment: job?.prePayment || "",
+    minInsurance: job?.minInsurance,
+    selfInsurance: job?.selfInsurance,
+    frcInsurance: job?.frcInsurance,
+    holdForCrates: job?.holdForCrates,
   });
 
   useEffect(() => {
@@ -120,6 +135,21 @@ export default function MoveSheet({ job }) {
           job.techs
             .map((tech) => `${tech.firstName} ${tech.lastName}`)
             .join(", ") || "",
+        other: job.other || "",
+        cost: job.cost || "",
+        emailInvoice: job.emailInvoice || "",
+        billTo: job.billTo || "",
+        salesMan: job.salesMan || "",
+        author: job.author || "",
+        poNum: job.poNum || "",
+        projectNum: job.projectNum || "",
+        references: job.references || "",
+        groupBill: job.groupBill || "",
+        prePayment: job.prePayment || "",
+        minInsurance: job.minInsurance,
+        selfInsurance: job.selfInsurance,
+        frcInsurance: job.frcInsurance,
+        holdForCrates: job.holdForCrates,
       }));
     }
   }, [job]);
@@ -143,34 +173,99 @@ export default function MoveSheet({ job }) {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    //const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+    const finalValue = type === "checkbox" ? checked : value;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value,
+      //[name]: value,
+      [name]: finalValue,
     }));
 
     if (name === "description") {
       const jobInput = {
-        description: formData.description,
+        //description: formData.description,
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "other") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "cost") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "emailInvoice") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "billTo") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "salesMan") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "author") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "poNum") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "projectNum") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "references") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "groupBill") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "prePayment") {
+      const jobInput = {
+        [name]: value,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "minInsurance") {
+      const jobInput = {
+        //[name]: value,
+        minInsurance: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "selfInsurance") {
+      const jobInput = {
+        selfInsurance: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "frcInsurance") {
+      const jobInput = {
+        frcInsurance: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "holdForCrates") {
+      const jobInput = {
+        holdForCrates: finalValue,
       };
       updateJobDatabase(jobId, jobInput);
     }
   };
-
-  // const handleDescriptionChange = (event) => {
-  //   const newDescription = event.target.value;
-
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     description: newDescription,
-  //   }));
-
-  //   const jobInput = {
-  //     description: newDescription,
-  //   };
-
-  //   updateJobDatabase(jobId, jobInput);
-  // };
 
   return (
     <Box
@@ -699,7 +794,13 @@ export default function MoveSheet({ job }) {
           </FormGroup>
 
           <Grid item xs={12} md={12} sx={{ mt: 2, mb: 4 }}>
-            <TextField label="Other" fullWidth></TextField>
+            <TextField
+              label="Other"
+              name="other"
+              value={formData.other}
+              onChange={handleChange}
+              fullWidth
+            ></TextField>
           </Grid>
 
           <h2>Billing: </h2>
@@ -707,23 +808,51 @@ export default function MoveSheet({ job }) {
           <FormGroup sx={{ mt: 5, mb: 5 }} row>
             <span>Insurance:</span>
             <FormControlLabel
-              control={<Checkbox name="minimumInsurance" />}
+              control={
+                <Checkbox
+                  name="minInsurance"
+                  //value={formData.minInsurance}
+                  checked={formData.minInsurance || false} // if minInsurance is undefined, set to false
+                  onChange={handleChange}
+                />
+              }
               label="Minumum"
             />
             <FormControlLabel
-              control={<Checkbox name="selfInsurance" />}
+              control={
+                <Checkbox
+                  name="selfInsurance"
+                  checked={formData.selfInsurance || false}
+                  onChange={handleChange}
+                />
+              }
               label="Self"
             />
             <FormControlLabel
-              control={<Checkbox name="frcInsurance" />}
+              control={
+                <Checkbox
+                  name="frcInsurance"
+                  checked={formData.frcInsurance || false}
+                  onChange={handleChange}
+                />
+              }
               label="F.R.C"
             />
 
             <Grid item xs={12} md={12}>
-              <TextField label="Cost" sx={{ width: "150%" }} />
+              <TextField
+                label="Cost"
+                name="cost"
+                value={formData.cost}
+                onChange={handleChange}
+                sx={{ width: "150%" }}
+              />
             </Grid>
             <TextField
               label="Please Email Invoice to"
+              name="emailInvoice"
+              value={formData.emailInvoice}
+              onChange={handleChange}
               multiline
               rows={2}
               sx={{ ml: 50, width: "30%" }}
@@ -735,18 +864,39 @@ export default function MoveSheet({ job }) {
               <FormGroup>
                 <TextField
                   label="Bill To"
+                  name="billTo"
+                  value={formData.billTo}
+                  onChange={handleChange}
                   multiline
                   rows={6}
                   variant="outlined"
                 />
 
                 <FormControlLabel
-                  control={<Checkbox name="holdForCrates" />}
+                  control={
+                    <Checkbox
+                      name="holdForCrates"
+                      checked={formData.holdForCrates || false}
+                      onChange={handleChange}
+                    />
+                  }
                   label="Hold For Crates"
                   sx={{ mb: 4 }}
                 />
-                <TextField label="Salesman" sx={{ mb: 1 }} />
-                <TextField label="Author" sx={{ mb: 1 }} />
+                <TextField
+                  label="Salesman"
+                  name="salesMan"
+                  value={formData.salesMan}
+                  onChange={handleChange}
+                  sx={{ mb: 1 }}
+                />
+                <TextField
+                  label="Author"
+                  name="author"
+                  value={formData.author}
+                  onChange={handleChange}
+                  sx={{ mb: 1 }}
+                />
               </FormGroup>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -757,11 +907,41 @@ export default function MoveSheet({ job }) {
                   borderRadius: 5,
                 }}
               >
-                <TextField label="PO #" sx={{ mb: 1 }} />
-                <TextField label="Project #" sx={{ mb: 1 }} />
-                <TextField label="References" sx={{ mb: 1 }} />
-                <TextField label="Group Bill" sx={{ mb: 1 }} />
-                <TextField label="Pre Payment" sx={{ mb: 1 }} />
+                <TextField
+                  label="PO #"
+                  name="poNum"
+                  value={formData.poNum}
+                  onChange={handleChange}
+                  sx={{ mb: 1 }}
+                />
+                <TextField
+                  label="Project #"
+                  name="projectNum"
+                  value={formData.projectNum}
+                  onChange={handleChange}
+                  sx={{ mb: 1 }}
+                />
+                <TextField
+                  label="References"
+                  name="references"
+                  value={formData.references}
+                  onChange={handleChange}
+                  sx={{ mb: 1 }}
+                />
+                <TextField
+                  label="Group Bill"
+                  name="groupBill"
+                  value={formData.groupBill}
+                  onChange={handleChange}
+                  sx={{ mb: 1 }}
+                />
+                <TextField
+                  label="Pre Payment"
+                  name="prePayment"
+                  value={formData.prePayment}
+                  onChange={handleChange}
+                  sx={{ mb: 1 }}
+                />
               </FormGroup>
             </Grid>
           </Grid>

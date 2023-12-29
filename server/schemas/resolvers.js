@@ -117,7 +117,22 @@ const resolvers = {
         .populate("serviceType")
         .populate("remarks")
         .populate("crewSize")
-        .populate("description");
+        .populate("description")
+        .populate("other")
+        .populate("cost")
+        .populate("emailInvoice")
+        .populate("billTo")
+        .populate("salesMan")
+        .populate("author")
+        .populate("poNum")
+        .populate("projectNum")
+        .populate("references")
+        .populate("groupBill")
+        .populate("prePayment")
+        .populate("minInsurance")
+        .populate("selfInsurance")
+        .populate("frcInsurance")
+        .populate("holdForCrates");
 
       // console.log(jobs);
       // console.log(JSON.stringify(jobs, null, 2));

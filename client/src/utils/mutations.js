@@ -227,7 +227,9 @@ export const UPDATE_JOB = gql`
         other
       }
       description
-      insurance
+      other
+      cost
+      emailInvoice
       billTo
       holdForCrates
       salesMan
@@ -237,6 +239,9 @@ export const UPDATE_JOB = gql`
       references
       groupBill
       prePayment
+      minInsurance
+      selfInsurance
+      frcInsurance
     }
   }
 `;

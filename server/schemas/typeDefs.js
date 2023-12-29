@@ -114,13 +114,18 @@ const typeDefs = gql`
     techs: [User]
     equipment: Equipment
     description: String
-    insurance: String
+    other: String
+    minInsurance: Boolean
+    selfInsurance: Boolean
+    frcInsurance: Boolean
+    cost: String
+    emailInvoice: String
     billTo: String
     holdForCrates: Boolean
     salesMan: String
     author: String
-    poNum: Int
-    projectNum: Int
+    poNum: String
+    projectNum: String
     references: String
     groupBill: String
     prePayment: String
@@ -151,13 +156,18 @@ const typeDefs = gql`
     techs: [ID]
     equipment: EquipmentInput
     description: String
-    insurance: String
+    other: String
+    minInsurance: Boolean
+    selfInsurance: Boolean
+    frcInsurance: Boolean
+    cost: String
+    emailInvoice: String
     billTo: String
     holdForCrates: Boolean
     salesMan: String
     author: String
-    poNum: Int
-    projectNum: Int
+    poNum: String
+    projectNum: String
     references: String
     groupBill: String
     prePayment: String
