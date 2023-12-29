@@ -150,6 +150,19 @@ export const FETCH_JOBS_BY_DATE = gql`
         email
         phone
       }
+      callContactUponArrival
+      callContactWhenLeavingAbc
+      callContactWhenClose
+      noCrewCabs
+      tailgate
+      truck100
+      openBack
+      stairs
+      toolTime
+      materialSheet
+      bostonCrateSheet
+      parkingPermits
+      directions
       description
       other
       cost

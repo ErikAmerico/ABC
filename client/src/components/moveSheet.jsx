@@ -95,6 +95,19 @@ export default function MoveSheet({ job }) {
     selfInsurance: job?.selfInsurance,
     frcInsurance: job?.frcInsurance,
     holdForCrates: job?.holdForCrates,
+    callContactUponArrival: job?.callContactUponArrival,
+    callContactWhenLeavingAbc: job?.callContactWhenLeavingAbc,
+    callContactWhenClose: job?.callContactWhenClose,
+    noCrewCabs: job?.noCrewCabs,
+    tailgate: job?.tailgate,
+    truck100: job?.truck100,
+    openBack: job?.openBack,
+    stairs: job?.stairs,
+    toolTime: job?.toolTime,
+    materialSheet: job?.materialSheet,
+    bostonCrateSheet: job?.bostonCrateSheet,
+    parkingPermits: job?.parkingPermits,
+    directions: job?.directions,
   });
 
   useEffect(() => {
@@ -150,6 +163,19 @@ export default function MoveSheet({ job }) {
         selfInsurance: job.selfInsurance,
         frcInsurance: job.frcInsurance,
         holdForCrates: job.holdForCrates,
+        callContactUponArrival: job.callContactUponArrival,
+        callContactWhenLeavingAbc: job.callContactWhenLeavingAbc,
+        callContactWhenClose: job.callContactWhenClose,
+        noCrewCabs: job.noCrewCabs,
+        tailgate: job.tailgate,
+        truck100: job.truck100,
+        openBack: job.openBack,
+        stairs: job.stairs,
+        toolTime: job.toolTime,
+        materialSheet: job.materialSheet,
+        bostonCrateSheet: job.bostonCrateSheet,
+        parkingPermits: job.parkingPermits,
+        directions: job.directions,
       }));
     }
   }, [job]);
@@ -262,6 +288,71 @@ export default function MoveSheet({ job }) {
     } else if (name === "holdForCrates") {
       const jobInput = {
         holdForCrates: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "callContactUponArrival") {
+      const jobInput = {
+        callContactUponArrival: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "callContactWhenLeavingAbc") {
+      const jobInput = {
+        callContactWhenLeavingAbc: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "callContactWhenClose") {
+      const jobInput = {
+        callContactWhenClose: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "noCrewCabs") {
+      const jobInput = {
+        noCrewCabs: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "tailgate") {
+      const jobInput = {
+        tailgate: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "truck100") {
+      const jobInput = {
+        truck100: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "openBack") {
+      const jobInput = {
+        openBack: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "stairs") {
+      const jobInput = {
+        stairs: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "toolTime") {
+      const jobInput = {
+        toolTime: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "materialSheet") {
+      const jobInput = {
+        materialSheet: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "bostonCrateSheet") {
+      const jobInput = {
+        bostonCrateSheet: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "parkingPermits") {
+      const jobInput = {
+        parkingPermits: finalValue,
+      };
+      updateJobDatabase(jobId, jobInput);
+    } else if (name === "directions") {
+      const jobInput = {
+        directions: finalValue,
       };
       updateJobDatabase(jobId, jobInput);
     }
@@ -424,17 +515,35 @@ export default function MoveSheet({ job }) {
                 fullWidth
               />
               <FormControlLabel
-                control={<Checkbox />}
+                control={
+                  <Checkbox
+                    name="callContactUponArrival"
+                    checked={formData.callContactUponArrival || false}
+                    onChange={handleChange}
+                  />
+                }
                 label="Call Contact Upon Arrival"
                 sx={{ marginRight: 2, mb: 6 }}
               />
               <FormControlLabel
-                control={<Checkbox />}
+                control={
+                  <Checkbox
+                    name="callContactWhenLeavingAbc"
+                    checked={formData.callContactWhenLeavingAbc || false}
+                    onChange={handleChange}
+                  />
+                }
                 label="Call Contact When Leaving ABC"
                 sx={{ marginRight: 2, mb: 6 }}
               />
               <FormControlLabel
-                control={<Checkbox />}
+                control={
+                  <Checkbox
+                    name="callContactWhenClose"
+                    checked={formData.callContactWhenClose || false}
+                    onChange={handleChange}
+                  />
+                }
                 label="Call Contact When Close"
                 sx={{ marginRight: 2, mb: 6 }}
               />
@@ -458,7 +567,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.noCrewCabs}
+                      checked={formData.noCrewCabs || false}
                       onChange={handleChange}
                       name="noCrewCabs"
                     />
@@ -468,7 +577,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.tailgate}
+                      checked={formData.tailgate || false}
                       onChange={handleChange}
                       name="tailgate"
                     />
@@ -478,7 +587,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.truck100}
+                      checked={formData.truck100 || false}
                       onChange={handleChange}
                       name="truck100"
                     />
@@ -488,7 +597,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.openBack}
+                      checked={formData.openBack || false}
                       onChange={handleChange}
                       name="openBack"
                     />
@@ -498,7 +607,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.stairs}
+                      checked={formData.stairs || false}
                       onChange={handleChange}
                       name="stairs"
                     />
@@ -508,7 +617,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.toolTime}
+                      checked={formData.toolTime || false}
                       onChange={handleChange}
                       name="toolTime"
                     />
@@ -518,7 +627,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.materialSheet}
+                      checked={formData.materialSheet || false}
                       onChange={handleChange}
                       name="materialSheet"
                     />
@@ -528,7 +637,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.bostonCrateSheet}
+                      checked={formData.bostonCrateSheet || false}
                       onChange={handleChange}
                       name="bostonCrateSheet"
                     />
@@ -538,7 +647,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.parkingPermits}
+                      checked={formData.parkingPermits || false}
                       onChange={handleChange}
                       name="parkingPermits"
                     />
@@ -548,7 +657,7 @@ export default function MoveSheet({ job }) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={formData.directions}
+                      checked={formData.directions || false}
                       onChange={handleChange}
                       name="directions"
                     />

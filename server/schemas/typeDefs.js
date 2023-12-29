@@ -99,12 +99,19 @@ const typeDefs = gql`
     serviceType: String
     remarks: String
     contact: [Contact]
-    noCrewCab: Boolean
+    callContactUponArrival: Boolean
+    callContactWhenLeavingAbc: Boolean
+    callContactWhenClose: Boolean
+    noCrewCabs: Boolean
     tailgate: Boolean
     truck100: Boolean
     openBack: Boolean
     stairs: Boolean
-    tooltime: Boolean
+    toolTime: Boolean
+    materialSheet: Boolean
+    bostonCrateSheet: Boolean
+    parkingPermits: Boolean
+    directions: Boolean
     crewSize: Int
     trucks: [Truck]
     vans: [Van]
@@ -141,12 +148,19 @@ const typeDefs = gql`
     serviceType: String
     remarks: String
     contact: [ID]
-    noCrewCab: Boolean
+    callContactUponArrival: Boolean
+    callContactWhenLeavingAbc: Boolean
+    callContactWhenClose: Boolean
+    noCrewCabs: Boolean
     tailgate: Boolean
     truck100: Boolean
     openBack: Boolean
     stairs: Boolean
-    tooltime: Boolean
+    toolTime: Boolean
+    materialSheet: Boolean
+    bostonCrateSheet: Boolean
+    parkingPermits: Boolean
+    directions: Boolean
     crewSize: Int
     trucks: [ID]
     vans: [ID]
@@ -189,7 +203,7 @@ const typeDefs = gql`
     truck100: Boolean
     openBack: Boolean
     stairs: Boolean
-    tooltime: Boolean
+    toolTime: Boolean
     crewSize: Int
     trucks: [ID]
     vans: [ID]

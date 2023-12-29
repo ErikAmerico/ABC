@@ -132,7 +132,20 @@ const resolvers = {
         .populate("minInsurance")
         .populate("selfInsurance")
         .populate("frcInsurance")
-        .populate("holdForCrates");
+        .populate("holdForCrates")
+        .populate("callContactUponArrival")
+        .populate("callContactWhenLeavingAbc")
+        .populate("callContactWhenClose")
+        .populate("noCrewCabs")
+        .populate("tailgate")
+        .populate("truck100")
+        .populate("openBack")
+        .populate("stairs")
+        .populate("toolTime")
+        .populate("materialSheet")
+        .populate("bostonCrateSheet")
+        .populate("parkingPermits")
+        .populate("directions");
 
       // console.log(jobs);
       // console.log(JSON.stringify(jobs, null, 2));

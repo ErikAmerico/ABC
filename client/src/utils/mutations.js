@@ -82,7 +82,7 @@ export const CREATE_JOB = gql`
       truck100
       openBack
       stairs
-      tooltime
+      toolTime
       crewSize
       trucks {
         id
@@ -167,12 +167,6 @@ export const UPDATE_JOB = gql`
       contact {
         id
       }
-      noCrewCab
-      tailgate
-      truck100
-      openBack
-      stairs
-      tooltime
       crewSize
       trucks {
         id
@@ -226,6 +220,19 @@ export const UPDATE_JOB = gql`
         rubberRiser
         other
       }
+      callContactUponArrival
+      callContactWhenLeavingAbc
+      callContactWhenClose
+      noCrewCabs
+      tailgate
+      truck100
+      openBack
+      stairs
+      toolTime
+      materialSheet
+      bostonCrateSheet
+      parkingPermits
+      directions
       description
       other
       cost
