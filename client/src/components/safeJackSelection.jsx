@@ -26,7 +26,7 @@ const SafeJackField = ({ selectedColors, setSelectedColors }) => {
   const [color, setColor] = useState("");
   const [safeJackAmount, setSafeJackAmount] = useState(0);
 
-  console.log(selectedColors);
+  //console.log(selectedColors);
 
   const handleDeleteColor = (colorToDelete) => () => {
     // Remove the color from the array

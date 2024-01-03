@@ -164,7 +164,6 @@ export const FETCH_JOBS_BY_DATE = gql`
       parkingPermits
       directions
       description
-      other
       cost
       emailInvoice
       billTo
@@ -180,6 +179,50 @@ export const FETCH_JOBS_BY_DATE = gql`
       selfInsurance
       frcInsurance
       holdForCrates
+      equipment {
+        dolly
+        comp
+        panel
+        library
+        bin
+        techBin
+        trashBin
+        tool
+        makitaCount
+        makita
+        ramp14
+        ramp10
+        ramp8
+        ramp6
+        platform
+        steelPlate
+        hoodLift
+        safeJackCount
+        safeJack
+        palletJack
+        skinnyJack
+        jBar
+        bigRed
+        masonite4
+        masonite8
+        ductTape
+        blueTape
+        coroflex
+        carpetGuard
+        broom
+        allenSet
+        bitBox
+        socketSet
+        foamAcknowledge
+        foam1L
+        foam1S
+        foam2L
+        foam2S
+        white
+        carpetRiser
+        rubberRiser
+        other
+      }
     }
   }
 `;

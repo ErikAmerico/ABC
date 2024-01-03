@@ -36,7 +36,7 @@ function formatDate(timestamp) {
 }
 
 export default function MoveSheet({ job }) {
-  //console.log(job);
+  console.log(job);
 
   const [makitaNumber, setMakitaNumber] = useState("0");
   const [safeJackAmount, setSafeJackAmount] = useState("0");
@@ -80,7 +80,6 @@ export default function MoveSheet({ job }) {
       job?.techs
         .map((tech) => `${tech.firstName} ${tech.lastName}`)
         .join(", ") || "",
-    other: job?.other || "",
     cost: job?.cost || "",
     emailInvoice: job?.emailInvoice || "",
     billTo: job?.billTo || "",
@@ -148,7 +147,6 @@ export default function MoveSheet({ job }) {
           job.techs
             .map((tech) => `${tech.firstName} ${tech.lastName}`)
             .join(", ") || "",
-        other: job.other || "",
         cost: job.cost || "",
         emailInvoice: job.emailInvoice || "",
         billTo: job.billTo || "",
@@ -180,9 +178,99 @@ export default function MoveSheet({ job }) {
     }
   }, [job]);
 
-  const [equipmentList, setEquipmentList] = useState([
-    { name: "", quantity: "" },
-  ]);
+  const [equipmentData, setEquipmentData] = useState({
+    dolly: job?.equipment.dolly || 0,
+    comp: job?.equipment.comp || 0,
+    panel: job?.equipment.panel || 0,
+    library: job?.equipment.library || 0,
+    bin: job?.equipment.bin || 0,
+    techBin: job?.equipment.techBin || 0,
+    trashBin: job?.equipment.trashBin || 0,
+    tool: job?.equipment.tool || "",
+    // makitaCount: job?.equipment.makitaCount || 0,
+    // makita: [job?.equipment.makita] || [],
+    ramp14: job?.equipment.ramp14 || 0,
+    ramp10: job?.equipment.ramp10 || 0,
+    ramp8: job?.equipment.ramp8 || 0,
+    ramp6: job?.equipment.ramp6 || 0,
+    platform: job?.equipment.platform || 0,
+    steelPlate: job?.equipment.steelPlate || 0,
+    hoodLift: job?.equipment.hoodLift || 0,
+    // safeJackCount: job?.equipment.safeJackCount || 0,
+    // safeJack: [job?.equipment.safeJack] || [],
+    palletJack: job?.equipment.palletJack || 0,
+    skinnyJack: job?.equipment.skinnyJack || 0,
+    jBar: job?.equipment.jBar || 0,
+    bigRed: job?.equipment.bigRed || 0,
+    masonite4: job?.equipment.masonite4 || 0,
+    masonite8: job?.equipment.masonite8 || 0,
+    ductTape: job?.equipment.ductTape || 0,
+    blueTape: job?.equipment.blueTape || 0,
+    coroflex: job?.equipment.coroflex || "",
+    carpetGuard: job?.equipment.carpetGuard,
+    broom: job?.equipment.broom,
+    allenSet: job?.equipment.allenSet,
+    bitBox: job?.equipment.bitBox,
+    socketSet: job?.equipment.socketSet,
+    foamAcknowledge: job?.equipment.foamAcknowledge,
+    foam1L: job?.equipment.foam1L || "",
+    foam1S: job?.equipment.foam1S || "",
+    foam2L: job?.equipment.foam2L || "",
+    foam2S: job?.equipment.foam2S || "",
+    white: job?.equipment.white || "",
+    carpetRiser: job?.equipment.carpetRiser || 0,
+    rubberRiser: job?.equipment.rubberRiser || 0,
+    other: job.equipment.other || "",
+  });
+
+  useEffect(() => {
+    console.log("Job prop has changed, equipment:", job);
+    setEquipmentData((prevEquipmentData) => ({
+      ...prevEquipmentData,
+      dolly: job.equipment.dolly || 0,
+      comp: job.equipment.comp || 0,
+      panel: job.equipment.panel || 0,
+      library: job.equipment.library || 0,
+      bin: job.equipment.bin || 0,
+      techBin: job.equipment.techBin || 0,
+      trashBin: job.equipment.trashBin || 0,
+      tool: job.equipment.tool || "",
+      // makitaCount: job.equipment.makitaCount || 0,
+      // makita: [job.equipment.makita] || [],
+      ramp14: job.equipment.ramp14 || 0,
+      ramp10: job.equipment.ramp10 || 0,
+      ramp8: job.equipment.ramp8 || 0,
+      ramp6: job.equipment.ramp6 || 0,
+      platform: job.equipment.platform || 0,
+      steelPlate: job.equipment.steelPlate || 0,
+      hoodLift: job.equipment.hoodLift || 0,
+      //safeJackCount: job.equipment.safeJackCount || 0,
+      //safeJack: [job.equipment.safeJack] || [],
+      palletJack: job.equipment.palletJack || 0,
+      skinnyJack: job.equipment.skinnyJack || 0,
+      jBar: job.equipment.jBar || 0,
+      bigRed: job.equipment.bigRed || 0,
+      masonite4: job.equipment.masonite4 || 0,
+      masonite8: job.equipment.masonite8 || 0,
+      ductTape: job.equipment.ductTape || 0,
+      blueTape: job.equipment.blueTape || 0,
+      coroflex: job.equipment.coroflex || "",
+      carpetGuard: job.equipment.carpetGuard,
+      broom: job.equipment.broom,
+      allenSet: job.equipment.allenSet,
+      bitBox: job.equipment.bitBox,
+      socketSet: job.equipment.socketSet,
+      foamAcknowledge: job.equipment.foamAcknowledge,
+      foam1L: job.equipment.foam1L || "",
+      foam1S: job.equipment.foam1S || "",
+      foam2L: job.equipment.foam2L || "",
+      foam2S: job.equipment.foam2S || "",
+      white: job.equipment.white || "",
+      carpetRiser: job.equipment.carpetRiser || 0,
+      rubberRiser: job.equipment.rubberRiser || 0,
+      other: job.equipment.other || "",
+    }));
+  }, [job]);
 
   const jobId = job.id;
 
@@ -199,162 +287,76 @@ export default function MoveSheet({ job }) {
   };
 
   const handleChange = (e) => {
-    //const { name, value } = e.target;
     const { name, value, type, checked } = e.target;
     const finalValue = type === "checkbox" ? checked : value;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      //[name]: value,
       [name]: finalValue,
     }));
 
-    if (name === "description") {
-      const jobInput = {
-        //description: formData.description,
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "other") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "cost") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "emailInvoice") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "billTo") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "salesMan") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "author") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "poNum") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "projectNum") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "references") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "groupBill") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "prePayment") {
-      const jobInput = {
-        [name]: value,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "minInsurance") {
-      const jobInput = {
-        //[name]: value,
-        minInsurance: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "selfInsurance") {
-      const jobInput = {
-        selfInsurance: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "frcInsurance") {
-      const jobInput = {
-        frcInsurance: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "holdForCrates") {
-      const jobInput = {
-        holdForCrates: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "callContactUponArrival") {
-      const jobInput = {
-        callContactUponArrival: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "callContactWhenLeavingAbc") {
-      const jobInput = {
-        callContactWhenLeavingAbc: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "callContactWhenClose") {
-      const jobInput = {
-        callContactWhenClose: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "noCrewCabs") {
-      const jobInput = {
-        noCrewCabs: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "tailgate") {
-      const jobInput = {
-        tailgate: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "truck100") {
-      const jobInput = {
-        truck100: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "openBack") {
-      const jobInput = {
-        openBack: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "stairs") {
-      const jobInput = {
-        stairs: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "toolTime") {
-      const jobInput = {
-        toolTime: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "materialSheet") {
-      const jobInput = {
-        materialSheet: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "bostonCrateSheet") {
-      const jobInput = {
-        bostonCrateSheet: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "parkingPermits") {
-      const jobInput = {
-        parkingPermits: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
-    } else if (name === "directions") {
-      const jobInput = {
-        directions: finalValue,
-      };
-      updateJobDatabase(jobId, jobInput);
+    const jobInput = {
+      [name]: finalValue,
+    };
+    updateJobDatabase(jobId, jobInput);
+  };
+
+  const updateEquipmentDatabase = async (jobId, equipmentData) => {
+    console.log("Updating equipment with input:", equipmentData);
+
+    const jobInput = {
+      equipment: equipmentData,
+    };
+    try {
+      const response = await updateJob({
+        variables: { id: jobId, input: jobInput },
+      });
+      console.log("Equipment updated successfully:", response);
+    } catch (error) {
+      console.error("Error updating equipment:", error);
+    }
+  };
+
+  const handleEquipmentChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    let finalValue;
+
+    if (type === "number") {
+      finalValue = value === "" ? 0 : Math.max(0, parseInt(value, 10));
+    } else if (type === "checkbox") {
+      finalValue = checked;
+    } else {
+      finalValue = value;
+    }
+
+    setEquipmentData((prevEquipmentData) => ({
+      ...prevEquipmentData,
+      [name]: finalValue,
+    }));
+
+    const equipmentInput = { ...equipmentData, [name]: finalValue };
+    updateEquipmentDatabase(jobId, equipmentInput);
+  };
+
+  const [initialValue, setInitialValue] = useState({});
+
+  const handleFocus = (e) => {
+    const { name, value } = e.target;
+    setInitialValue((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleBlur = (e) => {
+    const { name, value, type } = e.target;
+
+    // Check if the value has changed
+    if (initialValue[name] !== value) {
+      if (type === "number" && value === "") {
+        handleEquipmentChange({ target: { name, value: "0", type } });
+      } else if (type === "string" && value === "") {
+        handleEquipmentChange({ target: { name, value: "", type } });
+      }
     }
   };
 
@@ -672,7 +674,6 @@ export default function MoveSheet({ job }) {
                   rows={8}
                   value={formData.description}
                   onChange={handleChange}
-                  //onChange={handleDescriptionChange}
                   sx={{ marginBottom: 2, width: "100%" }}
                 />
               </FormGroup>
@@ -708,49 +709,93 @@ export default function MoveSheet({ job }) {
           <Grid item xs={1} md={1}>
             <TextField
               label="4 Wheel Dollies"
+              name="dolly"
+              value={equipmentData.dolly === 0 ? "" : equipmentData.dolly}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Computer Carts"
+              name="comp"
+              value={equipmentData.comp === 0 ? "" : equipmentData.comp}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Panels"
+              name="panel"
+              value={equipmentData.panel === 0 ? "" : equipmentData.panel}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Library Carts"
+              name="library"
+              value={equipmentData.library === 0 ? "" : equipmentData.library}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Bins"
+              name="bin"
+              value={equipmentData.bin === 0 ? "" : equipmentData.bin}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Tech Bins"
+              name="techBin"
+              value={equipmentData.techBin === 0 ? "" : equipmentData.techBin}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Trash Bins"
+              name="trashBin"
+              value={equipmentData.trashBin === 0 ? "" : equipmentData.trashBin}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
           </Grid>
           <Grid item xs={1} md={1} sx={{ mt: 1 }}>
-            <TextField label="Tools" variant="outlined" sx={{ mr: 0.5 }} />
+            <TextField
+              label="Tools"
+              name="tool"
+              value={equipmentData.tool}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              type="string"
+              variant="outlined"
+              sx={{ mr: 0.5 }}
+            />
             <MakitaField
               value={makitaNumber}
               onNumberChange={(e) => setMakitaNumber(e.target.value)}
@@ -760,39 +805,80 @@ export default function MoveSheet({ job }) {
             />
             <TextField
               label="14' Ramps"
+              name="ramp14"
+              value={equipmentData.ramp14 === 0 ? "" : equipmentData.ramp14}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="10' Ramps"
+              name="ramp10"
+              value={equipmentData.ramp10 === 0 ? "" : equipmentData.ramp10}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="8' Ramps"
+              name="ramp8"
+              value={equipmentData.ramp8 === 0 ? "" : equipmentData.ramp8}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="6' Ramps" type="number" variant="outlined" />
+            <TextField
+              label="6' Ramps"
+              name="ramp6"
+              value={equipmentData.ramp6 === 0 ? "" : equipmentData.ramp6}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
+              type="number"
+              variant="outlined"
+            />
           </Grid>
           <Grid item xs={1} md={1} sx={{ mt: 1 }}>
             <TextField
               label="Platform"
+              name="platform"
+              value={equipmentData.platform === 0 ? "" : equipmentData.platform}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Steel Plate"
+              name="steelPlate"
+              value={
+                equipmentData.steelPlate === 0 ? "" : equipmentData.steelPlate
+              }
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Hood Lift"
+              name="hoodLift"
+              value={equipmentData.hoodLift === 0 ? "" : equipmentData.hoodLift}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
@@ -806,96 +892,252 @@ export default function MoveSheet({ job }) {
             />
             <TextField
               label="Pallet Jacks"
+              name="palletJack"
+              value={
+                equipmentData.palletJack === 0 ? "" : equipmentData.palletJack
+              }
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="Skinny Jack" type="number" variant="outlined" />
+            <TextField
+              label="Skinny Jack"
+              name="skinnyJack"
+              value={
+                equipmentData.skinnyJack === 0 ? "" : equipmentData.skinnyJack
+              }
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
+              type="number"
+              variant="outlined"
+            />
           </Grid>
           <Grid item xs={1} md={1} sx={{ mt: 1 }}>
             <TextField
               label="J Bars"
+              name="jBar"
+              value={equipmentData.jBar === 0 ? "" : equipmentData.jBar}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Big Red"
+              name="bigRed"
+              value={equipmentData.bigRed === 0 ? "" : equipmentData.bigRed}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Masonite 4'"
+              name="masonite4"
+              value={
+                equipmentData.masonite4 === 0 ? "" : equipmentData.masonite4
+              }
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Masonite 8'"
+              name="masonite8"
+              value={
+                equipmentData.masonite8 === 0 ? "" : equipmentData.masonite8
+              }
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Duct Tape"
+              name="ductTape"
+              value={equipmentData.ductTape === 0 ? "" : equipmentData.ductTape}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
             <TextField
               label="Blue Tape"
+              name="blueTape"
+              value={equipmentData.blueTape === 0 ? "" : equipmentData.blueTape}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               type="number"
               variant="outlined"
               sx={{ mr: 0.5 }}
             />
-            <TextField label="Coroflex" variant="outlined" />
+            <TextField
+              label="Coroflex"
+              name="coroflex"
+              value={equipmentData.coroflex}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              type="string"
+              variant="outlined"
+            />
           </Grid>
 
           <FormGroup row>
             <FormControlLabel
               control={
                 <Checkbox
-                  // checked={formData.noCrewCabs}
-                  // onChange={handleChange}
                   name="carpetGuard"
+                  checked={equipmentData.carpetGuard || false}
+                  onChange={handleEquipmentChange}
                 />
               }
               label="Carpet Guard"
             />
             <FormControlLabel
-              control={<Checkbox name="broom" />}
+              control={
+                <Checkbox
+                  name="broom"
+                  checked={equipmentData.broom || false}
+                  onChange={handleEquipmentChange}
+                />
+              }
               label="Broom"
             />
             <FormControlLabel
-              control={<Checkbox name="allenSet" />}
+              control={
+                <Checkbox
+                  name="allenSet"
+                  checked={equipmentData.allenSet || false}
+                  onChange={handleEquipmentChange}
+                />
+              }
               label="Allen Set"
             />
             <FormControlLabel
-              control={<Checkbox name="bitBox" />}
+              control={
+                <Checkbox
+                  name="bitBox"
+                  checked={equipmentData.bitBox || false}
+                  onChange={handleEquipmentChange}
+                />
+              }
               label="Bit Box"
             />
             <FormControlLabel
-              control={<Checkbox name="socketSet" />}
+              control={
+                <Checkbox
+                  name="socketSet"
+                  checked={equipmentData.socketSet || false}
+                  onChange={handleEquipmentChange}
+                />
+              }
               label="Socket Set"
             />
           </FormGroup>
           <FormGroup row sx={{ mt: 2 }}>
-            <FormControlLabel control={<Checkbox name="foam" />} label="Foam" />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="foamAcknowledge"
+                  checked={equipmentData.foamAcknowledge || false}
+                  onChange={handleEquipmentChange}
+                />
+              }
+              label="Foam"
+            />
             <Grid item xs={1} md={1}>
-              <TextField label='1" L' variant="outlined" sx={{ mr: 0.5 }} />
-              <TextField label='1" S' variant="outlined" sx={{ mr: 0.5 }} />
-              <TextField label='2" L' variant="outlined" sx={{ mr: 0.5 }} />
-              <TextField label='2" S' variant="outlined" sx={{ mr: 0.5 }} />
-              <TextField label="White" variant="outlined" sx={{ mr: 0.5 }} />
+              <TextField
+                label='1" L'
+                name="foam1L"
+                value={equipmentData.foam1L}
+                onChange={handleEquipmentChange}
+                onBlur={handleBlur}
+                type="string"
+                variant="outlined"
+                sx={{ mr: 0.5 }}
+              />
+              <TextField
+                label='1" S'
+                name="foam1S"
+                value={equipmentData.foam1S}
+                onChange={handleEquipmentChange}
+                onBlur={handleBlur}
+                type="string"
+                variant="outlined"
+                sx={{ mr: 0.5 }}
+              />
+              <TextField
+                label='2" L'
+                name="foam2L"
+                value={equipmentData.foam2L}
+                onChange={handleEquipmentChange}
+                onBlur={handleBlur}
+                type="string"
+                variant="outlined"
+                sx={{ mr: 0.5 }}
+              />
+              <TextField
+                label='2" S'
+                name="foam2S"
+                value={equipmentData.foam2S}
+                onChange={handleEquipmentChange}
+                onBlur={handleBlur}
+                type="string"
+                variant="outlined"
+                sx={{ mr: 0.5 }}
+              />
+              <TextField
+                label="White"
+                name="white"
+                value={equipmentData.white}
+                onChange={handleEquipmentChange}
+                onBlur={handleBlur}
+                type="string"
+                variant="outlined"
+                sx={{ mr: 0.5 }}
+              />
               <TextField
                 label="Carpet Riser"
+                name="carpetRiser"
+                value={
+                  equipmentData.carpetRiser === 0
+                    ? ""
+                    : equipmentData.carpetRiser
+                }
+                onChange={handleEquipmentChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
                 type="number"
                 variant="outlined"
                 sx={{ mr: 0.5 }}
               />
               <TextField
                 label="Rubber Riser"
+                name="rubberRiser"
+                value={
+                  equipmentData.rubberRiser === 0
+                    ? ""
+                    : equipmentData.rubberRiser
+                }
+                onChange={handleEquipmentChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
                 type="number"
                 variant="outlined"
               />
@@ -906,8 +1148,10 @@ export default function MoveSheet({ job }) {
             <TextField
               label="Other"
               name="other"
-              value={formData.other}
-              onChange={handleChange}
+              value={equipmentData.other}
+              onChange={handleEquipmentChange}
+              onBlur={handleBlur}
+              type="string"
               fullWidth
             ></TextField>
           </Grid>
@@ -920,8 +1164,7 @@ export default function MoveSheet({ job }) {
               control={
                 <Checkbox
                   name="minInsurance"
-                  //value={formData.minInsurance}
-                  checked={formData.minInsurance || false} // if minInsurance is undefined, set to false
+                  checked={formData.minInsurance || false}
                   onChange={handleChange}
                 />
               }

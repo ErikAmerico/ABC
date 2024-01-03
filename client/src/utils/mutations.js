@@ -77,7 +77,7 @@ export const CREATE_JOB = gql`
       contact {
         id
       }
-      noCrewCab
+      noCrewCabs
       tailgate
       truck100
       openBack
@@ -103,41 +103,53 @@ export const CREATE_JOB = gql`
         id
       }
       equipment {
-        dollies
-        comps
-        panels
+        dolly
+        comp
+        panel
         library
-        bins
-        teachBins
-        trashBins
-        tools
+        bin
+        techBin
+        trashBin
+        tool
+        makitaCount
         makita
-        ramps
+        ramp14
+        ramp10
+        ramp8
+        ramp6
         platform
         steelPlate
         hoodLift
-        safeJacks
-        palletJacks
-        sknnyJack
-        Jbar
+        safeJackCount
+        safeJack
+        palletJack
+        skinnyJack
+        jBar
         bigRed
-        masonite
+        masonite4
+        masonite8
         ductTape
-        blutTape
+        blueTape
         coroflex
         carpetGuard
         broom
         allenSet
         bitBox
         socketSet
-        foam
+        foamAcknowledge
+        foam1L
+        foam1S
+        foam2L
+        foam2S
         white
         carpetRiser
         rubberRiser
         other
       }
       description
-      insurance
+      minInsurance
+      selfInsurance
+      frcInsurance
       billTo
       holdForCrates
       salesMan
@@ -187,34 +199,44 @@ export const UPDATE_JOB = gql`
         id
       }
       equipment {
-        dollies
-        comps
-        panels
+        dolly
+        comp
+        panel
         library
-        bins
-        teachBins
-        trashBins
-        tools
+        bin
+        techBin
+        trashBin
+        tool
+        makitaCount
         makita
-        ramps
+        ramp14
+        ramp10
+        ramp8
+        ramp6
         platform
         steelPlate
         hoodLift
-        safeJacks
-        palletJacks
-        sknnyJack
-        Jbar
+        safeJackCount
+        safeJack
+        palletJack
+        skinnyJack
+        jBar
         bigRed
-        masonite
+        masonite4
+        masonite8
         ductTape
-        blutTape
+        blueTape
         coroflex
         carpetGuard
         broom
         allenSet
         bitBox
         socketSet
-        foam
+        foamAcknowledge
+        foam1L
+        foam1S
+        foam2L
+        foam2S
         white
         carpetRiser
         rubberRiser
@@ -234,7 +256,6 @@ export const UPDATE_JOB = gql`
       parkingPermits
       directions
       description
-      other
       cost
       emailInvoice
       billTo

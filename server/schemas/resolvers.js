@@ -118,7 +118,6 @@ const resolvers = {
         .populate("remarks")
         .populate("crewSize")
         .populate("description")
-        .populate("other")
         .populate("cost")
         .populate("emailInvoice")
         .populate("billTo")
@@ -145,7 +144,8 @@ const resolvers = {
         .populate("materialSheet")
         .populate("bostonCrateSheet")
         .populate("parkingPermits")
-        .populate("directions");
+        .populate("directions")
+        .populate("equipment");
 
       // console.log(jobs);
       // console.log(JSON.stringify(jobs, null, 2));
