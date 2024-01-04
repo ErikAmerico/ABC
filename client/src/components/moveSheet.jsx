@@ -377,15 +377,6 @@ export default function MoveSheet({ job }) {
     });
   };
 
-  useEffect(() => {
-    const fetchInitialSafeJack = async () => {
-      const initialSafeJack = await job.equipment.safeJack;
-      setSelectedColors(initialSafeJack);
-    };
-
-    fetchInitialSafeJack();
-  }, []);
-
   const [isInitialMount, setIsInitialMount] = useState(true);
 
   useEffect(() => {
@@ -407,15 +398,6 @@ export default function MoveSheet({ job }) {
   };
 
   useEffect(() => {
-    const fetchInitialMakita = async () => {
-      const initialMakita = await job.equipment.makita;
-      setSelectedNumbers(initialMakita);
-    };
-
-    fetchInitialMakita();
-  }, []);
-
-  useEffect(() => {
     if (isInitialMount) {
       setIsInitialMount(false);
       return;
@@ -424,6 +406,27 @@ export default function MoveSheet({ job }) {
     const updatedData = { ...equipmentData, makita: selectedNumbers };
     updateEquipmentDatabase(jobId, updatedData);
   }, [selectedNumbers]);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      if (job) {
+        setSelectedNumbers([]);
+        setSelectedColors([]);
+
+        const initialMakita = Array.isArray(job.equipment.makita)
+          ? job.equipment.makita
+          : [];
+        const initialSafeJack = Array.isArray(job.equipment.safeJack)
+          ? job.equipment.safeJack
+          : [];
+
+        setSelectedNumbers(initialMakita);
+        setSelectedColors(initialSafeJack);
+      }
+    };
+
+    fetchInitialData();
+  }, [job]);
 
   return (
     <Box
