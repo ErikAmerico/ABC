@@ -198,7 +198,7 @@ export default function MoveSheet({ job }) {
     steelPlate: job?.equipment.steelPlate || 0,
     hoodLift: job?.equipment.hoodLift || 0,
     safeJackCount: job?.equipment.safeJackCount || 0,
-    // safeJack: [job?.equipment.safeJack] || [],
+    safeJack: job?.equipment.safeJack || [],
     palletJack: job?.equipment.palletJack || 0,
     skinnyJack: job?.equipment.skinnyJack || 0,
     jBar: job?.equipment.jBar || 0,
@@ -246,7 +246,7 @@ export default function MoveSheet({ job }) {
       steelPlate: job.equipment.steelPlate || 0,
       hoodLift: job.equipment.hoodLift || 0,
       safeJackCount: job.equipment.safeJackCount || 0,
-      // safeJack: [job.equipment.safeJack] || [],
+      safeJack: job.equipment.safeJack || [],
       palletJack: job.equipment.palletJack || 0,
       skinnyJack: job.equipment.skinnyJack || 0,
       jBar: job.equipment.jBar || 0,
@@ -368,6 +368,27 @@ export default function MoveSheet({ job }) {
       return updatedData;
     });
   };
+
+  useEffect(() => {
+    const fetchInitialSafeJack = async () => {
+      const initialSafeJack = await job.equipment.safeJack;
+      setSelectedColors(initialSafeJack);
+    };
+
+    fetchInitialSafeJack();
+  }, []);
+
+  const [isInitialMount, setIsInitialMount] = useState(true);
+
+  useEffect(() => {
+    if (isInitialMount) {
+      setIsInitialMount(false);
+      return;
+    }
+
+    const updatedData = { ...equipmentData, safeJack: selectedColors };
+    updateEquipmentDatabase(jobId, updatedData);
+  }, [selectedColors]);
 
   return (
     <Box
