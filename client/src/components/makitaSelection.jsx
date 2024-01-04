@@ -25,9 +25,13 @@ const numbers = [
   "15",
 ];
 
-const MakitaField = ({ selectedNumbers, setSelectedNumbers }) => {
+const MakitaField = ({
+  makitaCount,
+  setMakitaCount,
+  selectedNumbers,
+  setSelectedNumbers,
+}) => {
   const [number, setNumber] = useState("");
-  const [makitaCount, setMakitaCount] = useState(0);
 
   const handleDeleteNumber = (numberToDelete) => () => {
     setSelectedNumbers(selectedNumbers.filter((num) => num !== numberToDelete));

@@ -99,12 +99,19 @@ const typeDefs = gql`
     serviceType: String
     remarks: String
     contact: [Contact]
-    noCrewCab: Boolean
+    callContactUponArrival: Boolean
+    callContactWhenLeavingAbc: Boolean
+    callContactWhenClose: Boolean
+    noCrewCabs: Boolean
     tailgate: Boolean
     truck100: Boolean
     openBack: Boolean
     stairs: Boolean
-    tooltime: Boolean
+    toolTime: Boolean
+    materialSheet: Boolean
+    bostonCrateSheet: Boolean
+    parkingPermits: Boolean
+    directions: Boolean
     crewSize: Int
     trucks: [Truck]
     vans: [Van]
@@ -114,13 +121,17 @@ const typeDefs = gql`
     techs: [User]
     equipment: Equipment
     description: String
-    insurance: String
+    minInsurance: Boolean
+    selfInsurance: Boolean
+    frcInsurance: Boolean
+    cost: String
+    emailInvoice: String
     billTo: String
     holdForCrates: Boolean
     salesMan: String
     author: String
-    poNum: Int
-    projectNum: Int
+    poNum: String
+    projectNum: String
     references: String
     groupBill: String
     prePayment: String
@@ -136,12 +147,19 @@ const typeDefs = gql`
     serviceType: String
     remarks: String
     contact: [ID]
-    noCrewCab: Boolean
+    callContactUponArrival: Boolean
+    callContactWhenLeavingAbc: Boolean
+    callContactWhenClose: Boolean
+    noCrewCabs: Boolean
     tailgate: Boolean
     truck100: Boolean
     openBack: Boolean
     stairs: Boolean
-    tooltime: Boolean
+    toolTime: Boolean
+    materialSheet: Boolean
+    bostonCrateSheet: Boolean
+    parkingPermits: Boolean
+    directions: Boolean
     crewSize: Int
     trucks: [ID]
     vans: [ID]
@@ -151,13 +169,17 @@ const typeDefs = gql`
     techs: [ID]
     equipment: EquipmentInput
     description: String
-    insurance: String
+    minInsurance: Boolean
+    selfInsurance: Boolean
+    frcInsurance: Boolean
+    cost: String
+    emailInvoice: String
     billTo: String
     holdForCrates: Boolean
     salesMan: String
     author: String
-    poNum: Int
-    projectNum: Int
+    poNum: String
+    projectNum: String
     references: String
     groupBill: String
     prePayment: String
@@ -174,12 +196,12 @@ const typeDefs = gql`
     serviceType: String
     remarks: String
     contact: [ID]
-    noCrewCab: Boolean
+    noCrewCabs: Boolean
     tailgate: Boolean
     truck100: Boolean
     openBack: Boolean
     stairs: Boolean
-    tooltime: Boolean
+    toolTime: Boolean
     crewSize: Int
     trucks: [ID]
     vans: [ID]
@@ -202,70 +224,90 @@ const typeDefs = gql`
   }
 
   type Equipment {
-    dollies: Int
-    comps: Int
-    panels: Int
+    dolly: Int
+    comp: Int
+    panel: Int
     library: Int
-    bins: Int
-    teachBins: Int
-    trashBins: Int
-    tools: [String]
+    bin: Int
+    techBin: Int
+    trashBin: Int
+    tool: String
+    makitaCount: Int
     makita: [Int]
-    ramps: [Int]
+    ramp14: Int
+    ramp10: Int
+    ramp8: Int
+    ramp6: Int
     platform: Int
     steelPlate: Int
     hoodLift: Int
-    safeJacks: [String]
-    palletJacks: Int
-    sknnyJack: Int
-    Jbar: Int
+    safeJackCount: Int
+    safeJack: [String]
+    palletJack: Int
+    skinnyJack: Int
+    jBar: Int
     bigRed: Int
-    masonite: String
+    masonite4: Int
+    masonite8: Int
     ductTape: Int
-    blutTape: Int
-    coroflex: Int
+    blueTape: Int
+    coroflex: String
     carpetGuard: Boolean
     broom: Boolean
     allenSet: Boolean
     bitBox: Boolean
     socketSet: Boolean
-    foam: [String]
-    white: [String]
+    foamAcknowledge: Boolean
+    foam1L: String
+    foam1S: String
+    foam2L: String
+    foam2S: String
+    white: String
     carpetRiser: Int
     rubberRiser: Int
     other: String
   }
 
   input EquipmentInput {
-    dollies: Int
-    comps: Int
-    panels: Int
+    dolly: Int
+    comp: Int
+    panel: Int
     library: Int
-    bins: Int
-    teachBins: Int
-    trashBins: Int
-    tools: [String]
+    bin: Int
+    techBin: Int
+    trashBin: Int
+    tool: String
+    makitaCount: Int
     makita: [Int]
-    ramps: [Int]
+    ramp14: Int
+    ramp10: Int
+    ramp8: Int
+    ramp6: Int
     platform: Int
     steelPlate: Int
     hoodLift: Int
-    safeJacks: [String]
-    palletJacks: Int
-    sknnyJack: Int
-    Jbar: Int
+    safeJackCount: Int
+    safeJack: [String]
+    palletJack: Int
+    skinnyJack: Int
+    jBar: Int
     bigRed: Int
-    masonite: String
+    masonite4: Int
+    masonite8: Int
     ductTape: Int
-    blutTape: Int
-    coroflex: Int
+    blueTape: Int
+    coroflex: String
     carpetGuard: Boolean
     broom: Boolean
     allenSet: Boolean
     bitBox: Boolean
     socketSet: Boolean
-    foam: [String]
-    white: [String]
+    foamAcknowledge: Boolean
+    foam1L: String
+    foam1S: String
+    foam2L: String
+    foam2S: String
+    white: String
     carpetRiser: Int
     rubberRiser: Int
     other: String

@@ -77,12 +77,12 @@ export const CREATE_JOB = gql`
       contact {
         id
       }
-      noCrewCab
+      noCrewCabs
       tailgate
       truck100
       openBack
       stairs
-      tooltime
+      toolTime
       crewSize
       trucks {
         id
@@ -103,41 +103,53 @@ export const CREATE_JOB = gql`
         id
       }
       equipment {
-        dollies
-        comps
-        panels
+        dolly
+        comp
+        panel
         library
-        bins
-        teachBins
-        trashBins
-        tools
+        bin
+        techBin
+        trashBin
+        tool
+        makitaCount
         makita
-        ramps
+        ramp14
+        ramp10
+        ramp8
+        ramp6
         platform
         steelPlate
         hoodLift
-        safeJacks
-        palletJacks
-        sknnyJack
-        Jbar
+        safeJackCount
+        safeJack
+        palletJack
+        skinnyJack
+        jBar
         bigRed
-        masonite
+        masonite4
+        masonite8
         ductTape
-        blutTape
+        blueTape
         coroflex
         carpetGuard
         broom
         allenSet
         bitBox
         socketSet
-        foam
+        foamAcknowledge
+        foam1L
+        foam1S
+        foam2L
+        foam2S
         white
         carpetRiser
         rubberRiser
         other
       }
       description
-      insurance
+      minInsurance
+      selfInsurance
+      frcInsurance
       billTo
       holdForCrates
       salesMan
@@ -167,12 +179,6 @@ export const UPDATE_JOB = gql`
       contact {
         id
       }
-      noCrewCab
-      tailgate
-      truck100
-      openBack
-      stairs
-      tooltime
       crewSize
       trucks {
         id
@@ -193,41 +199,65 @@ export const UPDATE_JOB = gql`
         id
       }
       equipment {
-        dollies
-        comps
-        panels
+        dolly
+        comp
+        panel
         library
-        bins
-        teachBins
-        trashBins
-        tools
+        bin
+        techBin
+        trashBin
+        tool
+        makitaCount
         makita
-        ramps
+        ramp14
+        ramp10
+        ramp8
+        ramp6
         platform
         steelPlate
         hoodLift
-        safeJacks
-        palletJacks
-        sknnyJack
-        Jbar
+        safeJackCount
+        safeJack
+        palletJack
+        skinnyJack
+        jBar
         bigRed
-        masonite
+        masonite4
+        masonite8
         ductTape
-        blutTape
+        blueTape
         coroflex
         carpetGuard
         broom
         allenSet
         bitBox
         socketSet
-        foam
+        foamAcknowledge
+        foam1L
+        foam1S
+        foam2L
+        foam2S
         white
         carpetRiser
         rubberRiser
         other
       }
+      callContactUponArrival
+      callContactWhenLeavingAbc
+      callContactWhenClose
+      noCrewCabs
+      tailgate
+      truck100
+      openBack
+      stairs
+      toolTime
+      materialSheet
+      bostonCrateSheet
+      parkingPermits
+      directions
       description
-      insurance
+      cost
+      emailInvoice
       billTo
       holdForCrates
       salesMan
@@ -237,6 +267,9 @@ export const UPDATE_JOB = gql`
       references
       groupBill
       prePayment
+      minInsurance
+      selfInsurance
+      frcInsurance
     }
   }
 `;

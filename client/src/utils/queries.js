@@ -150,6 +150,23 @@ export const FETCH_JOBS_BY_DATE = gql`
         email
         phone
       }
+      callContactUponArrival
+      callContactWhenLeavingAbc
+      callContactWhenClose
+      noCrewCabs
+      tailgate
+      truck100
+      openBack
+      stairs
+      toolTime
+      materialSheet
+      bostonCrateSheet
+      parkingPermits
+      directions
+      description
+      cost
+      emailInvoice
+      billTo
       remarks
       salesMan
       author
@@ -158,6 +175,54 @@ export const FETCH_JOBS_BY_DATE = gql`
       references
       groupBill
       prePayment
+      minInsurance
+      selfInsurance
+      frcInsurance
+      holdForCrates
+      equipment {
+        dolly
+        comp
+        panel
+        library
+        bin
+        techBin
+        trashBin
+        tool
+        makitaCount
+        makita
+        ramp14
+        ramp10
+        ramp8
+        ramp6
+        platform
+        steelPlate
+        hoodLift
+        safeJackCount
+        safeJack
+        palletJack
+        skinnyJack
+        jBar
+        bigRed
+        masonite4
+        masonite8
+        ductTape
+        blueTape
+        coroflex
+        carpetGuard
+        broom
+        allenSet
+        bitBox
+        socketSet
+        foamAcknowledge
+        foam1L
+        foam1S
+        foam2L
+        foam2S
+        white
+        carpetRiser
+        rubberRiser
+        other
+      }
     }
   }
 `;

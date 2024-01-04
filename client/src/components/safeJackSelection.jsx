@@ -22,11 +22,13 @@ const colors = [
   "Yellow",
 ];
 
-const SafeJackField = ({ selectedColors, setSelectedColors }) => {
+const SafeJackField = ({
+  safeJackAmount,
+  setSafeJackAmount,
+  selectedColors,
+  setSelectedColors,
+}) => {
   const [color, setColor] = useState("");
-  const [safeJackAmount, setSafeJackAmount] = useState(0);
-
-  console.log(selectedColors);
 
   const handleDeleteColor = (colorToDelete) => () => {
     // Remove the color from the array
@@ -68,21 +70,6 @@ const SafeJackField = ({ selectedColors, setSelectedColors }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {/* <div
-                style={{
-                  display: "flex",
-                  //flexWrap: "wrap",
-                  gap: "5px",
-                }}
-              >
-                {selectedColors?.map((color) => (
-                  <Chip
-                    key={color}
-                    label={color}
-                    onDelete={handleDeleteColor(color)}
-                  />
-                ))}
-              </div> */}
               <div style={{ display: "flex", gap: "5px" }}>
                 {selectedColors?.map((selectedColor) => (
                   <IconButton

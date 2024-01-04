@@ -200,19 +200,21 @@ export default function Dispatch() {
   const updateJobInDatabase = async (selectedRowId) => {
     const selectedRow = rows.find((row) => row.id === selectedRowId);
 
-    let drivers = [];
-    let helpers = [];
-    let techs = [];
+    // let drivers = [];
+    // let helpers = [];
+    // let techs = [];
 
-    selectedRow.crewMembers.forEach((member) => {
-      if (member.role === "Driver") {
-        drivers = member.names.map((name) => name.id);
-      } else if (member.role === "Helper") {
-        helpers = member.names.map((name) => name.id);
-      } else if (member.role === "Tech") {
-        techs = member.names.map((name) => name.id);
-      }
-    });
+    // // I no longer think this is necessary. line 203-217 is taken care of in dispatchDrawer? leaving commented out for now.
+
+    // selectedRow.crewMembers.forEach((member) => {
+    //   if (member.role === "Driver") {
+    //     drivers = member.names.map((name) => name.id);
+    //   } else if (member.role === "Helper") {
+    //     helpers = member.names.map((name) => name.id);
+    //   } else if (member.role === "Tech") {
+    //     techs = member.names.map((name) => name.id);
+    //   }
+    // });
 
     console.log("selectedRow:", selectedRow.id);
 
