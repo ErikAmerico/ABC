@@ -11,12 +11,12 @@ import {
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AuthService from "../utils/auth";
+import AuthService from "../../utils/auth";
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
-import DispatchDrawer from "./dispatchDrawer";
+import DispatchDrawer from "./headerComponents/dispatchDrawer";
 import { useLocation } from "react-router-dom";
-import { useGlobalContext } from "../utils/globalContext";
+import { useGlobalContext } from "../../utils/globalContext";
 
 const classes = styled(Avatar)(({ theme }) => ({
   width: theme.spacing(4),

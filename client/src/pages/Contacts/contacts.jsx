@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AuthService from "../utils/auth.js";
+import AuthService from "../../utils/auth.js";
 import "./contacts.css";
 
 import Modal from "@mui/material/Modal";
@@ -20,10 +20,10 @@ import { Button } from "@mui/material";
 import { useMutation, useQuery } from "@apollo/client";
 import { useApolloClient } from "@apollo/client";
 
-import { CREATE_CONTACT } from "../utils/mutations.js";
-import { GET_ALL_CONTACTS } from "../utils/queries.js";
-import { GET_ALL_COMPANIES } from "../utils/queries.js";
-import { CREATE_COMPANY } from "../utils/mutations.js";
+import { CREATE_CONTACT } from "../../utils/mutations.js";
+import { GET_ALL_CONTACTS } from "../../utils/queries.js";
+import { GET_ALL_COMPANIES } from "../../utils/queries.js";
+import { CREATE_COMPANY } from "../../utils/mutations.js";
 
 export default function Contacts() {
   if (!AuthService.loggedIn()) {

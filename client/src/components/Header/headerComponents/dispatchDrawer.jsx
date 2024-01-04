@@ -16,9 +16,9 @@ import {
   GET_ALL_VANS,
   GET_ALL_TRUCKS,
   GET_ALL_USER_IDS,
-} from "../utils/queries.js";
-import { useGlobalContext } from "../utils/globalContext";
-import { CREATE_JOB, UPDATE_JOB } from "../utils/mutations.js";
+} from "../../../utils/queries.js";
+import { useGlobalContext } from "../../../utils/globalContext.jsx";
+import { CREATE_JOB, UPDATE_JOB } from "../../../utils/mutations.js";
 
 export default function DispatchDrawer() {
   //const [open, setOpen] = useState(false);

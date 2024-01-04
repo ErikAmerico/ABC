@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AuthService from "../utils/auth.js";
+import AuthService from "../../utils/auth.js";
 import "./employees.css";
 
 import Modal from "@mui/material/Modal";
@@ -13,7 +13,7 @@ import {
   MenuItem,
   Checkbox,
 } from "@mui/material";
-import { CREATE_USER } from "../utils/mutations.js";
+import { CREATE_USER } from "../../utils/mutations.js";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
@@ -21,9 +21,9 @@ import { Button } from "@mui/material";
 import { useMutation, useQuery } from "@apollo/client";
 import { useApolloClient } from "@apollo/client";
 
-import { GET_ALL_USER_IDS } from "../utils/queries.js";
-import { DELETE_USER } from "../utils/mutations.js";
-import { GET_USER } from "../utils/queries.js";
+import { GET_ALL_USER_IDS } from "../../utils/queries.js";
+import { DELETE_USER } from "../../utils/mutations.js";
+import { GET_USER } from "../../utils/queries.js";
 
 export default function Employees() {
   if (AuthService.loggedIn()) {

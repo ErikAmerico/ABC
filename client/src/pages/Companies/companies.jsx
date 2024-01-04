@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AuthService from "../utils/auth.js";
+import AuthService from "../../utils/auth.js";
 import "./companies.css";
 
 import {
@@ -18,8 +18,8 @@ import { Button } from "@mui/material";
 import { useMutation, useQuery } from "@apollo/client";
 import { useApolloClient } from "@apollo/client";
 
-import { GET_ALL_COMPANIES } from "../utils/queries.js";
-import { CREATE_COMPANY, CREATE_CONTACT } from "../utils/mutations.js";
+import { GET_ALL_COMPANIES } from "../../utils/queries.js";
+import { CREATE_COMPANY, CREATE_CONTACT } from "../../utils/mutations.js";
 
 export default function Companies() {
   if (AuthService.loggedIn()) {

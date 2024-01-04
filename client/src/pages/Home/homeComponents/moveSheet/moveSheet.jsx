@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { UPDATE_JOB } from "../utils/mutations";
+import { UPDATE_JOB } from "../../../../utils/mutations";
 
 import {
   TextField,
@@ -12,8 +12,8 @@ import {
   Grid,
 } from "@mui/material";
 
-import MakitaField from "./makitaSelection";
-import SafeJackField from "./safeJackSelection";
+import MakitaField from "./moveSheetComponents/makitaSelection";
+import SafeJackField from "./moveSheetComponents/safeJackSelection";
 
 function formatDate(timestamp) {
   // Create a date object from the timestamp
@@ -410,6 +410,8 @@ export default function MoveSheet({ job }) {
   useEffect(() => {
     const fetchInitialData = async () => {
       if (job) {
+        //if the problem of the makita and safe jack arrays being wiped clean from database on reload persists,
+        // try remove the following two lines.
         setSelectedNumbers([]);
         setSelectedColors([]);
 
