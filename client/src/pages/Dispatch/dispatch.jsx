@@ -15,10 +15,14 @@ import {
   Typography,
 } from "@mui/material";
 import { useGlobalContext } from "../../utils/globalContext.jsx";
-import RemoveModal from "../../components/removeModal.jsx";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_JOB, UPDATE_JOB } from "../../utils/mutations.js";
 import { FETCH_JOBS_BY_DATE } from "../../utils/queries.js";
+
+import TimeInput from "./dispatchComponents/timeInput.jsx";
+import RemoveModal from "./dispatchComponents/removeModal.jsx";
+import Footer from "./dispatchComponents/footer.jsx";
+import ServiceDropdown from "./dispatchComponents/serviceDropdown.jsx";
 
 export default function Dispatch() {
   const { rows, setRows } = useGlobalContext();
@@ -30,9 +34,6 @@ export default function Dispatch() {
     selectedDate,
     setSelectedDate,
   } = useGlobalContext();
-  // const [selectedDate, setSelectedDate] = useState(
-  //   formatDate(new Date(Date.now() + 86400000))
-  // );
 
   const [updateJob, { updateJobData, updateJobLoading, updateJobError }] =
     useMutation(UPDATE_JOB, {
@@ -109,8 +110,6 @@ export default function Dispatch() {
     }
   }, [data]);
 
-  //console.log(data);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -122,99 +121,8 @@ export default function Dispatch() {
     return chunks;
   };
 
-  function TimeInput({ value, onChange }) {
-    const [hour, minutePart] = value.split(":");
-    const minute = minutePart.split(" ")[0];
-    const period = minutePart.split(" ")[1];
-
-    const handleTimeChange = () => {
-      const selectedHour = hourRef.current.value;
-      const selectedMinute = minuteRef.current.value;
-      const selectedPeriod = periodRef.current.value;
-      onChange(`${selectedHour}:${selectedMinute} ${selectedPeriod}`);
-    };
-
-    const hourRef = useRef(null);
-    const minuteRef = useRef(null);
-    const periodRef = useRef(null);
-
-    return (
-      <div
-        style={{ display: "flex", alignItems: "center" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <select ref={hourRef} value={hour} onChange={handleTimeChange}>
-          {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
-            <option key={num} value={num}>
-              {num}
-            </option>
-          ))}
-        </select>
-        <div style={{ margin: "0 5px" }}>:</div>
-        <select ref={minuteRef} value={minute} onChange={handleTimeChange}>
-          {["00", "15", "30", "45"].map((min) => (
-            <option key={min} value={min}>
-              {min}
-            </option>
-          ))}
-        </select>
-        <select
-          ref={periodRef}
-          value={period}
-          onChange={handleTimeChange}
-          style={{ marginLeft: "5px" }}
-        >
-          <option value="AM">AM</option>
-          <option value="PM">PM</option>
-        </select>
-      </div>
-    );
-  }
-
-  function ServiceDropdown({ value, onChange }) {
-    const serviceOptions = [
-      "Move",
-      "Pull",
-      "Crate Delivery",
-      "Crate Pickup",
-      "Material Delivery",
-      "Warehouse",
-    ];
-
-    return (
-      <select
-        value={value}
-        onClick={(e) => e.stopPropagation()}
-        onChange={(e) => onChange(e.target.value)}
-        style={{ width: "130px", position: "relative", right: "7px" }}
-      >
-        {serviceOptions.map((service) => (
-          <option key={service} value={service}>
-            {service}
-          </option>
-        ))}
-      </select>
-    );
-  }
-
   const updateJobInDatabase = async (selectedRowId) => {
     const selectedRow = rows.find((row) => row.id === selectedRowId);
-
-    // let drivers = [];
-    // let helpers = [];
-    // let techs = [];
-
-    // // I no longer think this is necessary. line 203-217 is taken care of in dispatchDrawer? leaving commented out for now.
-
-    // selectedRow.crewMembers.forEach((member) => {
-    //   if (member.role === "Driver") {
-    //     drivers = member.names.map((name) => name.id);
-    //   } else if (member.role === "Helper") {
-    //     helpers = member.names.map((name) => name.id);
-    //   } else if (member.role === "Tech") {
-    //     techs = member.names.map((name) => name.id);
-    //   }
-    // });
 
     console.log("selectedRow:", selectedRow.id);
 
@@ -728,64 +636,11 @@ export default function Dispatch() {
             rowHeight={100}
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "16px",
-            backgroundColor: "#f5f5f5",
-            position: "sticky",
-            bottom: 0,
-          }}
-        >
-          <TableContainer
-            component={Paper}
-            style={{ marginRight: "16px", maxWidth: "20em" }}
-          >
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Men</TableCell>
-                  <TableCell>Trucks</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>Row 1</TableCell>
-                  <TableCell>Row 1</TableCell>
-                  <TableCell>AM</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Row 2</TableCell>
-                  <TableCell>Row 2</TableCell>
-                  <TableCell>PM</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <div style={{ marginRight: "16px" }}>
-            <Typography variant="subtitle1">Available</Typography>
-            <TextField variant="outlined" multiline rows={3} />
-          </div>
-          <div style={{ marginRight: "16px" }}>
-            <Typography variant="subtitle1">Not Available</Typography>
-            <TextField variant="outlined" multiline rows={3} />
-          </div>
-          <TextField
-            label="Date"
-            type="date"
-            variant="outlined"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <Button onClick={addRow} variant="contained" color="primary">
-            Add Job
-          </Button>
-        </div>
+        <Footer
+          addRow={addRow}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
       </div>
       <RemoveModal
         open={modalVisible}
