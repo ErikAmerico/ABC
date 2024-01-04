@@ -14,11 +14,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useGlobalContext } from "../utils/globalContext";
-import RemoveModal from "../components/removeModal";
+import { useGlobalContext } from "../../utils/globalContext.jsx";
+import RemoveModal from "../../components/removeModal.jsx";
 import { useMutation, useQuery } from "@apollo/client";
-import { CREATE_JOB, UPDATE_JOB } from "../utils/mutations.js";
-import { FETCH_JOBS_BY_DATE } from "../utils/queries";
+import { CREATE_JOB, UPDATE_JOB } from "../../utils/mutations.js";
+import { FETCH_JOBS_BY_DATE } from "../../utils/queries.js";
 
 export default function Dispatch() {
   const { rows, setRows } = useGlobalContext();

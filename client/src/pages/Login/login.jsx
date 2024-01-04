@@ -13,8 +13,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "../utils/mutations";
-import AuthService from "../utils/auth";
+import { LOGIN } from "../../utils/mutations";
+import AuthService from "../../utils/auth";
 
 function Copyright(props) {
   return (

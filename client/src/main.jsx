@@ -10,14 +10,14 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import AuthService from "./utils/auth";
 
-import Announcements from "./pages/announcements.jsx";
-import Employees from "./pages/employees.jsx";
-import Login from "./pages/login.jsx";
-import Dispatch from "./pages/dispatch.jsx";
-import Home from "./pages/home.jsx";
-import Office from "./pages/office.jsx";
-import Contacts from "./pages/contacts.jsx";
-import Companies from "./pages/companies.jsx";
+import Announcements from "./pages/Announcements/announcements.jsx";
+import Employees from "./pages/Employees/employees.jsx";
+import Login from "./pages/Login/login.jsx";
+import Dispatch from "./pages/Dispatch/dispatch.jsx";
+import Home from "./pages/Home/home.jsx";
+import Office from "./pages/Office/office.jsx";
+import Contacts from "./pages/Contacts/contacts.jsx";
+import Companies from "./pages/Companies/companies.jsx";
 
 const RootComponent = () => {
   const navigate = useNavigate();
