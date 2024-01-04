@@ -38,10 +38,8 @@ function formatDate(timestamp) {
 export default function MoveSheet({ job }) {
   console.log(job);
 
-  const [makitaNumber, setMakitaNumber] = useState("0");
   const [selectedNumbers, setSelectedNumbers] = useState([]);
 
-  const [safeJackAmount, setSafeJackAmount] = useState("0");
   const [selectedColors, setSelectedColors] = useState([]);
 
   const [updateJob, { updateJobData, updateJobLoading, updateJobError }] =
@@ -188,8 +186,8 @@ export default function MoveSheet({ job }) {
     techBin: job?.equipment.techBin || 0,
     trashBin: job?.equipment.trashBin || 0,
     tool: job?.equipment.tool || "",
-    // makitaCount: job?.equipment.makitaCount || 0,
-    // makita: [job?.equipment.makita] || [],
+    makitaCount: job?.equipment.makitaCount || 0,
+    makita: job?.equipment.makita || [],
     ramp14: job?.equipment.ramp14 || 0,
     ramp10: job?.equipment.ramp10 || 0,
     ramp8: job?.equipment.ramp8 || 0,
@@ -236,8 +234,8 @@ export default function MoveSheet({ job }) {
       techBin: job.equipment.techBin || 0,
       trashBin: job.equipment.trashBin || 0,
       tool: job.equipment.tool || "",
-      // makitaCount: job.equipment.makitaCount || 0,
-      // makita: [job.equipment.makita] || [],
+      makitaCount: job.equipment.makitaCount || 0,
+      makita: job.equipment.makita || [],
       ramp14: job.equipment.ramp14 || 0,
       ramp10: job.equipment.ramp10 || 0,
       ramp8: job.equipment.ramp8 || 0,
@@ -304,9 +302,19 @@ export default function MoveSheet({ job }) {
   const updateEquipmentDatabase = async (jobId, equipmentData) => {
     console.log("Updating equipment with input:", equipmentData);
 
+    const makitaIntegers = equipmentData.makita.map(Number);
+
+    // const jobInput = {
+    //   equipment: equipmentData,
+    // };
+
     const jobInput = {
-      equipment: equipmentData,
+      equipment: {
+        ...equipmentData,
+        makita: makitaIntegers,
+      },
     };
+
     try {
       const response = await updateJob({
         variables: { id: jobId, input: jobInput },
@@ -389,6 +397,33 @@ export default function MoveSheet({ job }) {
     const updatedData = { ...equipmentData, safeJack: selectedColors };
     updateEquipmentDatabase(jobId, updatedData);
   }, [selectedColors]);
+
+  const handleMakitaCountChange = (newCount) => {
+    setEquipmentData((prevData) => {
+      const updatedData = { ...prevData, makitaCount: newCount };
+      updateEquipmentDatabase(jobId, updatedData);
+      return updatedData;
+    });
+  };
+
+  useEffect(() => {
+    const fetchInitialMakita = async () => {
+      const initialMakita = await job.equipment.makita;
+      setSelectedNumbers(initialMakita);
+    };
+
+    fetchInitialMakita();
+  }, []);
+
+  useEffect(() => {
+    if (isInitialMount) {
+      setIsInitialMount(false);
+      return;
+    }
+
+    const updatedData = { ...equipmentData, makita: selectedNumbers };
+    updateEquipmentDatabase(jobId, updatedData);
+  }, [selectedNumbers]);
 
   return (
     <Box
@@ -828,8 +863,8 @@ export default function MoveSheet({ job }) {
             />
             <MakitaField
               value={equipmentData.makitaCount}
-              onNumberChange={(e) => setMakitaNumber(e.target.value)}
-              onSelectChange={(e) => setMakitaNumber(e.target.value)}
+              makitaCount={equipmentData.makitaCount}
+              setMakitaCount={handleMakitaCountChange}
               selectedNumbers={selectedNumbers}
               setSelectedNumbers={setSelectedNumbers}
             />
@@ -917,7 +952,7 @@ export default function MoveSheet({ job }) {
               value={equipmentData.safeJackCount}
               safeJackAmount={equipmentData.safeJackCount}
               setSafeJackAmount={handleSafeJackCountChange}
-              selectedColors={selectedColors} ///original
+              selectedColors={selectedColors}
               setSelectedColors={setSelectedColors}
             />
             <TextField
