@@ -39,8 +39,9 @@ export default function MoveSheet({ job }) {
   console.log(job);
 
   const [makitaNumber, setMakitaNumber] = useState("0");
-  const [safeJackAmount, setSafeJackAmount] = useState("0");
   const [selectedNumbers, setSelectedNumbers] = useState([]);
+
+  const [safeJackAmount, setSafeJackAmount] = useState("0");
   const [selectedColors, setSelectedColors] = useState([]);
 
   const [updateJob, { updateJobData, updateJobLoading, updateJobError }] =
@@ -196,7 +197,7 @@ export default function MoveSheet({ job }) {
     platform: job?.equipment.platform || 0,
     steelPlate: job?.equipment.steelPlate || 0,
     hoodLift: job?.equipment.hoodLift || 0,
-    // safeJackCount: job?.equipment.safeJackCount || 0,
+    safeJackCount: job?.equipment.safeJackCount || 0,
     // safeJack: [job?.equipment.safeJack] || [],
     palletJack: job?.equipment.palletJack || 0,
     skinnyJack: job?.equipment.skinnyJack || 0,
@@ -244,8 +245,8 @@ export default function MoveSheet({ job }) {
       platform: job.equipment.platform || 0,
       steelPlate: job.equipment.steelPlate || 0,
       hoodLift: job.equipment.hoodLift || 0,
-      //safeJackCount: job.equipment.safeJackCount || 0,
-      //safeJack: [job.equipment.safeJack] || [],
+      safeJackCount: job.equipment.safeJackCount || 0,
+      // safeJack: [job.equipment.safeJack] || [],
       palletJack: job.equipment.palletJack || 0,
       skinnyJack: job.equipment.skinnyJack || 0,
       jBar: job.equipment.jBar || 0,
@@ -358,6 +359,14 @@ export default function MoveSheet({ job }) {
         handleEquipmentChange({ target: { name, value: "", type } });
       }
     }
+  };
+
+  const handleSafeJackCountChange = (newCount) => {
+    setEquipmentData((prevData) => {
+      const updatedData = { ...prevData, safeJackCount: newCount };
+      updateEquipmentDatabase(jobId, updatedData);
+      return updatedData;
+    });
   };
 
   return (
@@ -797,7 +806,7 @@ export default function MoveSheet({ job }) {
               sx={{ mr: 0.5 }}
             />
             <MakitaField
-              value={makitaNumber}
+              value={equipmentData.makitaCount}
               onNumberChange={(e) => setMakitaNumber(e.target.value)}
               onSelectChange={(e) => setMakitaNumber(e.target.value)}
               selectedNumbers={selectedNumbers}
@@ -884,10 +893,10 @@ export default function MoveSheet({ job }) {
               sx={{ mr: 0.5 }}
             />
             <SafeJackField
-              value={safeJackAmount}
-              onNumberChange={(e) => setSafeJackAmount(e.target.value)}
-              onSelectChange={(e) => setSafeJackAmount(e.target.value)}
-              selectedColors={selectedColors}
+              value={equipmentData.safeJackCount}
+              safeJackAmount={equipmentData.safeJackCount}
+              setSafeJackAmount={handleSafeJackCountChange}
+              selectedColors={selectedColors} ///original
               setSelectedColors={setSelectedColors}
             />
             <TextField
