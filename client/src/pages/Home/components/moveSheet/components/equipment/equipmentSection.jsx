@@ -123,6 +123,11 @@ const EquipmentSection = ({
           setMakitaCount={handleMakitaCountChange}
           selectedNumbers={selectedNumbers}
           setSelectedNumbers={setSelectedNumbers}
+          handleMakitaCountChange={handleMakitaCountChange}
+          updateEquipmentDatabase={updateEquipmentDatabase}
+          job={job}
+          jobId={jobId}
+          equipmentData={equipmentData}
         />
         <TextField
           label="14' Ramps"

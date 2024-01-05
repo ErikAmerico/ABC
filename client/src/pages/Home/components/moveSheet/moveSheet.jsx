@@ -14,26 +14,7 @@ import {
 
 import EquipmentSection from "./components/equipment/equipmentSection";
 import BillingSection from "./components/billingSection";
-
-function formatDate(timestamp) {
-  // Create a date object from the timestamp
-  const d = new Date(Number(timestamp));
-
-  // Adjust for timezone offset
-  const timeOffsetInMS = d.getTimezoneOffset() * 60000;
-  d.setTime(d.getTime() + timeOffsetInMS);
-
-  // Get local date parts
-  let month = "" + (d.getMonth() + 1); // getMonth() is zero-indexed
-  let day = "" + d.getDate();
-  const year = d.getFullYear();
-
-  // Pad single digit month and day with leading zero
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
-
-  return [month, day, year].join("-");
-}
+import formatDate from "./components/dateFormat";
 
 export default function MoveSheet({ job }) {
   console.log(job);
@@ -374,30 +355,6 @@ export default function MoveSheet({ job }) {
       return updatedData;
     });
   };
-
-  const [isInitialMakitaMount, setIsInitialMakitaMount] = useState(true);
-
-  useEffect(() => {
-    if (isInitialMakitaMount) {
-      setIsInitialMakitaMount(false);
-      return;
-    }
-
-    const updatedData = {
-      ...equipmentData,
-      makita: selectedNumbers.map(Number),
-    };
-    updateEquipmentDatabase(jobId, updatedData);
-  }, [selectedNumbers]);
-
-  useEffect(() => {
-    if (job) {
-      const initialMakita = Array.isArray(job.equipment.makita)
-        ? job.equipment.makita
-        : [];
-      setSelectedNumbers(initialMakita);
-    }
-  }, [job]);
 
   return (
     <Box
