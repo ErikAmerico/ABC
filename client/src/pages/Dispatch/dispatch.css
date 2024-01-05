@@ -1,0 +1,45 @@
+.border-right {
+  border-right: 1px solid rgba(224, 224, 224, 1);
+}
+
+.myDataGrid {
+  position: relative;
+  max-width: 100%;
+  box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5) !important;
+}
+.myDataGrid .MuiDataGrid-overlay {
+  display: none;
+}
+
+.MuiDataGrid-columnHeaders {
+  background-color: gray;
+  position: fixed;
+}
+
+.tableContainer {
+  position: relative;
+  top: 20px;
+  max-width: 80%;
+  box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevents page-level scrolling */
+}
+
+#root,
+.appContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.dispatchContainerDiv {
+  flex: 1; /* This allows it to take up available space */
+  overflow-y: auto; /* This ensures the grid will scroll within this container */
+}
