@@ -32,9 +32,13 @@ export default function Dispatch() {
   const [modalVisible, setModalVisible] = useState(false);
   const [removalDetails, setRemovalDetails] = useState({ id: null, name: "" });
 
-  const { data, loading, error } = useQuery(FETCH_JOBS_BY_DATE, {
+  const { data, loading, error, refetch } = useQuery(FETCH_JOBS_BY_DATE, {
     variables: { date: selectedDate.toString().split("T")[0] },
   });
+
+  useEffect(() => {
+    refetch();
+  }, [selectedDate]);
 
   useEffect(() => {
     if (data && data.getJobsByDate) {

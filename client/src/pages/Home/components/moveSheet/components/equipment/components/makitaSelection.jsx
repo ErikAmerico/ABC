@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   InputAdornment,
@@ -30,8 +30,36 @@ const MakitaField = ({
   setMakitaCount,
   selectedNumbers,
   setSelectedNumbers,
+  job,
+  jobId,
+  equipmentData,
+  updateEquipmentDatabase,
 }) => {
   const [number, setNumber] = useState("");
+
+  const [isInitialMakitaMount, setIsInitialMakitaMount] = useState(true);
+
+  useEffect(() => {
+    if (isInitialMakitaMount) {
+      setIsInitialMakitaMount(false);
+      return;
+    }
+
+    const updatedData = {
+      ...equipmentData,
+      makita: selectedNumbers.map(Number),
+    };
+    updateEquipmentDatabase(jobId, updatedData);
+  }, [selectedNumbers]);
+
+  useEffect(() => {
+    if (job) {
+      const initialMakita = Array.isArray(job.equipment.makita)
+        ? job.equipment.makita
+        : [];
+      setSelectedNumbers(initialMakita);
+    }
+  }, [job]);
 
   const handleDeleteNumber = (numberToDelete) => () => {
     setSelectedNumbers(selectedNumbers.filter((num) => num !== numberToDelete));

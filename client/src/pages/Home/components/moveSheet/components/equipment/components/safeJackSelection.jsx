@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   InputAdornment,
   Select,
   MenuItem,
   IconButton,
-  Chip,
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 
@@ -27,19 +26,40 @@ const SafeJackField = ({
   setSafeJackAmount,
   selectedColors,
   setSelectedColors,
+  job,
+  jobId,
+  equipmentData,
+  updateEquipmentDatabase,
 }) => {
   const [color, setColor] = useState("");
 
+  const [isInitialSafeJackMount, setIsInitialSafeJackMount] = useState(true);
+
+  useEffect(() => {
+    if (isInitialSafeJackMount) {
+      setIsInitialSafeJackMount(false);
+      return;
+    }
+
+    const updatedData = { ...equipmentData, safeJack: selectedColors };
+    updateEquipmentDatabase(jobId, updatedData);
+  }, [selectedColors]);
+
+  useEffect(() => {
+    if (job) {
+      const initialSafeJack = Array.isArray(job.equipment.safeJack)
+        ? job.equipment.safeJack
+        : [];
+      setSelectedColors(initialSafeJack);
+    }
+  }, [job]);
+
   const handleDeleteColor = (colorToDelete) => () => {
-    // Remove the color from the array
     setSelectedColors(selectedColors.filter((c) => c !== colorToDelete));
   };
 
   const handleChangeColor = (e) => {
     const newColor = e.target.value;
-    setColor(newColor);
-
-    // Add color if it's not already in the array
     if (!selectedColors.includes(newColor)) {
       setSelectedColors((prevColors) => [...prevColors, newColor]);
       setColor("");
@@ -70,14 +90,14 @@ const SafeJackField = ({
                   </MenuItem>
                 ))}
               </Select>
-              <div style={{ display: "flex", gap: "5px" }}>
+              <div style={{ display: "flex" }}>
                 {selectedColors?.map((selectedColor) => (
                   <IconButton
                     key={selectedColor}
                     onClick={handleDeleteColor(selectedColor)}
                     style={{ color: selectedColor }}
                   >
-                    <CircleIcon />{" "}
+                    <CircleIcon />
                   </IconButton>
                 ))}
               </div>

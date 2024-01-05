@@ -21,7 +21,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import { useMutation, useQuery } from "@apollo/client";
 import { FETCH_JOBS_BY_DATE } from "../../utils/queries";
 
-import MoveSheet from "./homeComponents/moveSheet/moveSheet";
+import MoveSheet from "./components/moveSheet/moveSheet";
 
 const drawerWidth = 240;
 
