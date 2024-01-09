@@ -7,23 +7,7 @@ import {
   Chip,
 } from "@mui/material";
 
-const numbers = [
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-];
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
 const MakitaField = ({
   makitaCount,
@@ -35,8 +19,6 @@ const MakitaField = ({
   equipmentData,
   updateEquipmentDatabase,
 }) => {
-  const [number, setNumber] = useState("");
-
   const [isInitialMakitaMount, setIsInitialMakitaMount] = useState(true);
 
   useEffect(() => {
@@ -45,11 +27,10 @@ const MakitaField = ({
       return;
     }
 
-    const updatedData = {
-      ...equipmentData,
-      makita: selectedNumbers.map(Number),
-    };
+    const updatedData = { ...equipmentData, makita: selectedNumbers };
     updateEquipmentDatabase(jobId, updatedData);
+
+    console.log("updatedData makita", updatedData);
   }, [selectedNumbers]);
 
   useEffect(() => {
@@ -67,11 +48,8 @@ const MakitaField = ({
 
   const handleChangeNumber = (e) => {
     const newNumber = e.target.value;
-    setNumber(newNumber);
-
     if (!selectedNumbers.includes(newNumber)) {
       setSelectedNumbers((prevNumbers) => [...prevNumbers, newNumber]);
-      setNumber("");
     }
   };
 
@@ -114,7 +92,7 @@ const MakitaField = ({
         endAdornment: (
           <InputAdornment position="end">
             <Select
-              value={number}
+              value=""
               onChange={handleChangeNumber}
               displayEmpty
               inputProps={{ "aria-label": "Without label" }}
