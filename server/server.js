@@ -1,47 +1,46 @@
 const express = require("express");
-const { ApolloServer } = require("@apollo/server");
-const { expressMiddleware } = require("@apollo/server/express4");
 const path = require("path");
-const { authMiddleware } = require("./utils/auth");
-
+const { ApolloServer } = require("@apollo/server");
+const { startStandaloneServer } = require("@apollo/server/standalone");
 const { typeDefs, resolvers } = require("./schemas");
+const { authMiddleware } = require("./utils/auth");
 const db = require("./config/connection");
 
 const PORT = process.env.PORT || 3001;
+
+// Initialize Express
 const app = express();
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-
-const startApolloServer = async () => {
-  await server.start();
-
-  app.use(express.urlencoded({ extended: false }));
-  app.use(express.json());
-
-  app.use(
-    "/graphql",
-    expressMiddleware(server, {
-      context: authMiddleware,
-    })
-  );
-
-  if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../client/dist")));
-
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../client/dist/index.html"));
-    });
-  }
-
-  db.once("open", () => {
-    app.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
-    });
+// Serve static files from React app in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
   });
-};
+}
 
-startApolloServer();
+async function startApolloServer() {
+  // Initialize Apollo Server
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    async context({ req }) {
+      // Use authMiddleware to add user info to context
+      return authMiddleware({ req });
+    },
+  });
+
+  // Use startStandaloneServer for Apollo Server setup
+  await startStandaloneServer(server, {
+    listen: { port: PORT },
+    // Optionally, provide the Express app for HTTP server configuration
+    // This allows startStandaloneServer to attach itself to the Express app
+    httpServer: app,
+  });
+
+  console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+}
+
+db.once("open", startApolloServer);
