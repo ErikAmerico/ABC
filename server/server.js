@@ -8,6 +8,9 @@ const db = require("./config/connection");
 
 const PORT = process.env.PORT || 3001;
 
+//convert everything to rest api
+// rewrite project
+
 // Initialize Express
 const app = express();
 app.use(express.urlencoded({ extended: false }));
